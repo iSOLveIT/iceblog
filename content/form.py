@@ -1,10 +1,11 @@
-from wtforms import Form, StringField, validators
+from wtforms import StringField, validators
 from flask_ckeditor import CKEditorField
-from wtforms.fields.html5 import EmailField
+from flask_wtf import FlaskForm
+# from wtforms.fields.html5 import EmailField
 
 
 # Form for Blog Form
-class ArticleForm(Form):
+class ArticleForm(FlaskForm):
     title = StringField('Title', [
         validators.Length(max=225),
         validators.DataRequired()
@@ -13,8 +14,16 @@ class ArticleForm(Form):
         validators.DataRequired(),
         validators.Length(min=30)
     ])
-    link = StringField('Link to Cover Image', [
+    link = StringField('Cover Image Link', [
         validators.DataRequired(),
-        validators.InputRequired(message="Please provide link to the image"),
+        validators.InputRequired(message="Please provide link to the image")
+    ])
+    category = StringField('Category', [
+        validators.DataRequired(),
+        validators.InputRequired(message="Please provide category for article")
+    ])
+    readTime = StringField('Minutes spent reading', [
+        validators.DataRequired(),
+        validators.InputRequired()
     ])
 

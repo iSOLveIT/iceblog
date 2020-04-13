@@ -1,10 +1,9 @@
 from flask_mail import Message
 from datetime import datetime as dt
-from flask import jsonify
-from content import mail
+#from content import mail
 
 
-def sendEmail(_name, _subject, _email, _body):
+def sendemail(_name, _subject, _email, _body):
     # SEND EMAIL
     _recipient = 'isolveitgroup@gmail.com'
     msg = Message(_subject, sender=('iSOLveIT Contact', 'isolveitgroup@gmail.com'), recipients=[_recipient])
@@ -19,11 +18,11 @@ Date Sent:  {dt.now().strftime('%B %d, %Y, %H:%M ') + 'GMT'}
     return 'OK'
 
 
-def replyMessage(_email, _sender):
+def replymessage(_email, _sender):
     # REPLY EMAIL
     _subj = 'Message Received'
-    mesg = Message(_subj, sender=('iSOLveIT Contact', 'isolveitgroup@gmail.com'), recipients=[_email])
-    mesg.body = f'''Hello {_sender},
+    msg = Message(_subj, sender=('iSOLveIT Contact', 'isolveitgroup@gmail.com'), recipients=[_email])
+    msg.body = f'''Hello {_sender},
 The message sent by {_sender} to iSOLveIT has been received. iSOLveIT will contact you within 24 hours.
 
 Thank you,
@@ -31,5 +30,5 @@ iSOLveIT Team.
 
 Date Sent:  {dt.now().strftime('%B %d, %Y, %H:%M ') + 'GMT'}
 '''
-    mail.send(mesg)
+    mail.send(msg)
     return 'OK'
