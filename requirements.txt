@@ -1,0 +1,11 @@
+Flask
+Flask-CKEditor
+Flask-Mail
+Flask-PyMongo
+Flask-WTF
+gunicorn
+passlib
+pymongo
+requests
+WTForms
+dnspython
