@@ -3,11 +3,19 @@ from flask import Flask
 from flask_pymongo import PyMongo
 from flask_ckeditor import CKEditor
 # from flask_mail import Mail
+from flask_wtf.csrf import CSRFProtect
+import os
 
 
 # Instantiate flask and secret key
 app = Flask(__name__)
 
+# Instantiate csrf protection globally
+# app.config['WTF_CSRF_ENABLED'] = True
+# app.config['WTF_CSRF_SECRET_KEY'] = os.urandom(75)
+# app.config['WTF_CSRF_FIELD_NAME'] = 'csrf_token'
+# app.config['WTF_CSRF_TIME_LIMIT'] = 31536000
+# csrf = CSRFProtect(app)
 """
 # Config and Instantiate Mongo
 Username = urllib.parse.quote_plus('isolveit')
@@ -31,6 +39,7 @@ mail = Mail(app)
 
 # Config CKEDITOR
 app.config['CKEDITOR_PKG_TYPE'] = 'full'
+app.config['CKEDITOR_SERVE_LOCAL'] = True
 ckeditor = CKEditor(app)
 
 from content import url

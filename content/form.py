@@ -1,10 +1,10 @@
-from wtforms import StringField, validators
+from wtforms import StringField, validators, TextAreaField
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 # from wtforms.fields.html5 import EmailField
 
 
-# Form for Blog Form
+# Form for Blog Post
 class ArticleForm(FlaskForm):
     title = StringField('Title', [
         validators.Length(max=225),
@@ -12,6 +12,7 @@ class ArticleForm(FlaskForm):
     ])
     body = CKEditorField('Body', [
         validators.DataRequired(),
+        validators.InputRequired(),
         validators.Length(min=30)
     ])
     link = StringField('Cover Image Link', [
@@ -27,3 +28,13 @@ class ArticleForm(FlaskForm):
         validators.InputRequired()
     ])
 
+
+class CommentForm(FlaskForm):
+    name = StringField('Name *', [
+        validators.InputRequired(),
+        validators.Length(min=5, max=30)
+    ])
+    msg = TextAreaField('Message *', [
+        validators.InputRequired(),
+        validators.Length(min=1, max=255)
+    ])
