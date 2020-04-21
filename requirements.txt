@@ -1,4 +1,6 @@
+Werkzeug==0.16.0
 Flask
+Flask-Session
 Flask-CKEditor
 Flask-Mail
 Flask-PyMongo

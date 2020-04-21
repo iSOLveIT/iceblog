@@ -1,4 +1,4 @@
-from wtforms import StringField, validators, TextAreaField
+from wtforms import StringField, validators, TextAreaField, PasswordField
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 # from wtforms.fields.html5 import EmailField
@@ -37,4 +37,15 @@ class CommentForm(FlaskForm):
     msg = TextAreaField('Message *', [
         validators.InputRequired(),
         validators.Length(min=1, max=255)
+    ])
+
+
+class LoginForm(FlaskForm):
+    username = StringField('Username', [
+        validators.InputRequired(),
+        validators.Length(min=5, max=30)
+    ])
+    password = PasswordField('Password', [
+        validators.InputRequired(),
+        validators.Length(min=8, max=30)
     ])

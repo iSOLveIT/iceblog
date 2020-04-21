@@ -1,6 +1,6 @@
 from .user_views import IndexEndpoint, AboutEndpoint, CategoryEndpoint, ContactEndpoint, SingleEndpoint
 from content import app
-from .admin_views import AdminEndpoint, AddArticleEndpoint, EditArticleEndpoint, DeleteArticleEndpoint
+from .admin_views import *
 
 
 # Route for index
@@ -18,7 +18,12 @@ app.add_url_rule('/category/<string:category>/', view_func=CategoryEndpoint.as_v
 # Route for single blog
 app.add_url_rule('/category/<string:category>/blogpost/<string:blog_id>/', view_func=SingleEndpoint.as_view("blogpost"))
 
-# Route for admin
+
+# ADMIN ROUTES
+# Route for admin_login
+app.add_url_rule('/admin', view_func=AdminLoginEndpoint.as_view("admin"))
+
+# Route for admin dashboard
 app.add_url_rule('/admin_dashboard', view_func=AdminEndpoint.as_view("dashboard"))
 
 # Route for add article
@@ -32,3 +37,6 @@ app.add_url_rule('/admin_dashboard/edit_article/<string:blog_id>/',
 # Route for delete article
 app.add_url_rule('/admin_dashboard/delete/<string:blog_id>/',
                  view_func=DeleteArticleEndpoint.as_view("deletearticle"))
+
+# Route for admin logout
+app.add_url_rule('/admin_dashboard/logout', view_func=AdminLogoutEndpoint.as_view("logout"))

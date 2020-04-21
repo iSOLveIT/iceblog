@@ -2,6 +2,7 @@ from flask import Flask
 # import urllib
 from flask_pymongo import PyMongo
 from flask_ckeditor import CKEditor
+from flask_session import Session
 # from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 import os
@@ -16,6 +17,17 @@ app = Flask(__name__)
 # app.config['WTF_CSRF_FIELD_NAME'] = 'csrf_token'
 # app.config['WTF_CSRF_TIME_LIMIT'] = 31536000
 # csrf = CSRFProtect(app)
+
+# Check Configuration section for more details
+SESSION_COOKIE_NAME = "eveblog"
+SESSION_COOKIE_PATH = "http://127.0.0.1:4700/admin_dashboard/"
+SESSION_TYPE = 'filesystem'
+SESSION_KEY_PREFIX = 'eve'
+SESSION_FILE_DIR = "app_session"
+PERMANENT_SESSION_LIFETIME = 86400
+app.config.from_object(__name__)
+Session(app)
+
 """
 # Config and Instantiate Mongo
 Username = urllib.parse.quote_plus('isolveit')
