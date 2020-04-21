@@ -52,6 +52,16 @@ class AdminLoginEndpoint(MethodView):
                 session['lastName'] = user['lastName']
                 session['firstName'] = user['firstName']
                 session['gender'] = user['gender']
+
+                users.find_one_and_update(
+                    {'_id': ObjectId(user['_id'])},
+                    {
+                        '$set': {
+                            'loginAt': dt.now()
+                        }
+                    },
+                    upsert=False,
+                )
                 flash('Logged in successfully.', 'success')
                 return redirect(url_for('dashboard'))
             else:
@@ -64,6 +74,22 @@ class AdminLogoutEndpoint(MethodView):
     @staticmethod
     @login_required
     def get():
+        # Create Mongodb connection
+        users = mongo.db.admin_user
+
+        # Get session username
+        username = session.get('username')
+
+        # Execute query to fetch data
+        users.find_one_and_update(
+            {'username': username},
+            {
+                '$set': {
+                    'logoutAt': dt.now()
+                }
+            },
+            upsert=False,
+        )
         session.clear()
         flash('Logged out.', 'success')
         return redirect(url_for('admin'))
