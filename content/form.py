@@ -29,6 +29,7 @@ class ArticleForm(FlaskForm):
     ])
 
 
+# Form for Comments
 class CommentForm(FlaskForm):
     name = StringField('Name *', [
         validators.InputRequired(),
@@ -40,6 +41,7 @@ class CommentForm(FlaskForm):
     ])
 
 
+# Form for Login
 class LoginForm(FlaskForm):
     username = StringField('Username', [
         validators.InputRequired(),

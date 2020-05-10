@@ -1,0 +1,94 @@
+{% extends 'layout.html'%}
+
+{% block content %}
+<div class="py-5 bg-light mb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h3>Account Details</h3>
+                <p>Make changes to your account</p>
+            </div>
+
+            <div class="col-md-6">
+                {% include 'includes/_message.html'%}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-light">
+    <div class="row bg-white mb-5" style="margin-right: 0; margin-left: 0;">
+        <div class="container">
+            <div class="col-md-8 col-md-offset-4">
+                <form method="post" action="">
+                    <h4 style="color: #000033;" class="text-uppercase">Personal Information</h4>
+                    <hr>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputLName">Last Name</label>
+                            <input type="text" class="form-control" id="inputLName" name="LName" value="{{ user['lastName'] }}"
+                                maxlength="255" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputFName">First Name</label>
+                            <input type="text" class="form-control" id="inputFName" name="FName" value="{{ user['firstName'] }}"
+                                maxlength="255" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail">Email Address</label>
+                            <input type="email" class="form-control" id="inputEmail" name="Email" value="{{ user['email'] }}" maxlength="255">
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            <label for="inputGender">Gender</label>
+                            <select id="inputGender" class="form-control" name="Gender" required>
+                                {% if user['gender'] == "M" %}
+                                    <option selected value="M">Male</option>
+                                    <option value="F">Female</option>
+                                {% else %}
+                                    <option value="M">Male</option>
+                                    <option selected value="F">Female</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p class="">Joined: <b style="color: #000033;">{{ user['dateCreated'].strftime('%B %d, %Y') }}</b></p>
+                    </div>
+
+                    <br><br>
+
+                    <h4 style="color: #000033;" class="text-uppercase">Data Information</h4>
+                    <hr>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputID">Username</label>
+                            <input type="numeric" class="form-control" id="inputID" value="@{{ user['username'] }}" readonly
+                                disabled required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputPassword">Password</label>
+                            <input type="password" class="form-control" id="inputPassword" name="password" value="{{ user['decrypted_pswd'] }}"
+                                maxlength="255" minlength="8">
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <input type="submit" class="btn"
+                            style="background-color: #ff69b4; color: #fff; padding: 8px; border-radius: 8px;"
+                            value="Save Changes">
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

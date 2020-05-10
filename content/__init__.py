@@ -4,7 +4,7 @@ from flask_pymongo import PyMongo
 from flask_ckeditor import CKEditor
 from flask_session import Session
 # from flask_mail import Mail
-from flask_wtf.csrf import CSRFProtect
+# from flask_wtf.csrf import CSRFProtect
 import os
 
 

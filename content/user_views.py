@@ -1,17 +1,31 @@
 from flask.views import MethodView
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash, session
 from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
 from flask_pymongo import pymongo
-from .form import ArticleForm, CommentForm
+from .form import CommentForm
 from datetime import datetime as dt
+from functools import wraps
+from emoji import emojize
+
+
+# Check if admin is logged out
+def logout_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'logged_in' in session:
+            flash(f"{emojize(':warning:')} Unauthorised access, Logout first", 'danger')
+            return redirect(url_for('dashboard'))
+        else:
+            return f(*args, **kwargs)
+    return decorated_function
 
 
 # View for index
 class IndexEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get():
-        # session['logged_in'] = True
         # Create Mongodb connection
         articles = mongo.db.articles
 
@@ -42,10 +56,20 @@ class IndexEndpoint(MethodView):
                                recent_posts=recent_posts, catColor=category_color
                                ), 200
 
+    @staticmethod
+    @logout_required
+    def post():
+        e_mail = request.form['newsletter']
+        dB = mongo.db.newsletter_subscribers
+        dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+        flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        return redirect(url_for('index', _anchor='newsletter'))
+
 
 # View for about
 class AboutEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get():
         return render_template('about.html'), 200
 
@@ -53,6 +77,7 @@ class AboutEndpoint(MethodView):
 # View for contact
 class ContactEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get():
         return render_template('contact.html'), 200
 
@@ -60,34 +85,48 @@ class ContactEndpoint(MethodView):
 # View for blog category
 class CategoryEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get(category):
+        offset = int(request.args['page'])
+        limit = 6
         # Create Mongodb connection
         articles = mongo.db.articles
+        _total_doc = articles.count_documents({'category': category})
+        if offset < 0 or offset >= int(_total_doc):
+            return redirect(url_for('category', category=category, page=0))
+        else:
+            # Execute query to fetch data
+            posts = articles.find({'$and': [
+                {"category": category},
+                {"category_num": {'$gte': offset}}
+            ]}).limit(limit).sort('category_num', pymongo.ASCENDING)
 
-        # Execute query to fetch data
-        posts = articles.find({"category": category})
+            _previous = int(offset) - limit
+            _next = int(offset) + limit
 
-        # color codes for category
-        category_info = {
-            "Lifestyle": ["primary", "This is a description for Lifestyle"],
-            "Tech": ["danger", "This is a description for Tech"],
-            "Sports": ["info", "This is a description for Sports"],
-            "Entertainment": ["warning", "This is a description for Entertainment"],
-            "Health": ["success", "This is a description for Health"]
-        }
+            # color codes for category
+            category_info = {
+                "Lifestyle": ["primary", "This is a description for Lifestyle"],
+                "Tech": ["danger", "This is a description for Tech"],
+                "Sports": ["info", "This is a description for Sports"],
+                "Entertainment": ["warning", "This is a description for Entertainment"],
+                "Health": ["success", "This is a description for Health"]
+            }
 
-        # select category color
-        cat_info = []
-        if category in category_info:
-            cat_info = category_info.get(category)
+            # select category color
+            cat_info = []
+            if category in category_info:
+                cat_info = category_info.get(category)
 
         return render_template('category.html', posts=posts,
+                               _previous=_previous, _next=_next,
                                category=category, cat_info=cat_info), 200
 
 
 # View for single blog
 class SingleEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get(category, blog_id):
         # Create Mongodb connection
         articles = mongo.db.articles
@@ -137,26 +176,35 @@ class SingleEndpoint(MethodView):
                                article_color=article_color), 200
 
     @staticmethod
+    @logout_required
     def post(category, blog_id):
-        name = request.form['name']
-        message = request.form['msg']
-        datePosted = dt.now()
-        # Create Mongodb connection
-        dB = mongo.db.articles
+        if 'name' and 'msg' in request.form:
+            name = request.form['name']
+            message = request.form['msg']
+            datePosted = dt.now()
+            # Create Mongodb connection
+            dB = mongo.db.articles
 
-        # Execute query to fetch data
-        dB.find_one_and_update(
-            {"_id": ObjectId(blog_id)},
-            {
-                "$push": {
-                    "comments": {
-                        "name": name,
-                        "datePosted": datePosted,
-                        "message": message
+            # Execute query to fetch data
+            dB.find_one_and_update(
+                {"_id": ObjectId(blog_id)},
+                {
+                    "$push": {
+                        "comments": {
+                            "name": name,
+                            "datePosted": datePosted,
+                            "message": message
+                        }
                     }
                 }
-            }
-        )
+            )
+            return redirect(url_for('blogpost', category=category,
+                                    blog_id=blog_id, _anchor='comment-section'))
 
-        return redirect(url_for('blogpost', category=category,
-                                blog_id=blog_id, _anchor='comment-section'))
+        elif 'newsletter' in request.form:
+            e_mail = request.form['newsletter']
+            dB = mongo.db.newsletter_subscribers
+            dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+            flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
+            return redirect(url_for('blogpost', category=category,
+                                    blog_id=blog_id, _anchor='newsletter'))
