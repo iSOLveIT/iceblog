@@ -85,19 +85,19 @@ class AdminTask(TaskSequence):
             "readTime": 10
         })
 
-    # @seq_task(4)
-    # def delete_article(self):
-    #     self.client.post("/admin_dashboard/delete/5eb7274ce9cee8b1fa351b15/")
+    @seq_task(4)
+    def delete_article(self):
+        self.client.post("/admin_dashboard/delete/5eae68d06779b0be24dc4730/")
 
 
-# class WebsiteUser(HttpLocust):
-#     """Initiliazes the UserBehaviour class
+class WebsiteUser(HttpLocust):
+    """Initializes the UserBehaviour class
 
-#     Arguments:
-#         HttpLocust
-#     """
-#     task_set = UserBehaviour
-#     wait_time = between(0, 0)
+    Arguments:
+        HttpLocust
+    """
+    task_set = UserBehaviour
+    wait_time = between(0, 0)
 
 
 class AdminUser(HttpLocust):

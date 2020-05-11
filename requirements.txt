@@ -11,3 +11,5 @@ pymongo
 requests
 WTForms
 dnspython
+pytest
+locustio

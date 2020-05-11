@@ -5,7 +5,7 @@
 * First you have to get [Python](https://www.python.org) installed on your computer.
 * Create a new directory
 * Open the directory in a terminal, then enter the command `git init .`
-* Enter the command `git clone urlof_project` in the terminal
+* Enter the command `git clone https://github.com/iSOLveIT/eveblog.git` in the terminal
 
 * Install all dependencies in the requirements.txt file by using command `pip install -r requirements.txt` or Installation info 2
 
