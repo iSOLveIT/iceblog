@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
 from flask_pymongo import pymongo
@@ -208,3 +208,26 @@ class SingleEndpoint(MethodView):
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
             return redirect(url_for('blogpost', category=category,
                                     blog_id=blog_id, _anchor='newsletter'))
+
+
+# View for likes
+class LikesEndpoint(MethodView):
+    @staticmethod
+    @logout_required
+    def get():
+        blog_id = request.args.get('blog_id', type=str)
+        likes = request.args.get('no_likes', 0, type=int)
+        likes = int(likes)
+
+        # Create Mongodb connection
+        articles = mongo.db.articles
+        articles.find_one_and_update(
+            {'_id': ObjectId(blog_id)},
+            {'$inc': {'likes': likes}}
+        )
+        query = articles.find_one({'_id': ObjectId(blog_id)})
+        result = query['likes']
+        if likes == +1:
+            return jsonify(result=result)
+        else:
+            return jsonify(result=result)

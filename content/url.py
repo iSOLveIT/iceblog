@@ -20,6 +20,9 @@ app.add_url_rule('/category/<string:category>/',
 app.add_url_rule('/category/<string:category>/blogpost/<string:blog_id>/',
                  view_func=SingleEndpoint.as_view("blogpost"))
 
+# Route for likes
+app.add_url_rule('/likes', view_func=LikesEndpoint.as_view("likes"))
+
 
 # ADMIN ROUTES
 # Route for admin_login

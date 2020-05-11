@@ -22,7 +22,6 @@ class UserBehaviour(TaskSet):
         self.client.get("/")
         self.client.post("/", {"newsletter": "test1@gmail.com"})
 
-
     @task
     def category(self):
         """Task that sends get request to the each category page
@@ -32,7 +31,6 @@ class UserBehaviour(TaskSet):
         self.client.get("/category/Tech/?page=0")
         self.client.get("/category/Entertainment/?page=0")
         self.client.get("/category/Sports/?page=0")
-
 
     @task
     def single_blog(self):
