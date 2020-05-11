@@ -6,22 +6,34 @@ from content import app
 @pytest.fixture
 def client():
     """Create and configure a new app instance for each test."""
-    # create a temporary file to isolate the database for each test
-    app.config['TESTING'] = True
+    app.config['TESTING'] = True    # Sets app into testing mode
 
     with app.test_client() as client:
-        yield client
+        yield client    # Creates a generator object
 
 
 def test_paths(client):
-    """Start with a blank database."""
+    """Testing the Homepage
 
-    rv = client.get('/category/Lifestyle')
+    Arguments:
+        client {generator object}
+    """
+    rv = client.get('/')
     assert b'Lifestyle' in rv.data
 
 
 def login(client, username, password):
-    app.config['SECRET_KEY'] = os.urandom(75)
+    """Function for testing login
+
+    Arguments:
+        client {generator object}
+        username {str} -- user login name
+        password {str} -- user login password
+
+    Returns:
+        str -- returns the response received from request made
+    """
+    app.config['SECRET_KEY'] = os.urandom(20000)
     return client.post('/admin', data=dict(
         username=username,
         password=password
@@ -29,17 +41,30 @@ def login(client, username, password):
 
 
 def logout(client):
-    app.config['SECRET_KEY'] = os.urandom(75)
+    """Function for testing logout
+
+    Arguments:
+        client {generator object}
+
+    Returns:
+        str -- returns the response received from request made
+    """
+    app.config['SECRET_KEY'] = os.urandom(2000)
     return client.get('/admin_dashboard/logout', follow_redirects=True)
 
 
 def test_login(client):
-    """Make sure login and logout works."""
-    rv = login(client, "iSOLveIT20", "gigantic")
+    """ Function that checks the response received from the request made.
+    Make sure there is some information which confirms either the user has logged in or out
+
+
+    Arguments:
+        client {generator object}
+    """
+    rv = login(client, "USERNAME", "PASSWORD")
     assert b'Welcome Mr. Duodu' in rv.data
     assert b'Dashboard' in rv.data
     assert b'iSOLveIT20' in rv.data
 
     fv = logout(client)
     assert b'Admin Login' in fv.data
-
