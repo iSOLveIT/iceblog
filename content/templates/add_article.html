@@ -1,0 +1,55 @@
+{% extends 'layout.html'%}
+
+{% block content %}
+<div class="py-5 bg-light mb-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h3>Add Article</h3>
+          <p>Write and post an article </p>
+        </div>
+  
+        <div class="col-md-6">
+          {% include 'includes/_message.html'%}
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="bg-light" >
+    <div class="row bg-white mb-5" style="margin-right: 0; margin-left: 0;">
+        <div class="container">
+            <div class="col-md-8 col-md-offset-4">
+                <form method="post" action="">
+                    <div class="form-group">
+                        {{ form.title.label(for="title") }}
+                        {{ form.title(class_="form-control", id="title") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.body.label(for="body") }}
+                        {{ form.body(class_="form-control", id="body", rows=50, cols=20) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.category.label(for="category") }}
+                        {{ form.category(class_="form-control", id="category") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.link.label(for="link") }}
+                        {{ form.link(class_="form-control", id="link") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.readTime.label(for="readtime") }}
+                        {{ form.readTime(class_="form-control", id="readtime") }}
+                    </div>
+                    <input type="submit" class= "btn" style="background-color: #ff69b4; color: #fff; padding: 8px; border-radius: 8px;" value="Submit">
+                </form>
+            </div>
+        </div>
+        
+    </div>
+
+
+{{ ckeditor.load() }}
+{{ ckeditor.config(name='body') }}
+</div>
+{% endblock %}

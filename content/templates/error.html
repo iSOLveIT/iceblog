@@ -1,71 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>EveBlog</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends 'layout.html' %}
 
-  <link href="https://fonts.googleapis.com/css2?family=Montez&family=Montserrat:wght@300;400;600;900&display=swap"
-    rel="stylesheet">
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/icomoon/style.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/magnific-popup.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery-ui.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.carousel.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/owl.theme.default.min.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-datepicker.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='fonts/flaticon/font/flaticon.css') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/aos.css') }}">
-
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <div class="page-wrap gradient-primary">
-        <div class="holder">
-            <h2 class="text-white h2 mb-4 mt-4"
-                    style="font-family: 'Montez', cursive; font-size: 50px;">EveBlog</h2>
-            
-            <div class="error_handle pt-5 pb-5">
-                        <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
-                            <span class="icon-error_outline" style="font-size: 100px;"></span>
-                        </h1>
-                        <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
-                            Oops! An error occured...
-                        </h1>
-                        <p style="font-size:14pt;" class="text-white">Kindly, go back to the <a href="/" style="color:#000;">Homepage</a> </p>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center text-white">
-                  <p>
-                    Copyright &copy;
-                    <script>document.write(new Date().getFullYear());</script> All rights reserved | EveBlog 
-                  </p>
-                </div>
-              </div>
-        </div>
+{% block others %}
+<div class="holder">
+    <h2 class="text-white h2 mb-4 mt-4"
+            style="font-family: 'Montez', cursive; font-size: 50px;">EveBlog</h2>
+    
+    <div class="error_handle pt-5 pb-5">
+                <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
+                    <span class="icon-error_outline" style="font-size: 100px;"></span>
+                </h1>
+                <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
+                    Oops! An error occured...
+                </h1>
+                <p style="font-size:14pt;" class="text-white">Kindly, go back to the <a href="/" style="color:#000;">Homepage</a> </p>
     </div>
+</div>
 
-    
-
-    
-
-  <script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery-migrate-3.0.1.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery-ui.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/owl.carousel.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery.stellar.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery.countdown.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/jquery.magnific-popup.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/bootstrap-datepicker.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/aos.js') }}"></script>
-
-  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
-</body>
-</html>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center text-white">
+          <p>
+            Copyright &copy;
+            <script>document.write(new Date().getFullYear());</script> All rights reserved | EveBlog 
+          </p>
+        </div>
+      </div>
+</div>dat
+{% endblock %}

@@ -1,0 +1,70 @@
+{%  extends 'layout.html' %}
+
+{%  block content %}
+
+<div class="py-5 bg-light mb-4">
+  <div class="container">
+    <div class="row dash">
+      <div class="col-md-6 mb-2">
+        <span>Dashboard</span>
+        {% if session.get('gender') == 'M' %}
+          <h3>Welcome Mr. {{ session.get('lastName') }}</h3>
+        {% else %}
+          <h3>Welcome Miss {{ session.get('lastName') }}</h3>
+        {% endif %}
+        <a href="/admin_dashboard/add_article" class="btn" style=" color:#fff; padding: 4px; border-radius: 8px;">
+          Add Article
+         </a>
+      </div>
+
+      <div class="col-md-6">
+        {% include 'includes/_message.html'%}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ <div class="container mb-5">
+   <div class="row">
+    <table class="table table-striped col-12">
+      <thead class="thead-dark">
+        <tr>
+          <th>Date</th>
+          <th>Title</th>
+          <th>Image</th>
+          <th>Category</th>
+          <th>Likes</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+          {% if posts %}
+            {% for article in posts %}
+              <tr>
+                  <td>{{article.datePosted.strftime('%B %d, %Y')}}</td>
+                  <td>{{article.title}}</td>
+                  <td>{{article.coverimageLink[:20]}}</td>
+                  <td>{{article.category}}</td>
+                  <td>{{article.likes}} likes</td>
+                  <td>
+                    <a href='/admin_dashboard/edit_article/{{article._id}}/' class="pull-right" style="color:#242424">Edit</a>
+                  </td>
+                  <td>
+                  <form action="/admin_dashboard/delete/{{article._id}}/" method="POST">
+                      <input type="hidden" name="_method" value="DELETE">
+                      <input type="submit" class=" btn btn-danger" style="padding: 1px; border-radius: 8px;" value="Delete">
+                  </form>
+                  </td>
+              </tr>
+            {% endfor %}
+
+      </tbody>
+    </table> 
+          {% else %}
+                <div class="text-center text-secondary h4">All Clean :( Why don't you write some articles?</div>
+          {% endif %}
+   </div>
+ </div> 
+{% endblock %}

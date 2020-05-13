@@ -48,11 +48,11 @@ class IndexEndpoint(MethodView):
         category_color = {
             "Lifestyle": "primary",
             "Tech": "danger",
-            "Sports": "info",
+            "Education": "info",
             "Entertainment": "warning",
             "Health": "success"
         }
-        return render_template('index.html', random_post=random_post,
+        return render_template('index.html', random_post=random_post, others=False,
                                recent_posts=recent_posts, catColor=category_color
                                ), 200
 
@@ -71,7 +71,7 @@ class AboutEndpoint(MethodView):
     @staticmethod
     @logout_required
     def get():
-        return render_template('about.html'), 200
+        return render_template('about.html', others=False), 200
 
 
 # View for contact
@@ -79,55 +79,54 @@ class ContactEndpoint(MethodView):
     @staticmethod
     @logout_required
     def get():
-        return render_template('contact.html'), 200
+        return render_template('contact.html', others=False), 200
 
 
 # View for blog category
 class CategoryEndpoint(MethodView):
     @staticmethod
     @logout_required
-    def get(category):
+    def get():
         offset = int(request.args['page'])
-        limit = 6
+        limit = 12
         # Create Mongodb connection
         articles = mongo.db.articles
-        _total_doc = articles.count_documents({'category': category})
+        _total_doc = articles.count_documents({})
         if offset < 0 or offset >= int(_total_doc):
-            return redirect(url_for('category', category=category, page=0))
+            return redirect(url_for('category', page=0))
         else:
             # Execute query to fetch data
-            posts = articles.find({'$and': [
-                {"category": category},
+            posts = articles.find(
                 {"category_num": {'$gte': offset}}
-            ]}).limit(limit).sort('category_num', pymongo.ASCENDING)
+            ).limit(limit).sort('category_num', pymongo.ASCENDING)
 
             _previous = int(offset) - limit
             _next = int(offset) + limit
 
             # color codes for category
-            category_info = {
-                "Lifestyle": ["primary", "This is a description for Lifestyle"],
-                "Tech": ["danger", "This is a description for Tech"],
-                "Sports": ["info", "This is a description for Sports"],
-                "Entertainment": ["warning", "This is a description for Entertainment"],
-                "Health": ["success", "This is a description for Health"]
+            category_color = {
+                "Lifestyle": "primary",
+                "Tech": "danger",
+                "Education": "info",
+                "Entertainment": "warning",
+                "Health": "success"
             }
 
-            # select category color
-            cat_info = []
-            if category in category_info:
-                cat_info = category_info.get(category)
+            # # select category color
+            # cat_info = []
+            # if category in category_info:
+            #     cat_info = category_info.get(category)
 
         return render_template('category.html', posts=posts,
                                _previous=_previous, _next=_next,
-                               category=category, cat_info=cat_info), 200
+                               others=False, color=category_color), 200
 
 
 # View for single blog
 class SingleEndpoint(MethodView):
     @staticmethod
     @logout_required
-    def get(category, blog_id):
+    def get(blog_id):
         # Create Mongodb connection
         articles = mongo.db.articles
 
@@ -135,7 +134,7 @@ class SingleEndpoint(MethodView):
         article = articles.find_one({"_id": ObjectId(blog_id)})
 
         # Execute query to fetch data
-        popular_posts = articles.find({"likes": {'$gt': 12}}).limit(5).sort('datePosted', pymongo.DESCENDING)
+        popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', pymongo.DESCENDING)
 
         # Number of comments
         len_comments = len(article['comments'])
@@ -149,35 +148,34 @@ class SingleEndpoint(MethodView):
         category_color = {
             "Lifestyle": "primary",
             "Tech": "danger",
-            "Sports": "info",
+            "Education": "info",
             "Entertainment": "warning",
             "Health": "success"
         }
-        # Color for category
-        article_color = category_color.get(category)
-        cat_color = [category_color[item['category']] for item in related_post if item['category'] in category_color]
+        # # Color for category
+        # article_color = category_color.get(category)
+        # cat_color = [category_color[item['category']] for item in related_post if item['category'] in category_color]
 
         # Comment form
         form = CommentForm()
 
-        # Numbers of articles for each category
-        lifestyle = articles.count_documents({"category": "Lifestyle"})
-        tech = articles.count_documents({"category": "Tech"})
-        sports = articles.count_documents({"category": "Sports"})
-        entertain = articles.count_documents({"category": "Entertainment"})
-        health = articles.count_documents({"category": "Health"})
-        len_category = [lifestyle, health, entertain, tech, sports]
+        # # Numbers of articles for each category
+        # lifestyle = articles.count_documents({"category": "Lifestyle"})
+        # tech = articles.count_documents({"category": "Tech"})
+        # sports = articles.count_documents({"category": "Sports"})
+        # entertain = articles.count_documents({"category": "Entertainment"})
+        # health = articles.count_documents({"category": "Health"})
+        # len_category = [lifestyle, health, entertain, tech, sports]
 
         return render_template('single.html', article=article,
                                len_comments=len_comments, form=form,
                                popular_posts=popular_posts,
                                related_post=related_post,
-                               cat_color=cat_color, len_category=len_category,
-                               article_color=article_color), 200
+                              others=False, color=category_color,), 200
 
     @staticmethod
     @logout_required
-    def post(category, blog_id):
+    def post(blog_id):
         if 'name' and 'msg' in request.form:
             name = request.form['name']
             message = request.form['msg']
@@ -198,16 +196,14 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            return redirect(url_for('blogpost', category=category,
-                                    blog_id=blog_id, _anchor='comment-section'))
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section'))
 
         elif 'newsletter' in request.form:
             e_mail = request.form['newsletter']
             dB = mongo.db.newsletter_subscribers
             dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-            return redirect(url_for('blogpost', category=category,
-                                    blog_id=blog_id, _anchor='newsletter'))
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter'))
 
 
 # View for likes

@@ -8,6 +8,7 @@ from passlib.hash import sha256_crypt
 from functools import wraps
 from flask_pymongo import pymongo
 from emoji import emojize
+from .user_views import logout_required
 
 
 # Check if user is logged in
@@ -25,11 +26,13 @@ def login_required(f):
 # View for admin login
 class AdminLoginEndpoint(MethodView):
     @staticmethod
+    @logout_required
     def get():
         form = LoginForm(request.form)
-        return render_template('login.html', form=form), 200
+        return render_template('login.html', others=True, form=form), 200
 
     @staticmethod
+    @logout_required
     def post():
         # Get data entered into Login form
         username = request.form['username']
@@ -69,6 +72,20 @@ class AdminLoginEndpoint(MethodView):
                 flash(f"{emojize(':warning:')} Password is incorrect", 'danger')
                 return redirect(url_for('admin'))
 
+# View for admin dashboard
+class AdminEndpoint(MethodView):
+    @staticmethod
+    @login_required
+    def get():
+        # Get session username
+        author = session.get('username')
+        # Create Mongodb connection
+        articles = mongo.db.articles
+
+        # Execute query to fetch data
+        posts = articles.find({"author": author}).sort('datePosted', pymongo.DESCENDING)
+        return render_template('admin.html', others=False, posts=posts), 200
+
 
 # View for admin logout
 class AdminLogoutEndpoint(MethodView):
@@ -107,7 +124,7 @@ class AdminProfileEndpoint(MethodView):
         username = session.get('username')
         # Execute query to fetch data
         user_details = users.find_one({'username': username})
-        return render_template('admin_profile.html', user=user_details)
+        return render_template('admin_profile.html', others=False, user=user_details)
 
     @staticmethod
     @login_required
@@ -143,28 +160,13 @@ class AdminProfileEndpoint(MethodView):
         return redirect(url_for('profile'))
 
 
-# View for admin dashboard
-class AdminEndpoint(MethodView):
-    @staticmethod
-    @login_required
-    def get():
-        # Get session username
-        author = session.get('username')
-        # Create Mongodb connection
-        articles = mongo.db.articles
-
-        # Execute query to fetch data
-        posts = articles.find({"author": author}).sort('datePosted', pymongo.DESCENDING)
-        return render_template('admin.html', posts=posts), 200
-
-
 # View for add article
 class AddArticleEndpoint(MethodView):
     @staticmethod
     @login_required
     def get():
         form = ArticleForm(request.form)
-        return render_template('add_article.html', form=form), 200
+        return render_template('add_article.html', others=False, form=form), 200
 
     @staticmethod
     @login_required
@@ -178,7 +180,7 @@ class AddArticleEndpoint(MethodView):
 
         # Create Mongodb connection
         articles = mongo.db.articles
-        query = articles.count_documents({'category': category})
+        query = articles.count_documents({})
         category_num = query + 1
         # Execute query to fetch data
         articles.insert_one(
@@ -214,7 +216,7 @@ class EditArticleEndpoint(MethodView):
         form.category.data = query["category"]
         form.readTime.data = query["readTime"]
 
-        return render_template('edit_article.html', form=form), 200
+        return render_template('edit_article.html', others=False, form=form), 200
 
     @staticmethod
     @login_required
@@ -267,10 +269,10 @@ class DeleteArticleEndpoint(MethodView):
 # 1.Error_404 Page
 @app.errorhandler(404)
 def error_404(error):
-    return render_template('error.html'), 404
+    return render_template('error.html', others=True), 404
 
 
 # 2.Error_500 page
 @app.errorhandler(500)
 def error_500(error):
-    return render_template('error.html'), 500
+    return render_template('error.html', others=True), 500

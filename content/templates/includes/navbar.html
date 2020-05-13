@@ -1,0 +1,92 @@
+{% if session.logged_in %}
+    <div class="site-mobile-menu">
+    <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+        <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar sticky-top shadow-sm" role="banner">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+
+            <div class="col-2 site-logo">
+                <a href="/" class="text-black h2 mb-0"
+                style="font-family: 'Montez', cursive; font-size: 50px;">EveBlog</a>
+            </div>
+
+            <div class="col-10 text-right">
+                <nav class="site-navigation" role="navigation">
+                <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
+                    <li><a href="/admin_dashboard">Dashboard</a></li>                
+
+                    <li>
+                        <div class="form-inline my-2 my-lg-0">
+                          <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown dropleft active" style="list-style: none;">
+                              <a class="nav-link dropdown-toggle" href="#" style="color:#000;" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              &nbsp; {{ session.get('username') }}
+                              </a>
+                              <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                <a class="dropdown-item" href="/admin_dashboard/profile"><span class="icon-settings"></span>Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/admin_dashboard/logout"><span class="icon-exit_to_app"></span>Logout</a>
+                              </div>
+                            </li>
+                          </ul>
+                          &nbsp;
+                          <span class="icon-user-circle-o" style="font-size: 16pt;"></span>
+
+                        </div>
+                    </li>
+                </ul>
+                </nav>
+                <a href="#" class="site-menu-toggle js-menu-toggle text-black d-inline-block d-lg-none"><span
+                    class="icon-menu h3"></span></a>
+            </div>
+
+           
+        </div>
+
+    </div>
+    </header>
+{% else %}
+    <div class="site-mobile-menu">
+    <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+        <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar sticky-top shadow-sm" role="banner">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+
+            <div class="col-4 site-logo">
+                <a href="/" class="text-black h2 mb-0"
+                style="font-family: 'Montez', cursive; font-size: 50px;">EveBlog</a>
+            </div>
+
+            <div class="col-8 text-right">
+                <nav class="site-navigation" role="navigation">
+                <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/category?page=0">Blogs</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+                </nav>
+                <a href="#" class="site-menu-toggle js-menu-toggle text-black d-inline-block d-lg-none"><span
+                    class="icon-menu h3"></span></a>
+            </div>
+
+        </div>
+
+    </div>
+    </header>
+
+{% endif %}

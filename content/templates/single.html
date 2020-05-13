@@ -1,0 +1,259 @@
+{% extends 'layout.html' %}
+
+{% block content%}
+
+  <div class="site-cover site-cover-sm same-height overlay single-page"
+  style="background-image: url('{{ url_for('static', filename='images/img_3.jpg') }}');">
+  <div class="container">
+    <div class="row same-height justify-content-center">
+      <div class="col-md-12 col-lg-10">
+        <div class="post-entry text-center">
+          <span class="post-category text-white bg-{{ color.get(article['category']) }} mb-3">{{ article['category'] }}</span>
+          <h1 class="mb-4"><a href="#">{{ article['title'] }}</a></h1>
+          <div class="post-meta align-items-center text-center">
+            <figure class="author-figure mb-0 mr-3 d-inline-block">
+              <img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image" class="img-fluid">
+            </figure>
+            <span class="d-inline-block mt-1">By {{ article['author'] }}</span>
+            <span>&nbsp;-&nbsp; {{ article['datePosted'].strftime('%B %d, %Y') }}</span>
+          </div>
+          <span class="post-category text-white bg-dark">{{ article['readTime'] }} mins</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <section class="site-section py-lg">
+  <div class="container">
+    <div class="row blog-entries element-animate">
+
+      <div class="col-md-12 col-lg-8 main-content">
+
+        <div class="post-content-body img_align">
+          <p>
+            {{ article['body'] | safe }}
+          </p>
+        </div>
+
+
+        <div class="pt-5">
+          <p>
+            Categories: <span style="color: #ff69b4;">{{ article['category'] }}</span> &nbsp;&nbsp;
+
+            <button class="btn_like" id="{{ article['_id'] }}" value="+1" style="background: transparent; border: none;">
+              <span class="icon-heart dislike" id="user_like"></span>
+            </button> 
+            <span id="current_like">{{ article['likes'] }}</span> likes
+          </p>
+          
+        </div>
+
+
+        <div class="pt-5" id="comment-section">
+          <h4 class="mb-5">{{ len_comments }} Comments</h4>
+          <ul class="comment-list">
+            {% for comment in article['comments'] %}
+              <li class="comment">
+                <div class="vcard">
+                  <img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image placeholder">
+                </div>
+                <div class="comment-body">
+                  <h5>{{ comment['name'] }}</h5>
+                  <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
+                  <p>{{ comment['message'] }}</p>
+                </div>
+              </li>
+            {% endfor %}
+            
+          </ul>
+          <!-- END comment-list -->
+
+          <div class="comment-form-wrap pt-5 mb-4">
+            <h4 class="mb-5">Leave a comment</h4>
+            <form action="" method="POST" class="p-5 bg-light">
+
+              <div class="form-group">
+                {{ form.name.label(for="Cname") }}
+                {{ form.name(class_="form-control", id="Cname") }}
+              </div>
+
+              <div class="form-group">
+                {{ form.msg.label(for="message") }}
+                {{ form.msg(class_="form-control", id="message",cols="30", rows="10") }}
+              </div>
+              <div class="form-group text-muted">
+                <p>Fields with * are required</p>
+              </div>
+              <div class="form-group">
+                <input type="submit" value="Post Comment" class="btn">
+              </div>
+
+            </form>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- END main-content -->
+
+      <div class="col-md-12 col-lg-4 sidebar">
+        
+        <!-- END sidebar-box -->
+        <div class="sidebar-box">
+          <div class="bio text-center">
+            <img src="{{ url_for('static', filename='images/person_2.jpg') }}" alt="Image Placeholder" class="img-fluid mb-5">
+            <div class="bio-body">
+              <h2>{{ article['author'] }}</h2>
+              <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem facilis sunt
+                repellendus excepturi beatae porro debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
+                <!-- // TODO: Add a placeover element that shows the bio of the author -->
+              <p><a href="/about" class="btn btn-sm rounded px-4 py-2" style="color: #fff;">Read my bio</a></p>
+              <p class="social">
+                <a href="#" class="p-2"><span class="icon-facebook"></span></a>
+                <a href="#" class="p-2"><span class="icon-instagram"></span></a>
+                <a href="#" class="p-2"><span class="icon-twitter"></span></a>
+                <a href="#" class="p-2"><span class="icon-whatsapp"></span></a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- END sidebar-box -->
+        <div class="sidebar-box">
+          <h3 class="heading">Popular Posts</h3>
+          <div class="post-entry-sidebar">
+            <ul>
+              {% for ppost in popular_posts %}
+                <li>
+                  <a href="/category/{{ ppost['category'] }}/blogpost/{{ ppost['_id'] }}/">
+                    <img src="{{ url_for('static', filename='images/img_1.jpg') }}" alt="Image placeholder" class="mr-4">
+                    <div class="text">
+                      <h4>{{ ppost['title'] }}</h4>
+                      <div class="post-meta">
+                        <span class="mr-2">{{ ppost['datePosted'].strftime('%B %d, %Y') }}</span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              {% endfor %}
+
+            </ul>
+          </div>
+        </div>
+        <!-- END sidebar-box -->
+
+        <!-- <div class="sidebar-box bg-light" style="height: 250px;">
+          <p class="text-center" style="font-weight: 600;">Height = 250px</p>
+        </div> -->
+        <!-- END sidebar-box -->
+
+        <!-- <div class="sidebar-box">
+          <h3 class="heading">Categories</h3>
+          <ul class="categories bt">
+            <li><a href="/category/Lifestyle/?page=0">Lifestyle <span>10</span></a></li>
+            <li><a href="/category/Health/?page=0">Health <span>20</span></a></li>
+            <li><a href="/category/Entertainment/?page=0">Entertainment <span>3</span></a></li>
+            <li><a href="/category/Tech/?page=0">Tech <span>10</span></a></li>
+            <li><a href="/category/Sports/?page=0">Sports <span>50</span></a></li>
+          </ul>
+        </div> -->
+        <!-- END sidebar-box -->
+
+        <!-- <div class="sidebar-box bg-light" style="height: 250px;">
+          <p class="text-center" style="font-weight: 600;">Height = 250px</p>
+        </div> -->
+        <!-- END sidebar-box -->
+
+        <div class="sidebar-box" id="newsletter">
+          <div class="text-center">
+            <div class="col">
+                {% include 'includes/_message.html'%}
+              </div>
+            <h2>Subscribe to our newsletter</h2>
+            <p class="mb-5">
+              Get informative blogs delivered to your inbox every week. 
+              No spam ever. Unsubscribe any time. Curated by the EveBlog 😉.
+            </p>
+            <form action="" method="POST">
+              <input type="email" name="newsletter" class="form-control mb-2" placeholder="Enter your email address">
+              <input type="submit" class="btn" value="Subscribe">
+            </form>
+          </div>
+        </div>
+        <!-- END sidebar-box -->
+
+      </div>
+      <!-- END sidebar -->
+
+    </div>
+  </div>
+  </section>
+
+  <div class="site-section bg-light">
+    <div class="container">
+
+      <div class="row mb-5">
+        <div class="col-12">
+          <h2>More Related Posts</h2>
+        </div>
+      </div>
+
+      <div class="row align-items-stretch retro-layout">
+
+        <div class="col-md-5 order-md-2">
+          <a href="/category/blogpost/{{ related_post[0]['_id'] }}/" class="hentry img-1 h-100 gradient"
+            style="background-image: url('{{ url_for('static', filename='images/img_4.jpg') }}');">
+            <span class="post-category text-white bg-{{ color.get(related_post[0]['category']) }}">
+              {{ related_post[0]['category'] }}
+            </span>
+            <div class="text">
+              <h2>{{ related_post[0]['title'] }}</h2>
+              <span>{{ related_post[0]['datePosted'].strftime('%B %d, %Y') }}</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-md-7">
+
+          <a href="/category/blogpost/{{ related_post[1]['_id'] }}/" class="hentry img-2 v-height mb30 gradient"
+            style="background-image: url('{{ url_for('static', filename='images/img_1.jpg') }}');">
+            <span class="post-category text-white bg-{{ color.get(related_post[1]['category']) }}">
+              {{ related_post[1]['category'] }}
+            </span>
+            <div class="text text-sm">
+              <h2>{{ related_post[1]['title'] }}</h2>
+              <span>{{ related_post[1]['datePosted'].strftime('%B %d, %Y') }}</span>
+            </div>
+          </a>
+
+          <div class="two-col d-block d-md-flex">
+            <a href="/category/blogpost/{{ related_post[2]['_id'] }}/" class="hentry v-height img-2 gradient"
+              style="background-image: url('{{ url_for('static', filename='images/img_2.jpg') }}');">
+              <span class="post-category text-white bg-{{ color.get(related_post[2]['category']) }}">
+                {{ related_post[2]['category'] }}
+              </span>
+              <div class="text text-sm">
+                <h2>{{ related_post[2]['title'] }}</h2>
+                <span>{{ related_post[2]['datePosted'].strftime('%B %d, %Y') }}</span>
+              </div>
+            </a>
+            <a href="/category/blogpost/{{ related_post[3]['_id'] }}/" class="hentry v-height img-2 ml-auto gradient"
+              style="background-image: url('{{ url_for('static', filename='images/img_1.jpg') }}');">
+              <span class="post-category text-white bg-{{ color.get(related_post[3]['category']) }}">
+                {{ related_post[3]['category'] }}
+              </span>
+              <div class="text text-sm">
+                <h2>{{ related_post[3]['title'] }}</h2>
+                <span>{{ related_post[3]['datePosted'].strftime('%B %d, %Y') }}</span>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+{% endblock %}
