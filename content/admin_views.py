@@ -37,13 +37,10 @@ class AdminLoginEndpoint(MethodView):
         # Get data entered into Login form
         username = request.form['username']
         password = request.form['password']
-
         # Create Mongodb connection
-        users = mongo.db.admin_user
-
+        users = mongo.get_collection(name='admin_user')
         # Execute query to fetch data
         user = users.find_one({"username": username})
-
         # Authentication and Authorization
         if user is None:
             flash(f"{emojize(':warning:')} Invalid Login Credentials", 'danger')
@@ -72,6 +69,7 @@ class AdminLoginEndpoint(MethodView):
                 flash(f"{emojize(':warning:')} Password is incorrect", 'danger')
                 return redirect(url_for('admin'))
 
+
 # View for admin dashboard
 class AdminEndpoint(MethodView):
     @staticmethod
@@ -80,8 +78,7 @@ class AdminEndpoint(MethodView):
         # Get session username
         author = session.get('username')
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         posts = articles.find({"author": author}).sort('datePosted', pymongo.DESCENDING)
         return render_template('admin.html', others=False, posts=posts), 200
@@ -93,11 +90,9 @@ class AdminLogoutEndpoint(MethodView):
     @login_required
     def get():
         # Create Mongodb connection
-        users = mongo.db.admin_user
-
+        users = mongo.get_collection(name='admin_user')
         # Get session username
         username = session.get('username')
-
         # Execute query to fetch data
         users.find_one_and_update(
             {'username': username},
@@ -119,7 +114,7 @@ class AdminProfileEndpoint(MethodView):
     @login_required
     def get():
         # Create Mongodb connection
-        users = mongo.db.admin_user
+        users = mongo.get_collection(name='admin_user')
         # Get session username
         username = session.get('username')
         # Execute query to fetch data
@@ -137,8 +132,7 @@ class AdminProfileEndpoint(MethodView):
         
         _password = sha256_crypt.hash(str(password))  # Hash (encrypt) password
         # Create Mongodb connection
-        users = mongo.db.admin_user
-
+        users = mongo.get_collection(name='admin_user')
         # Get session username
         username = session.get('username')
         session['lastName'] = lname
@@ -179,7 +173,7 @@ class AddArticleEndpoint(MethodView):
         author = session.get('username')
 
         # Create Mongodb connection
-        articles = mongo.db.articles
+        articles = mongo.get_collection(name='articles')
         query = articles.count_documents({})
         category_num = query + 1
         # Execute query to fetch data
@@ -201,14 +195,11 @@ class EditArticleEndpoint(MethodView):
     @login_required
     def get(blog_id):
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         query = articles.find_one({"_id": ObjectId(blog_id)})
-
         # GEt form
         form = ArticleForm(request.form)
-
         # populate form fields
         form.title.data = query["title"]
         form.body.data = query["body"]
@@ -227,10 +218,8 @@ class EditArticleEndpoint(MethodView):
         category = request.form['category']
         readTime = request.form['readTime']
         dateUpdated = dt.now()
-
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         articles.find_one_and_update(
             {'_id': ObjectId(blog_id)},
@@ -256,8 +245,7 @@ class DeleteArticleEndpoint(MethodView):
     @login_required
     def post(blog_id):
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         articles.find_one_and_delete({"_id": ObjectId(blog_id)})
         flash(f"Article Deleted {emojize(':grinning_face_with_big_eyes:')}", 'success')

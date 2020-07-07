@@ -3,7 +3,7 @@ Flask
 Flask-Session
 Flask-CKEditor
 Flask-Mail
-Flask-PyMongo
+Flask-Compress
 Flask-WTF
 gunicorn
 passlib
@@ -11,5 +11,3 @@ pymongo
 requests
 WTForms
 dnspython
-pytest
-locustio

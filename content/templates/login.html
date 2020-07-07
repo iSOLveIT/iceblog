@@ -1,22 +1,26 @@
 {% extends 'layout.html' %}
 
+{% block title %}Login | IceBlog{% endblock %}
+
 {% block others %}
 <div class="holder">
     <h2 class="text-white h2 mb-4 mt-4"
-            style="font-family: 'Montez', cursive; font-size: 50px;"><a href="/" class="text-white">EveBlog</a></h2>
+            style="font-family: 'Montez', cursive; font-size: 50px;"><a href="/" aria-label="Blog Homepage Link" class="text-white">IceBlog</a></h2>
     <div class="login_form_inner pt-5 pb-5">
         <h2>Admin Login</h2>
         <div class="mb-4 ml-2 mr-2">{% include 'includes/_message.html'%}</div>
 
         <form class="row login_form mt-5" action="" method="post">
           <div class="col-md-12 form-group">
-              {{ form.username(class_="form-control", placeholder="Username", onfocus="this.placeholder = 'Enter your username here'", onblur="this.placeholder = 'Username'") }}
+              <h5 class="text-black text-left">{{ form.username.label(for="userInput") }}</h5>
+              {{ form.username(class_="form-control", id="userInput", placeholder="✍️ Enter your username here", onfocus="this.placeholder = '✍️'") }}
           </div>
           <div class="col-md-12 form-group">
-              {{ form.password(class_="form-control", placeholder="Password", onfocus="this.placeholder = 'Enter your password here'", onblur="this.placeholder = 'Password'") }}
+              <h5 class="text-black text-left">{{ form.password.label(for="pswdInput") }}</h5>
+              {{ form.password(class_="form-control", id="pswdInput", placeholder="✍️ Enter your password here", onfocus="this.placeholder = '✍️'") }}
           </div>
           <div class="col-md-12 form-group ">
-            <button type="submit" class="btn col-md-12">Log In</button>
+            <button type="submit" aria-label="Login button" class="btn col-md-12">Log In</button>
           </div>
         </form>
     </div>
@@ -24,12 +28,12 @@
 
 <div class="container">
     <div class="row">
-      <div class="col-12 text-center text-white">
-        <p>
-          Copyright &copy;
-          <script>document.write(new Date().getFullYear());</script> All rights reserved | <a href="/" class="text-white"><u>EveBlog</u></a>
-        </p>
+        <div class="col-12 text-center text-black">
+          <p>
+            Copyright &copy; <span id="footer_date"></span>
+            All rights reserved | <a href="/" aria-label="Blog Homepage Link" class="text-black"><u>IceBlog</u></a>
+          </p>
+        </div>
       </div>
-    </div>
 </div>
 {% endblock %}

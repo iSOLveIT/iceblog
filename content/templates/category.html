@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% block title %}Blog Posts | IceBlog{% endblock %}
+
 {% block content %}
 
   <div class="py-5 bg-light">
@@ -7,7 +9,7 @@
       <div class="row">
         <div class="col-md-6">
           <h3>Blog Posts</h3>
-          <p>All blogs written by the EVEBLOG team</p>
+          <p>All blogs written by the ICEBLOG team</p>
         </div>
       </div>
     </div>
@@ -19,20 +21,20 @@
         {% for post in posts %}
           <div class="col-lg-4 mb-4">
             <div class="entry2">
-              <a href="/category/blogpost/{{ post['_id'] }}/"><img src="{{ url_for('static', filename='images/img_1.jpg') }}" alt="Image" class="img-fluid rounded"></a>
+              <a href="/category/blogpost/{{ post['_id'] }}/" aria-label="Blog post link"><img src="{{ url_for('static', filename='images/webp/img_1.webp') }}" alt="Image" class="img-fluid rounded"></a>
               <div class="excerpt">
                 <span class="post-category text-white bg-{{ color.get(post['category']) }} mb-3">{{ post['category'] }}</span>
 
-                <h2><a href="/category/blogpost/{{ post['_id'] }}/">{{ post['title'] }}</a></h2>
+                <h2><a href="/category/blogpost/{{ post['_id'] }}/" aria-label="Blog post link">{{ post['title'] }}</a></h2>
                 <div class="post-meta align-items-center text-left clearfix">
-                  <figure class="author-figure mb-0 mr-3 float-left"><img src="{{ url_for('static', filename='images/person_1.jpg') }}" alt="Image"
+                  <figure class="author-figure mb-0 mr-3 float-left"><img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image"
                       class="img-fluid"></figure>
-                  <span class="d-inline-block mt-1">By <a href="#">{{ post['author'] }}</a></span>
+                  <span class="d-inline-block mt-1">By {{ post['author'] }}</span>
                   <span>&nbsp;-&nbsp; {{ post['datePosted'].strftime('%B %d, %Y') }}</span>
                 </div>
 
                 <p>{{ post['body'][:200] | safe }}...</p>
-                <p><a href="/category/blogpost/{{ post['_id'] }}/" style="font-weight: 600;">Read More</a></p>
+                <p><a href="/category/blogpost/{{ post['_id'] }}/" aria-label="Blog post link" style="font-weight: 600;">Read More</a></p>
               </div>
             </div>
           </div>
@@ -42,9 +44,9 @@
       <div class="row text-center pt-5 border-top">
         <div class="col-md-12">
           <div class="custom-pagination">
-            <a href="/category?page={{_previous}}"><span class="icon-skip_previous"></span></a>
+            <a href="/category?page={{_previous}}" aria-label="Previous button"><span class="icon-skip_previous"></span></a>
             <span>Previous | Next</span>
-            <a href="/category?page={{_next}}"><span class="icon-skip_next"></span></a></a>
+            <a href="/category?page={{_next}}" aria-label="Next button"><span class="icon-skip_next"></span></a></a>
           </div>
         </div>
         <!-- <div class="col-md-12 mt-4" style="height: 250px; background-color:#ff69b4;">

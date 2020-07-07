@@ -1,5 +1,7 @@
 {%  extends 'layout.html' %}
 
+{% block title %}User Dashboard | IceBlog{% endblock %}
+
 {%  block content %}
 
 <div class="py-5 bg-light mb-4">
@@ -12,7 +14,7 @@
         {% else %}
           <h3>Welcome Miss {{ session.get('lastName') }}</h3>
         {% endif %}
-        <a href="/admin_dashboard/add_article" class="btn" style=" color:#fff; padding: 4px; border-radius: 8px;">
+        <a href="/admin_dashboard/add_article" aria-label="Add Article link" class="btn text-black" style=" color:#fff; padding: 4px; border-radius: 8px;">
           Add Article
          </a>
       </div>
@@ -49,7 +51,7 @@
                   <td>{{article.category}}</td>
                   <td>{{article.likes}} likes</td>
                   <td>
-                    <a href='/admin_dashboard/edit_article/{{article._id}}/' class="pull-right" style="color:#242424">Edit</a>
+                    <a href='/admin_dashboard/edit_article/{{article._id}}/' aria-label="Edit Article link" class="pull-right" style="color:#242424">Edit</a>
                   </td>
                   <td>
                   <form action="/admin_dashboard/delete/{{article._id}}/" method="POST">

@@ -1,9 +1,11 @@
 {% extends 'layout.html' %}
 
+{% block title %}Error | IceBlog{% endblock %}
+
 {% block others %}
 <div class="holder">
     <h2 class="text-white h2 mb-4 mt-4"
-            style="font-family: 'Montez', cursive; font-size: 50px;">EveBlog</h2>
+            style="font-family: 'Montez', cursive; font-size: 50px;">IceBlog</h2>
     
     <div class="error_handle pt-5 pb-5">
                 <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
@@ -12,7 +14,7 @@
                 <h1 style="font-family: 'Montez', cursive; font-size: 50px;" class="text-white">
                     Oops! An error occured...
                 </h1>
-                <p style="font-size:14pt;" class="text-white">Kindly, go back to the <a href="/" style="color:#000;">Homepage</a> </p>
+                <p style="font-size:14pt;" class="text-white">Kindly, go back to the <a href="/" aria-label="Blog Homepage link" style="color:#000;">Homepage</a> </p>
     </div>
 </div>
 
@@ -21,9 +23,9 @@
         <div class="col-12 text-center text-white">
           <p>
             Copyright &copy;
-            <script>document.write(new Date().getFullYear());</script> All rights reserved | EveBlog 
+            <span id="footer_date"></span> All rights reserved | IceBlog
           </p>
         </div>
       </div>
-</div>dat
+</div>
 {% endblock %}

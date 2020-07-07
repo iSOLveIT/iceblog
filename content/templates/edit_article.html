@@ -1,5 +1,7 @@
 {% extends 'layout.html'%}
 
+{% block title %}Edit Article | IceBlog{% endblock %}
+
 {% block content %}
 <div class="py-5 bg-light mb-4">
     <div class="container">
@@ -41,7 +43,7 @@
                         {{ form.readTime.label(for="readtime") }}
                         {{ form.readTime(class_="form-control", id="readtime") }}
                     </div>
-                    <input type="submit" class= "btn" style="background-color: #ff69b4; color: #fff; padding: 8px; border-radius: 8px;" value="Submit">
+                    <input type="submit" class= "btn text-black" style="background-color: #ff69b4; color: #fff; padding: 8px; border-radius: 8px;" value="Submit">
                 </form>
             </div>
         </div>

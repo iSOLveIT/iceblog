@@ -18,6 +18,7 @@ def logout_required(f):
             return redirect(url_for('dashboard'))
         else:
             return f(*args, **kwargs)
+
     return decorated_function
 
 
@@ -27,14 +28,11 @@ class IndexEndpoint(MethodView):
     @logout_required
     def get():
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         random_posts = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
-
         # Loop through random_posts and store as a list
         random_post = [item for item in random_posts]
-
         # Execute query to fetch data
         recent_posts = articles.find(
             {
@@ -60,7 +58,7 @@ class IndexEndpoint(MethodView):
     @logout_required
     def post():
         e_mail = request.form['newsletter']
-        dB = mongo.db.newsletter_subscribers
+        dB = mongo.get_collection(name='newsletter_subscribers')
         dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
         flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
         return redirect(url_for('index', _anchor='newsletter'))
@@ -90,7 +88,7 @@ class CategoryEndpoint(MethodView):
         offset = int(request.args['page'])
         limit = 12
         # Create Mongodb connection
-        articles = mongo.db.articles
+        articles = mongo.get_collection(name='articles')
         _total_doc = articles.count_documents({})
         if offset < 0 or offset >= int(_total_doc):
             return redirect(url_for('category', page=0))
@@ -128,22 +126,16 @@ class SingleEndpoint(MethodView):
     @logout_required
     def get(blog_id):
         # Create Mongodb connection
-        articles = mongo.db.articles
-
+        articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         article = articles.find_one({"_id": ObjectId(blog_id)})
-
         # Execute query to fetch data
         popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', pymongo.DESCENDING)
-
         # Number of comments
         len_comments = len(article['comments'])
-
         # Execute query to fetch data
         related_posts = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
-
         related_post = [item for item in related_posts]
-
         # color codes for category
         category_color = {
             "Lifestyle": "primary",
@@ -155,7 +147,6 @@ class SingleEndpoint(MethodView):
         # # Color for category
         # article_color = category_color.get(category)
         # cat_color = [category_color[item['category']] for item in related_post if item['category'] in category_color]
-
         # Comment form
         form = CommentForm()
 
@@ -171,7 +162,7 @@ class SingleEndpoint(MethodView):
                                len_comments=len_comments, form=form,
                                popular_posts=popular_posts,
                                related_post=related_post,
-                              others=False, color=category_color,), 200
+                               others=False, color=category_color, ), 200
 
     @staticmethod
     @logout_required
@@ -181,10 +172,9 @@ class SingleEndpoint(MethodView):
             message = request.form['msg']
             datePosted = dt.now()
             # Create Mongodb connection
-            dB = mongo.db.articles
-
+            articles = mongo.get_collection(name='articles')
             # Execute query to fetch data
-            dB.find_one_and_update(
+            articles.find_one_and_update(
                 {"_id": ObjectId(blog_id)},
                 {
                     "$push": {
@@ -200,7 +190,7 @@ class SingleEndpoint(MethodView):
 
         elif 'newsletter' in request.form:
             e_mail = request.form['newsletter']
-            dB = mongo.db.newsletter_subscribers
+            dB = mongo.get_collection(name='newsletter_subscribers')
             dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
             return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter'))
@@ -216,7 +206,7 @@ class LikesEndpoint(MethodView):
         likes = int(likes)
 
         # Create Mongodb connection
-        articles = mongo.db.articles
+        articles = mongo.get_collection(name='articles')
         articles.find_one_and_update(
             {'_id': ObjectId(blog_id)},
             {'$inc': {'likes': likes}}
