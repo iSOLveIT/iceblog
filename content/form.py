@@ -15,10 +15,6 @@ class ArticleForm(FlaskForm):
         validators.InputRequired(),
         validators.Length(min=30)
     ])
-    link = StringField('Cover Image Link', [
-        validators.DataRequired(),
-        validators.InputRequired(message="Please provide link to the image")
-    ])
     category = StringField('Category', [
         validators.DataRequired(),
         validators.InputRequired(message="Please provide category for article")

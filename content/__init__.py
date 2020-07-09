@@ -13,7 +13,7 @@ app = Flask(__name__)
 SESSION_COOKIE_NAME = "iceblog"
 SESSION_COOKIE_PATH = "http://127.0.0.1:4700/admin_dashboard/"
 SESSION_TYPE = 'filesystem'
-SESSION_KEY_PREFIX = 'ice'
+SESSION_KEY_PREFIX = 'eve'
 SESSION_FILE_DIR = "app_session"
 PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
 app.config.from_object(__name__)

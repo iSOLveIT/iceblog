@@ -167,10 +167,10 @@ class AddArticleEndpoint(MethodView):
     def post():
         title = request.form['title']
         body = request.form['body']
-        link = request.form['link']
         category = request.form['category']
         readTime = request.form['readTime']
         author = session.get('username')
+        bodyUpdated = False
 
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -179,7 +179,7 @@ class AddArticleEndpoint(MethodView):
         # Execute query to fetch data
         articles.insert_one(
             {
-                "title": title, "body": body, "coverimageLink": link, "author": author,
+                "title": title, "body": body, "bodyUpdated": bodyUpdated, "author": author,
                 "datePosted": dt.now(), "dateUpdated": dt.now(), "likes": 0, "comments": [],
                 "category": category, "category_num": category_num, "readTime": readTime
             }
@@ -203,7 +203,6 @@ class EditArticleEndpoint(MethodView):
         # populate form fields
         form.title.data = query["title"]
         form.body.data = query["body"]
-        form.link.data = query["coverimageLink"]
         form.category.data = query["category"]
         form.readTime.data = query["readTime"]
 
@@ -214,7 +213,7 @@ class EditArticleEndpoint(MethodView):
     def post(blog_id):
         title = request.form['title']
         body = request.form['body']
-        link = request.form['link']
+        bodyUpdated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
         category = request.form['category']
         readTime = request.form['readTime']
         dateUpdated = dt.now()
@@ -227,7 +226,7 @@ class EditArticleEndpoint(MethodView):
                 '$set': {
                     'title': title,
                     'body': body,
-                    'coverimageLink': link,
+                    'bodyUpdated': bodyUpdated,
                     'category': category,
                     'readTime': readTime,
                     'dateUpdated': dateUpdated,
@@ -251,6 +250,57 @@ class DeleteArticleEndpoint(MethodView):
         flash(f"Article Deleted {emojize(':grinning_face_with_big_eyes:')}", 'success')
 
         return redirect(url_for('dashboard'))
+
+
+# View for approving comments
+class CommentStatusEndpoint(MethodView):
+    @staticmethod
+    @login_required
+    def get():
+        # Create Mongodb connection
+        articles = mongo.get_collection(name='articles')
+        # Execute query to fetch data
+        query = articles.find({
+            "comments": { '$elemMatch': { 'approved': False } }
+        }).sort("{'comments': { '$elemMatch': 'datePosted'}}", pymongo.DESCENDING)
+        results = [item for item in query]
+        return render_template('comments.html', results=results), 200
+
+
+class CommentApprovalEndpoint(MethodView):
+    @staticmethod
+    @login_required
+    def get():
+        ids = request.args.get('IDs', type=str)
+        blog_id, commentIndex, _ = ids.split('_')
+        approved = request.args.get('approval', None, type=str)
+        comment_id = request.args.get('commentID', None, type=str)
+           
+        if approved == 'true':
+            # Create Mongodb connection
+            articles = mongo.get_collection(name='articles')
+            # Execute query
+            articles.find_one_and_update(
+                {'_id': ObjectId(blog_id)},
+                {
+                    '$set':{f'comments.{commentIndex}.approved':True,}
+                    },
+                upsert=False,)     
+            status = 200
+            return {'status':status}
+
+        else:
+            # Create Mongodb connection
+            articles = mongo.get_collection(name='articles')
+            # Execute query
+            articles.find_one_and_update(
+                {'_id': ObjectId(blog_id)},
+                { 
+                    '$pull': { 'comments': { 'commentId': comment_id } }
+                    },
+                { 'multi': True })
+            status = 200
+            return {'status':status}   
 
 
 # ERROR PAGES

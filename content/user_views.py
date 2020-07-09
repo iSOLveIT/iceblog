@@ -7,6 +7,7 @@ from .form import CommentForm
 from datetime import datetime as dt
 from functools import wraps
 from emoji import emojize
+from .commentIDgenerator import random_string
 
 
 # Check if admin is logged out
@@ -132,7 +133,7 @@ class SingleEndpoint(MethodView):
         # Execute query to fetch data
         popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', pymongo.DESCENDING)
         # Number of comments
-        len_comments = len(article['comments'])
+        len_comments = len([comment for comment in article['comments'] if comment['approved'] == True])
         # Execute query to fetch data
         related_posts = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
         related_post = [item for item in related_posts]
@@ -171,6 +172,8 @@ class SingleEndpoint(MethodView):
             name = request.form['name']
             message = request.form['msg']
             datePosted = dt.now()
+            approval = False
+            comment_id = random_string()
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
             # Execute query to fetch data
@@ -181,7 +184,9 @@ class SingleEndpoint(MethodView):
                         "comments": {
                             "name": name,
                             "datePosted": datePosted,
-                            "message": message
+                            "message": message,
+                            "approved": approval,
+                            "commentId": comment_id
                         }
                     }
                 }

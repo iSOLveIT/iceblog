@@ -31,13 +31,13 @@
                         {{ form.body.label(for="body") }}
                         {{ form.body(class_="form-control", id="body", rows=50, cols=20) }}
                     </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" name="bodyUpdated" aria-label="Checkbox for indicating the body is updated" class="form-check-input" id="exampleCheck1">
+                        <label class="form-check-label" for="exampleCheck1">Body is Updated</label>
+                    </div> 
                     <div class="form-group">
                         {{ form.category.label(for="category") }}
                         {{ form.category(class_="form-control", id="category") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.link.label(for="link") }}
-                        {{ form.link(class_="form-control", id="link") }}
                     </div>
                     <div class="form-group">
                         {{ form.readTime.label(for="readtime") }}

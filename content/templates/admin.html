@@ -32,11 +32,11 @@
     <table class="table table-striped col-12">
       <thead class="thead-dark">
         <tr>
-          <th>Date</th>
+          <th>Date Posted</th>
           <th>Title</th>
-          <th>Image</th>
           <th>Category</th>
           <th>Likes</th>
+          <th>Date Updated</th>
           <th></th>
           <th></th>
         </tr>
@@ -47,9 +47,9 @@
               <tr>
                   <td>{{article.datePosted.strftime('%B %d, %Y')}}</td>
                   <td>{{article.title}}</td>
-                  <td>{{article.coverimageLink[:20]}}</td>
                   <td>{{article.category}}</td>
                   <td>{{article.likes}} likes</td>
+                  <td>{{article.dateUpdated.strftime('%B %d, %Y')}}</td>
                   <td>
                     <a href='/admin_dashboard/edit_article/{{article._id}}/' aria-label="Edit Article link" class="pull-right" style="color:#242424">Edit</a>
                   </td>

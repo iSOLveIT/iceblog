@@ -2,7 +2,7 @@ from .user_views import *
 from content import app
 from .admin_views import *
 
-
+# USER ROUTES
 # Route for index
 app.add_url_rule('/', view_func=IndexEndpoint.as_view("index"))
 
@@ -47,3 +47,11 @@ app.add_url_rule('/admin_dashboard/edit_article/<string:blog_id>/',
 # Route for delete article
 app.add_url_rule('/admin_dashboard/delete/<string:blog_id>/',
                  view_func=DeleteArticleEndpoint.as_view("deletearticle"))
+
+# Route for comment status
+app.add_url_rule('/admin_dashboard/comments',
+                 view_func=CommentStatusEndpoint.as_view("comments"))
+
+# Route for comment approval
+app.add_url_rule('/admin_dashboard/commentsapproval',
+                 view_func=CommentApprovalEndpoint.as_view("commentsapproval"))

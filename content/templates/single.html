@@ -16,9 +16,13 @@
               <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image" class="img-fluid">
             </figure>
             <span class="d-inline-block mt-1 text-black">By {{ article['author'] }}</span>
-            <span class="text-black">&nbsp;-&nbsp; {{ article['datePosted'].strftime('%B %d, %Y') }}</span>
+            {% if article['bodyUpdated'] == True %}
+              <span class="text-black">&nbsp;-&nbsp; {{ article['dateUpdated'].strftime('%B %d, %Y') }},&nbsp; Updated</span>
+            {% else %}
+              <span class="text-black">&nbsp;-&nbsp; {{ article['datePosted'].strftime('%B %d, %Y') }}</span>
+            {% endif %}
           </div>
-          <span class="post-category text-black bg-light">{{ article['readTime'] }} mins</span>
+          <span class="post-category text-white bg-dark">{{ article['readTime'] }} mins</span>
         </div>
       </div>
     </div>
@@ -55,16 +59,18 @@
           <h4 class="mb-5">{{ len_comments }} Comments</h4>
           <ul class="comment-list">
             {% for comment in article['comments'] %}
-              <li class="comment">
-                <div class="vcard">
-                  <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image placeholder">
-                </div>
-                <div class="comment-body">
-                  <h5>{{ comment['name'] }}</h5>
-                  <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
-                  <p>{{ comment['message'] }}</p>
-                </div>
-              </li>
+              {% if comment['approved'] == True %}
+                <li class="comment">
+                  <div class="vcard">
+                    <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image placeholder">
+                  </div>
+                  <div class="comment-body">
+                    <h5>{{ comment['name'] }}</h5>
+                    <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
+                    <p>{{ comment['message'] }}</p>
+                  </div>
+                </li>
+              {% endif %}
             {% endfor %}
             
           </ul>
