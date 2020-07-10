@@ -12,7 +12,6 @@ app = Flask(__name__)
 
 # Check Configuration section for more details
 SESSION_COOKIE_NAME = "iceblog"
-SESSION_COOKIE_DOMAIN = "https://iceblog-gh.herokuapp.com/"
 SESSION_COOKIE_PATH = 'https://iceblog-gh.herokuapp.com/admin_dashboard'
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'Strict'
