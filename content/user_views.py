@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
 from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
-from flask_pymongo import pymongo
+from pymongo import DESCENDING, ASCENDING
 from .form import CommentForm
 from datetime import datetime as dt
 from functools import wraps
@@ -97,7 +97,7 @@ class CategoryEndpoint(MethodView):
             # Execute query to fetch data
             posts = articles.find(
                 {"category_num": {'$gte': offset}}
-            ).limit(limit).sort('category_num', pymongo.ASCENDING)
+            ).limit(limit).sort('category_num', ASCENDING)
 
             _previous = int(offset) - limit
             _next = int(offset) + limit
@@ -131,7 +131,7 @@ class SingleEndpoint(MethodView):
         # Execute query to fetch data
         article = articles.find_one({"_id": ObjectId(blog_id)})
         # Execute query to fetch data
-        popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', pymongo.DESCENDING)
+        popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', DESCENDING)
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] == True])
         # Execute query to fetch data

@@ -6,7 +6,7 @@ from .form import ArticleForm, LoginForm
 from datetime import datetime as dt
 from passlib.hash import sha256_crypt
 from functools import wraps
-from flask_pymongo import pymongo
+from pymongo import DESCENDING
 from emoji import emojize
 from .user_views import logout_required
 
@@ -80,7 +80,7 @@ class AdminEndpoint(MethodView):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
-        posts = articles.find({"author": author}).sort('datePosted', pymongo.DESCENDING)
+        posts = articles.find({"author": author}).sort('datePosted', DESCENDING)
         return render_template('admin.html', others=False, posts=posts), 200
 
 
@@ -262,7 +262,7 @@ class CommentStatusEndpoint(MethodView):
         # Execute query to fetch data
         query = articles.find({
             "comments": {'$elemMatch': {'approved': False}}
-        }).sort("{'comments': { '$elemMatch': 'datePosted'}}", pymongo.DESCENDING)
+        }).sort("{'comments': { '$elemMatch': 'datePosted'}}", DESCENDING)
         results = [item for item in query]
         return render_template('comments.html', results=results), 200
 
