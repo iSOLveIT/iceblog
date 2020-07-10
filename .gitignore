@@ -7,3 +7,4 @@ test_run.py
 locustfile.py
 .pytest_cache
 *pytest_cache
+app_session

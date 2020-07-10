@@ -1,4 +1,3 @@
-Werkzeug==0.16.0
 Flask
 Flask-Session
 Flask-CKEditor
@@ -11,3 +10,4 @@ pymongo
 requests
 WTForms
 dnspython
+emoji

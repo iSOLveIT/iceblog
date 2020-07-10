@@ -16,7 +16,7 @@ def logout_required(f):
     def decorated_function(*args, **kwargs):
         if 'logged_in' in session:
             flash(f"{emojize(':warning:')} Unauthorised access, Logout first", 'danger')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('dashboard')), 301
         else:
             return f(*args, **kwargs)
 
@@ -62,7 +62,7 @@ class IndexEndpoint(MethodView):
         dB = mongo.get_collection(name='newsletter_subscribers')
         dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
         flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('index', _anchor='newsletter'))
+        return redirect(url_for('index', _anchor='newsletter')), 301
 
 
 # View for about
@@ -92,7 +92,7 @@ class CategoryEndpoint(MethodView):
         articles = mongo.get_collection(name='articles')
         _total_doc = articles.count_documents({})
         if offset < 0 or offset >= int(_total_doc):
-            return redirect(url_for('category', page=0))
+            return redirect(url_for('category', page=0)), 301
         else:
             # Execute query to fetch data
             posts = articles.find(
@@ -145,25 +145,14 @@ class SingleEndpoint(MethodView):
             "Entertainment": "warning",
             "Health": "success"
         }
-        # # Color for category
-        # article_color = category_color.get(category)
-        # cat_color = [category_color[item['category']] for item in related_post if item['category'] in category_color]
         # Comment form
         form = CommentForm()
-
-        # # Numbers of articles for each category
-        # lifestyle = articles.count_documents({"category": "Lifestyle"})
-        # tech = articles.count_documents({"category": "Tech"})
-        # sports = articles.count_documents({"category": "Sports"})
-        # entertain = articles.count_documents({"category": "Entertainment"})
-        # health = articles.count_documents({"category": "Health"})
-        # len_category = [lifestyle, health, entertain, tech, sports]
 
         return render_template('single.html', article=article,
                                len_comments=len_comments, form=form,
                                popular_posts=popular_posts,
                                related_post=related_post,
-                               others=False, color=category_color, ), 200
+                               others=False, color=category_color), 200
 
     @staticmethod
     @logout_required
@@ -191,14 +180,14 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section'))
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section')), 301
 
         elif 'newsletter' in request.form:
             e_mail = request.form['newsletter']
             dB = mongo.get_collection(name='newsletter_subscribers')
             dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter'))
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter')), 301
 
 
 # View for likes
@@ -219,6 +208,6 @@ class LikesEndpoint(MethodView):
         query = articles.find_one({'_id': ObjectId(blog_id)})
         result = query['likes']
         if likes == +1:
-            return jsonify(result=result)
+            return jsonify(result=result), 200
         else:
-            return jsonify(result=result)
+            return jsonify(result=result), 200

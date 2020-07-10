@@ -1,6 +1,6 @@
 {%  extends 'layout.html' %}
 
-{% block title %}User Dashboard | IceBlog{% endblock %}
+{% block title %}Admin Dashboard | IceBlog{% endblock %}
 
 {%  block content %}
 
@@ -56,7 +56,7 @@
                   <td>
                   <form action="/admin_dashboard/delete/{{article._id}}/" method="POST">
                       <input type="hidden" name="_method" value="DELETE">
-                      <input type="submit" class=" btn btn-danger" style="padding: 1px; border-radius: 8px;" value="Delete">
+                      <input type="submit" class="btn-danger" style="padding: 1px; border-radius: 8px;" value="Delete">
                   </form>
                   </td>
               </tr>

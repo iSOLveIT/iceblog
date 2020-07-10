@@ -1,39 +1,36 @@
-from flask import Flask, request
-# import urllib
+from flask import Flask
 from pymongo import MongoClient
 from flask_ckeditor import CKEditor
 from flask_session import Session
 from flask_compress import Compress
 import os
+import ssl
+
 
 # Instantiate flask and secret key
 app = Flask(__name__)
 
 # Check Configuration section for more details
 SESSION_COOKIE_NAME = "iceblog"
-SESSION_COOKIE_PATH = "http://127.0.0.1:4700/admin_dashboard/"
+SESSION_COOKIE_DOMAIN = "https://iceblog-gh.herokuapp.com/"
+SESSION_COOKIE_PATH = 'https://iceblog-gh.herokuapp.com/admin_dashboard'
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Strict'
 SESSION_TYPE = 'filesystem'
-SESSION_KEY_PREFIX = 'eve'
+SESSION_KEY_PREFIX = 'ice'
 SESSION_FILE_DIR = "app_session"
 PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
 app.config.from_object(__name__)
 Session(app)
 
-"""
-# Config and Instantiate Mongo
-Username = urllib.parse.quote_plus('isolveit')
-Password = urllib.parse.quote_plus('laden1472')
-"""
-# Config and Instantiate Mongo
-# user = str(os.environ.get('MONGODB_USERNAME'))
-# pswd = str(os.environ.get('MONGODB_PASSWORD'))
-# uri = f"mongodb+srv://{user}:{pswd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"
-# client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 
-# Instantiate mongodb into app
-client = MongoClient()
-# app.config['MONGO_DBNAME'] = 'ICEBLOG'
-mongo = client.get_database(name='EVEBLOG')
+# Config and Instantiate Mongo
+user = str(os.environ.get('MONGODB_USERNAME'))
+pswd = str(os.environ.get('MONGODB_PASSWORD'))
+uri = f"mongodb+srv://{user}:{pswd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"
+client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+
+mongo = client.get_database(name=str(os.environ.get('MONGO_DBNAME')))
 
 """# Config Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -71,7 +68,7 @@ def apply_headers(response):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    response.headers["Cache-Control"] = "max-age=10368000"  # 4 months
+    # response.headers["Cache-Control"] = "max-age=10368000"  # 4 months
 
     return response
 

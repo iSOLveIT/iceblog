@@ -20,12 +20,12 @@
         <div class="container">
             {% if results %}
             <table class="table table-striped col-12">
-                <thead class="thead-dark">
+                <thead class="thead-dark text-center">
                   <tr>
                     <th>Date Commented</th>
                     <th>Name</th>
                     <th>Message</th>
-                    <th>Status</th>
+                    <th colspan="2">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -41,6 +41,8 @@
                                     <button type="button" name="{{ comment.commentId }}" id="{{ result._id }}_{{ result.get('comments').index(comment) }}_decline" value="false" style="padding:0.35rem; transition: all 0.25s ease-in-out;" class="btn_decline btn-danger rounded">
                                         Decline
                                     </button>
+                                </td>
+                                <td>
                                     <button type="button" name="{{ comment.commentId }}" id="{{ result._id }}_{{ result.get('comments').index(comment) }}_approve" value="true" style="padding:0.35rem; transition: all 0.25s ease-in-out;" class="btn_approve btn-success rounded">
                                         Approve
                                     </button>

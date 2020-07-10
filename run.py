@@ -2,7 +2,7 @@ from content import app
 import os
 
 
-app.config['SECRET_KEY'] = os.urandom(75)
+app.config['SECRET_KEY'] = str(os.environ.get('SECRET_KEY'))
 
 if __name__ == "__main__":
-    app.run(port="6080", debug=True, threaded=True)
+    app.run(threaded=True)
