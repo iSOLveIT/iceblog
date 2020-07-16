@@ -1,7 +1,7 @@
 from flask import Flask
 from pymongo import MongoClient
 from flask_ckeditor import CKEditor
-from flask_session import Session
+# from flask_session import Session
 from flask_compress import Compress
 import os
 import ssl
@@ -11,16 +11,16 @@ import ssl
 app = Flask(__name__)
 
 # Check Configuration section for more details
-SESSION_COOKIE_NAME = "iceblog"
-SESSION_COOKIE_PATH = 'https://iceblog-gh.herokuapp.com/admin_dashboard'
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_SAMESITE = 'Strict'
-SESSION_TYPE = 'filesystem'
-SESSION_KEY_PREFIX = 'ice'
-SESSION_FILE_DIR = "app_session"
-PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
-app.config.from_object(__name__)
-Session(app)
+# SESSION_COOKIE_NAME = "iceblog"
+# SESSION_COOKIE_PATH = 'https://iceblog-gh.herokuapp.com/admin_dashboard'
+# SESSION_COOKIE_SECURE = True
+# SESSION_COOKIE_SAMESITE = 'Strict'
+# SESSION_TYPE = 'filesystem'
+# SESSION_KEY_PREFIX = 'ice'
+# SESSION_FILE_DIR = "app_session"
+# PERMANENT_SESSION_LIFETIME = 86400  # 24 hours
+# app.config.from_object(__name__)
+# Session(app)
 
 
 # Config and Instantiate Mongo
@@ -67,7 +67,7 @@ def apply_headers(response):
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    # response.headers["Cache-Control"] = "max-age=10368000"  # 4 months
+    response.headers["Cache-Control"] = "max-age=10368000"  # 4 months
 
     return response
 

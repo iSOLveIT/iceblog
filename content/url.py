@@ -1,6 +1,6 @@
 from .user_views import *
 from content import app
-from .admin_views import *
+# from .admin_views import *
 
 # USER ROUTES
 # Route for index
@@ -16,13 +16,13 @@ app.add_url_rule('/contact', view_func=ContactEndpoint.as_view("contact"))
 app.add_url_rule('/category', view_func=CategoryEndpoint.as_view("category"))
 
 # Route for single blog
-app.add_url_rule('/category/blogpost/<string:blog_id>/',
+app.add_url_rule('/blogpost/<string:blog_id>/',
                  view_func=SingleEndpoint.as_view("blogpost"))
 
 # Route for likes
 app.add_url_rule('/likes', view_func=LikesEndpoint.as_view("likes"))
 
-
+'''
 # ADMIN ROUTES
 # Route for admin_login
 app.add_url_rule('/admin', view_func=AdminLoginEndpoint.as_view("admin"))
@@ -55,3 +55,4 @@ app.add_url_rule('/admin_dashboard/comments',
 # Route for comment approval
 app.add_url_rule('/admin_dashboard/commentsapproval',
                  view_func=CommentApprovalEndpoint.as_view("commentsapproval"))
+'''

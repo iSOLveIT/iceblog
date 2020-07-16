@@ -1,6 +1,6 @@
 from flask.views import MethodView
 from flask import render_template, request, redirect, url_for, flash, session, jsonify
-from content import mongo
+from content import mongo, app
 from bson.objectid import ObjectId  # Import for using mongo id
 from pymongo import DESCENDING, ASCENDING
 from .form import CommentForm
@@ -11,22 +11,21 @@ from .commentIDgenerator import random_string
 
 
 # Check if admin is logged out
-def logout_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'logged_in' in session:
-            flash(f"{emojize(':warning:')} Unauthorised access, Logout first", 'danger')
-            return redirect(url_for('dashboard')), 301
-        else:
-            return f(*args, **kwargs)
+# def logout_required(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if 'logged_in' in session:
+#             flash(f"{emojize(':warning:')} Unauthorised access, Logout first", 'danger')
+#             return redirect(url_for('dashboard')), 301
+#         else:
+#             return f(*args, **kwargs)
 
-    return decorated_function
+#     return decorated_function
 
 
 # View for index
 class IndexEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -56,7 +55,6 @@ class IndexEndpoint(MethodView):
                                ), 200
 
     @staticmethod
-    @logout_required
     def post():
         e_mail = request.form['newsletter']
         dB = mongo.get_collection(name='newsletter_subscribers')
@@ -68,7 +66,6 @@ class IndexEndpoint(MethodView):
 # View for about
 class AboutEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
         return render_template('about.html', others=False), 200
 
@@ -76,7 +73,6 @@ class AboutEndpoint(MethodView):
 # View for contact
 class ContactEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
         return render_template('contact.html', others=False), 200
 
@@ -84,7 +80,6 @@ class ContactEndpoint(MethodView):
 # View for blog category
 class CategoryEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
         offset = int(request.args['page'])
         limit = 12
@@ -124,14 +119,13 @@ class CategoryEndpoint(MethodView):
 # View for single blog
 class SingleEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
         article = articles.find_one({"_id": ObjectId(blog_id)})
         # Execute query to fetch data
-        popular_posts = articles.find({"likes": {'$gt': 16}}).limit(5).sort('datePosted', DESCENDING)
+        today_post = articles.find_one({"likes": {'$gt': 16}})
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] == True])
         # Execute query to fetch data
@@ -150,12 +144,11 @@ class SingleEndpoint(MethodView):
 
         return render_template('single.html', article=article,
                                len_comments=len_comments, form=form,
-                               popular_posts=popular_posts,
+                               today_post=today_post,
                                related_post=related_post,
                                others=False, color=category_color), 200
 
     @staticmethod
-    @logout_required
     def post(blog_id):
         if 'name' and 'msg' in request.form:
             name = request.form['name']
@@ -193,7 +186,6 @@ class SingleEndpoint(MethodView):
 # View for likes
 class LikesEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
         blog_id = request.args.get('blog_id', type=str)
         likes = request.args.get('no_likes', 0, type=int)
@@ -211,3 +203,16 @@ class LikesEndpoint(MethodView):
             return jsonify(result=result), 200
         else:
             return jsonify(result=result), 200
+
+
+# ERROR PAGES
+# 1.Error_404 Page
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('error.html', others=True), 404
+
+
+# 2.Error_500 page
+@app.errorhandler(500)
+def error_500(error):
+    return render_template('error.html', others=True), 500

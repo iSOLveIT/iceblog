@@ -4,6 +4,18 @@ from flask_wtf import FlaskForm
 # from wtforms.fields.html5 import EmailField
 
 
+# Form for Comments
+class CommentForm(FlaskForm):
+    name = StringField('Name *', [
+        validators.InputRequired(),
+        validators.Length(min=5, max=30)
+    ])
+    msg = TextAreaField('Message *', [
+        validators.InputRequired(),
+        validators.Length(min=1, max=255)
+    ])
+
+'''
 # Form for Blog Post
 class ArticleForm(FlaskForm):
     title = StringField('Title', [
@@ -25,18 +37,6 @@ class ArticleForm(FlaskForm):
     ])
 
 
-# Form for Comments
-class CommentForm(FlaskForm):
-    name = StringField('Name *', [
-        validators.InputRequired(),
-        validators.Length(min=5, max=30)
-    ])
-    msg = TextAreaField('Message *', [
-        validators.InputRequired(),
-        validators.Length(min=1, max=255)
-    ])
-
-
 # Form for Login
 class LoginForm(FlaskForm):
     username = StringField('Username', [
@@ -47,3 +47,4 @@ class LoginForm(FlaskForm):
         validators.InputRequired(),
         validators.Length(min=8, max=30)
     ])
+'''
