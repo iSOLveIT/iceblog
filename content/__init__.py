@@ -18,8 +18,7 @@ PERMANENT_SESSION_LIFETIME = 36000  # 10 hours
 # Config and Instantiate Mongo
 user = str(os.environ.get('MONGODB_USERNAME'))
 pswd = str(os.environ.get('MONGODB_PASSWORD'))
-mongo_uri = str(os.environ.get('MONGODB_URI'))
-uri = f"{mongo_uri}"
+uri = f"mongodb+srv://{user}:{pswd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"
 client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 
 mongo = client.get_database(name=str(os.environ.get('MONGO_DBNAME')))
