@@ -46,7 +46,11 @@
             {% for article in posts %}
               <tr>
                   <td>{{article.datePosted.strftime('%B %d, %Y')}}</td>
-                  <td>{{article.title}}</td>
+                  <td>
+                    <a href="/blogpost/{{article._id}}/" aria-label="Blog Post link" target="blank" style="text-decoration: none;">
+                      <u>{{article.title}}</u>
+                    </a>
+                  </td>
                   <td>{{article.category}}</td>
                   <td>{{article.likes}} likes</td>
                   <td>{{article.dateUpdated.strftime('%B %d, %Y')}}</td>
