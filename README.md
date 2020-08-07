@@ -14,7 +14,7 @@
 * In order to run the app, open the directory in a terminal, then enter the command `python3 run.py` 
 
 #### Using the Gunicorn_server
-* To run the app, open the directory in a terminal, then enter the command `gunicorn -w 4 -b "localhost:4080" run:app`
+* To run the app, open the directory in a terminal, then enter the command `gunicorn -w 4 -b "localhost:5000" run:app`
 
 * NOTE: 
     * If you intend using this project in the productive environment do not use the development server.
@@ -43,17 +43,21 @@
 
 ## Main Pages
 * Home
-* Lifestyle
-* Health
-* Tech
-* Entertainment
-* Sports
+* Blogs
+* About
+* Contact
+* Sign In
+* Dashboard
+* Profile
+* Create User
+* Comments
+
 
 ## Directory Structure
 ![Directory Structure](./content/static/images/blog.png)
 
 ## Preview Link
-[Name of Project](link to project E.g {http://agmschool.org})
+[IceBlog](https://iceblog-gh.herokuapp.com/)
 
 ## Author
 * __Duodu Randy :octocat:__

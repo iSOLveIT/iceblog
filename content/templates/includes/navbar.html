@@ -1,36 +1,103 @@
-<div class="site-mobile-menu">
+{% if session.logged_in %}
+    <div class="site-mobile-menu">
     <div class="site-mobile-menu-header">
         <div class="site-mobile-menu-close mt-3">
-            <span class="icon-close2 js-menu-toggle"></span>
+        <span class="icon-close2 js-menu-toggle"></span>
         </div>
     </div>
     <div class="site-mobile-menu-body"></div>
-</div>
+    </div>
 
-<header class="site-navbar sticky-top shadow-sm" role="banner">
+    <header class="site-navbar sticky-top shadow-sm" role="banner">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+
+            <div class="col-2 site-logo">
+                <a href="/" aria-label="IceBlog's logo" class="text-black h2 mb-0"
+                style="font-family: 'Montez', cursive; font-size: 50px;">IceBlog</a>
+            </div>
+
+            <div class="col-10 text-right">
+                <nav class="site-navigation" role="navigation">
+                <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
+                    <li><a href="/admin_dashboard" aria-label="Dashboard link">Dashboard</a></li>
+
+                    <li>
+                        <div class="form-inline my-2 my-lg-0">
+                          <ul class="navbar-nav mr-auto">
+                            <li class="nav-item dropdown dropleft active" style="list-style: none;">
+                              <a class="nav-link dropdown-toggle" href="#" aria-label="Account settings" style="color:#000;" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              &nbsp; {{ session.get('profile')['username'] }}
+                              </a>
+                              <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+                                <a class="dropdown-item" href="/admin_dashboard/profile" aria-label="Profile link"><span class="icon-user-secret"></span> Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <!-- <a class="dropdown-item" href="#" aria-label="Newsletter post link"><span class="icon-newspaper-o"></span> Newsletter</a> -->
+                                <a class="dropdown-item" href="/admin_dashboard/create_user" aria-label="Create new user link"><span class="icon-person_add"></span> Create User</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/admin_dashboard/comments" aria-label="Comments link"><span class="icon-comments"></span> Comments</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="/admin_dashboard/logout" aria-label="Logout link"><span class="icon-exit_to_app"></span> Logout</a>
+                              </div>
+                            </li>
+                          </ul>
+                          &nbsp;
+                          
+                          <a class="navbar-brand" href="#">
+                            <img src="{{ session.get('profile')['picture'] }}" width="30" height="30" alt="User's profile picture" style="border-radius: 50%;">
+                          </a>
+
+                        </div>
+                    </li>
+                </ul>
+                </nav>
+                <a href="#" aria-label="Menu icon" class="site-menu-toggle js-menu-toggle text-black d-inline-block d-lg-none"><span
+                    class="icon-menu h3"></span></a>
+            </div>
+
+           
+        </div>
+
+    </div>
+    </header>
+{% else %}
+    <div class="site-mobile-menu">
+    <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+        <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+    </div>
+
+    <header class="site-navbar sticky-top shadow-sm" role="banner">
     <div class="container-fluid">
         <div class="row align-items-center">
 
             <div class="col-4 site-logo">
                 <a href="/" aria-label="IceBlog's logo" class="text-black h2 mb-0"
-                    style="font-family: 'Montez', cursive; font-size: 50px;">IceBlog</a>
+                style="font-family: 'Montez', cursive; font-size: 50px;">IceBlog</a>
             </div>
 
             <div class="col-8 text-right">
                 <nav class="site-navigation" role="navigation">
-                    <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
-                        <li><a href="/" aria-label="Home link">Home</a></li>
-                        <li><a href="/category?page=0" aria-label="Blogs link">Blogs</a></li>
-                        <li><a href="/about" aria-label="About link">About</a></li>
-                        <li><a href="/contact" aria-label="Contact link">Contact</a></li>
-                    </ul>
+                <ul class="site-menu js-clone-nav mr-auto d-none d-lg-block mb-0">
+                    <li><a href="/" aria-label="Home link">Home</a></li>
+                    <li><a href="/category?page=0" aria-label="Blogs link">Blogs</a></li>
+                    <li><a href="/about" aria-label="About link">About</a></li>
+                    <li><a href="/contact" aria-label="Contact link">Contact</a></li>
+                    
+                    <li><a href="/login" class="btn rounded text-black pl-2 pr-2" aria-label="User login link">Sign In</a></li>
+
+                </ul>
                 </nav>
-                <a href="#" aria-label="Menu icon"
-                    class="site-menu-toggle js-menu-toggle text-black d-inline-block d-lg-none"><span
-                        class="icon-menu h3"></span></a>
+                <a href="#" aria-label="Menu icon" class="site-menu-toggle js-menu-toggle text-black d-inline-block d-lg-none"><span
+                    class="icon-menu h3"></span></a>
             </div>
 
         </div>
 
     </div>
-</header>
+    </header>
+
+{% endif %}

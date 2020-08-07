@@ -1,13 +1,14 @@
 Flask
-# Flask-Session
 Flask-CKEditor
 Flask-Mail
 Flask-Compress
 Flask-WTF
+Flask-Bcrypt
 gunicorn
-passlib
 pymongo
 requests
 WTForms
 dnspython
 emoji
+authlib>=0.14.1
+six

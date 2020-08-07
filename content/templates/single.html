@@ -9,11 +9,11 @@
     <div class="row same-height justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="post-entry text-center">
-          <span class="post-category text-black bg-{{ color.get(article['category']) }} mb-3">{{ article['category'] }}</span>
+          <span class="post-category text-black bg-{{ color.get(article['category'], 'secondary') }} mb-3">{{ article['category'] }}</span>
           <h1 class="mb-4 text-black">{{ article['title'] }}</h1>
           <div class="post-meta align-items-center text-center">
             <figure class="author-figure mb-0 mr-3 d-inline-block">
-              <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image" class="img-fluid">
+              <img src="{{ url_for('static', filename='images/webp/randy.webp') }}" alt="Image" class="img-fluid">
             </figure>
             <span class="d-inline-block mt-1 text-black">By {{ article['author'] }}</span>
             {% if article['bodyUpdated'] == True %}
@@ -62,7 +62,7 @@
               {% if comment['approved'] == True %}
                 <li class="comment">
                   <div class="vcard">
-                    <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image placeholder">
+                    <img src="{{ url_for('static', filename='images/webp/comments.webp') }}" alt="Image placeholder">
                   </div>
                   <div class="comment-body">
                     <h5>{{ comment['name'] }}</h5>
@@ -113,7 +113,7 @@
         <!-- END sidebar-box -->
         <div class="sidebar-box">
           <div class="bio text-center">
-            <img src="{{ url_for('static', filename='images/webp/person_2.webp') }}" alt="Image Placeholder" class="img-fluid mb-5">
+            <img src="{{ url_for('static', filename='images/webp/randy.webp') }}" alt="Image Placeholder" class="img-fluid mb-5">
             <div class="bio-body">
               <h2>{{ article['author'] }}</h2>
               <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem facilis sunt
@@ -149,7 +149,7 @@
             <ul>
                 <li>
                   <a href="/blogpost/{{ today_post['_id'] }}/" aria-label="Link to blog post">
-                    <img src="{{ url_for('static', filename='images/webp/img_1.webp') }}" alt="Image placeholder" class="mr-4">
+                    <img src="{{ url_for('static', filename='images/webp/iceb.webp') }}" alt="Image placeholder" class="mr-4">
                     <div class="text">
                       <h4>{{ today_post['title'] }}</h4>
                       <div class="post-meta">
@@ -203,8 +203,8 @@
 
         <div class="col-md-5 order-md-2">
           <a href="/blogpost/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" class="hentry img-1 h-100 gradient"
-            style="background-image: url('{{ url_for('static', filename='images/webp/img_4.webp') }}');">
-            <span class="post-category text-black bg-{{ color.get(related_post[0]['category']) }}">
+            style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
+            <span class="post-category text-black bg-{{ color.get(related_post[0]['category'], 'secondary') }}">
               {{ related_post[0]['category'] }}
             </span>
             <div class="text">
@@ -217,8 +217,8 @@
         <div class="col-md-7">
 
           <a href="/blogpost/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" class="hentry img-2 v-height mb30 gradient"
-            style="background-image: url('{{ url_for('static', filename='images/webp/img_1.webp') }}');">
-            <span class="post-category text-black bg-{{ color.get(related_post[1]['category']) }}">
+            style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
+            <span class="post-category text-black bg-{{ color.get(related_post[1]['category'], 'secondary') }}">
               {{ related_post[1]['category'] }}
             </span>
             <div class="text text-sm">
@@ -229,8 +229,8 @@
 
           <div class="two-col d-block d-md-flex">
             <a href="/blogpost/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 gradient"
-              style="background-image: url('{{ url_for('static', filename='images/webp/img_2.webp') }}');">
-              <span class="post-category text-black bg-{{ color.get(related_post[2]['category']) }}">
+              style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
+              <span class="post-category text-black bg-{{ color.get(related_post[2]['category'], 'secondary') }}">
                 {{ related_post[2]['category'] }}
               </span>
               <div class="text text-sm">
@@ -239,8 +239,8 @@
               </div>
             </a>
             <a href="/blogpost/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 ml-auto gradient"
-              style="background-image: url('{{ url_for('static', filename='images/webp/img_1.webp') }}');">
-              <span class="post-category text-black bg-{{ color.get(related_post[3]['category']) }}">
+              style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
+              <span class="post-category text-black bg-{{ color.get(related_post[3]['category'], 'secondary') }}">
                 {{ related_post[3]['category'] }}
               </span>
               <div class="text text-sm">

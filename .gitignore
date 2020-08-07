@@ -14,4 +14,3 @@ content/templates/edit_article.html
 content/templates/login.html
 .pytest_cache
 *pytest_cache
-app_session

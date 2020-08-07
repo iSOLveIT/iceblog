@@ -5,22 +5,8 @@ from bson.objectid import ObjectId  # Import for using mongo id
 from pymongo import DESCENDING, ASCENDING
 from .form import CommentForm
 from datetime import datetime as dt
-from functools import wraps
 from emoji import emojize
 from .commentIDgenerator import random_string
-
-
-# Check if admin is logged out
-# def logout_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         if 'logged_in' in session:
-#             flash(f"{emojize(':warning:')} Unauthorised access, Logout first", 'danger')
-#             return redirect(url_for('dashboard')), 301
-#         else:
-#             return f(*args, **kwargs)
-
-#     return decorated_function
 
 
 # View for index
@@ -52,7 +38,7 @@ class IndexEndpoint(MethodView):
         }
         return render_template('index.html', random_post=random_post, others=False,
                                recent_posts=recent_posts, catColor=category_color
-                               ), 200
+                               )
 
     @staticmethod
     def post():
@@ -60,21 +46,21 @@ class IndexEndpoint(MethodView):
         dB = mongo.get_collection(name='newsletter_subscribers')
         dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
         flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('index', _anchor='newsletter')), 301
+        return redirect(url_for('index', _anchor='newsletter'))
 
 
 # View for about
 class AboutEndpoint(MethodView):
     @staticmethod
     def get():
-        return render_template('about.html', others=False), 200
+        return render_template('about.html', others=False)
 
 
 # View for contact
 class ContactEndpoint(MethodView):
     @staticmethod
     def get():
-        return render_template('contact.html', others=False), 200
+        return render_template('contact.html', others=False)
 
 
 # View for blog category
@@ -87,7 +73,7 @@ class CategoryEndpoint(MethodView):
         articles = mongo.get_collection(name='articles')
         _total_doc = articles.count_documents({})
         if offset < 0 or offset >= int(_total_doc):
-            return redirect(url_for('category', page=0)), 301
+            return redirect(url_for('category', page=0))
         else:
             # Execute query to fetch data
             posts = articles.find(
@@ -113,7 +99,7 @@ class CategoryEndpoint(MethodView):
 
         return render_template('category.html', posts=posts,
                                _previous=_previous, _next=_next,
-                               others=False, color=category_color), 200
+                               others=False, color=category_color)
 
 
 # View for single blog
@@ -146,7 +132,7 @@ class SingleEndpoint(MethodView):
                                len_comments=len_comments, form=form,
                                today_post=today_post,
                                related_post=related_post,
-                               others=False, color=category_color), 200
+                               others=False, color=category_color)
 
     @staticmethod
     def post(blog_id):
@@ -173,14 +159,14 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section')), 301
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section'))
 
         elif 'newsletter' in request.form:
             e_mail = request.form['newsletter']
             dB = mongo.get_collection(name='newsletter_subscribers')
             dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter')), 301
+            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter'))
 
 
 # View for likes
@@ -200,19 +186,6 @@ class LikesEndpoint(MethodView):
         query = articles.find_one({'_id': ObjectId(blog_id)})
         result = query['likes']
         if likes == +1:
-            return jsonify(result=result), 200
+            return jsonify(result=result)
         else:
-            return jsonify(result=result), 200
-
-
-# ERROR PAGES
-# 1.Error_404 Page
-@app.errorhandler(404)
-def error_404(error):
-    return render_template('error.html', others=True), 404
-
-
-# 2.Error_500 page
-@app.errorhandler(500)
-def error_500(error):
-    return render_template('error.html', others=True), 500
+            return jsonify(result=result)

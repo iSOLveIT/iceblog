@@ -1,140 +1,118 @@
 from flask.views import MethodView
 from flask import render_template, redirect, request, url_for, flash, session
-from content import mongo, app
+from content import mongo, app, bcrypt, auth0, AUTH0_CALLBACK_URL, AUTH0_CLIENT_ID, PROFILE_KEY
 from bson.objectid import ObjectId
-from .form import ArticleForm, LoginForm
+from .form import ArticleForm, SignupForm
 from datetime import datetime as dt
-from passlib.hash import sha256_crypt
 from functools import wraps
 from pymongo import DESCENDING
 from emoji import emojize
-from .user_views import logout_required
+from werkzeug.exceptions import HTTPException
+from six.moves.urllib.parse import urlencode
 
 
 # Check if user is logged in
-def login_required(f):
+def requires_auth(f):
     @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash(f"{emojize(':warning:')} Unauthorised access, Login first", 'danger')
-            return redirect(url_for('admin')), 301
-    return decorated_function
+    def decorated(*args, **kwargs):
+        if PROFILE_KEY not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+
+    return decorated
 
 
-# View for admin login
+# View for login
 class AdminLoginEndpoint(MethodView):
     @staticmethod
-    @logout_required
     def get():
-        form = LoginForm(request.form)
-        return render_template('login.html', others=True, form=form), 200
+        return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL)
 
+
+# View for callback
+class CallbackHandler(MethodView):
     @staticmethod
-    @logout_required
-    def post():
-        # Get data entered into Login form
-        username = request.form['username']
-        password = request.form['password']
-        # Create Mongodb connection
-        users = mongo.get_collection(name='admin_user')
-        # Execute query to fetch data
-        user = users.find_one({"username": username})
-        # Authentication and Authorization
-        if user is None:
-            flash(f"{emojize(':warning:')} Invalid Login Credentials", 'danger')
-            return redirect(url_for('admin'))
-        if user:
-            encrypted_password = user['password']
-            if sha256_crypt.verify(password, encrypted_password):
-                session['logged_in'] = True
-                session['username'] = username
-                session['lastName'] = user['lastName']
-                session['firstName'] = user['firstName']
-                session['gender'] = user['gender']
+    def get():
+        # Get data (access_token and user_info) from auth0
+        auth0.authorize_access_token()
+        auth0_response = auth0.get('userinfo')
+        
+        # Retrieve json from data sent by auth0
+        user_info = auth0_response.json()
 
-                users.find_one_and_update(
-                    {'_id': ObjectId(user['_id'])},
-                    {
-                        '$set': {
-                            'loginAt': dt.now()
-                        }
-                    },
-                    upsert=False,
-                )
-                flash(f"Logged in successfully {emojize(':grinning_face_with_big_eyes:')}", 'success')
-                return redirect(url_for('dashboard')), 301
-            else:
-                flash(f"{emojize(':warning:')} Password is incorrect", 'danger')
-                return redirect(url_for('admin')), 301
-
+        # Create session object (dict_object) and store data in session
+        session['logged_in'] = True
+        session[PROFILE_KEY] = {
+            'user_id': str(user_info['sub']).split('|')[1],
+            'username' : user_info['nickname'],
+            'firstName': user_info['name'].split(' ')[0],
+            'lastName': user_info['name'].split(' ')[1],
+            'gender' : user_info['gender'],
+            'picture': user_info['picture']
+        }
+        
+        flash(f"Logged in successfully {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        return redirect(url_for('dashboard'))
+            
 
 # View for admin dashboard
-class AdminEndpoint(MethodView):
+class AdminDashboardEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
-        # Get session username
-        author = session.get('username')
+        # Get user information stored in session
+        user_info = session.get(PROFILE_KEY)
+
+        # Get username from user info
+        author = user_info['username']
+
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data
+
+        # Execute query to fetch data from database
         posts = articles.find({"author": author}).sort('datePosted', DESCENDING)
-        return render_template('admin.html', others=False, posts=posts), 200
+        return render_template('admin.html', others=False, posts=posts, user_info=user_info)
 
 
 # View for admin logout
 class AdminLogoutEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
-        # Create Mongodb connection
-        users = mongo.get_collection(name='admin_user')
-        # Get session username
-        username = session.get('username')
-        # Execute query to fetch data
-        users.find_one_and_update(
-            {'username': username},
-            {
-                '$set': {
-                    'logoutAt': dt.now()
-                }
-            },
-            upsert=False,
-        )
-        session.clear()
-        flash(f"Logged out {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('admin')), 301
-
+        session.clear() # Clear all data in session
+        # flash(f"Logged out {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        params = {'returnTo': url_for('index', _external=True), 'client_id': AUTH0_CLIENT_ID}
+        # Logout user and redirect user to homepage
+        return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
+        
 
 # View for admin account details
 class AdminProfileEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
-        # Get session username
-        username = session.get('username')
+        # Get user information stored in session and get only username
+        username = session.get(PROFILE_KEY)['username']
         # Execute query to fetch data
         user_details = users.find_one({'username': username})
-        return render_template('admin_profile.html', others=False, user=user_details), 200
+        return render_template('admin_profile.html', others=False, user=user_details)
 
     @staticmethod
-    @login_required
+    @requires_auth
     def post():
-        lname = request.form['LName']
-        fname = request.form['FName']
-        email = request.form['Email']
-        gender = request.form['Gender']
-        password = request.form['password']
+        lname = str(request.form['LName'])
+        fname = str(request.form['FName'])
+        email = str(request.form['Email'])
+        gender = str(request.form['Gender'])
+        password = str(request.form['password'])
         
-        _password = sha256_crypt.hash(str(password))  # Hash (encrypt) password
+        _password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
-        # Get session username
-        username = session.get('username')
+        # Get user information stored in session and get only username
+        username = session.get(PROFILE_KEY)['username']
         session['lastName'] = lname
         session['firstName'] = fname
         session['gender'] = gender
@@ -144,32 +122,32 @@ class AdminProfileEndpoint(MethodView):
             {
                 '$set': {
                     'lastName': lname, 'firstName': fname, 'password': _password,
-                    'email': email, 'gender': gender, 'decrypted_pswd': password,
+                    'email': email, 'gender': gender, 'decryptedPswd': password,
                     'dateModified': dt.now()
                 }
             },
             upsert=False,
         )
         flash(f"Account details updated {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('profile')), 301
+        return redirect(url_for('profile'))
 
 
 # View for add article
 class AddArticleEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
         form = ArticleForm(request.form)
-        return render_template('add_article.html', others=False, form=form), 200
+        return render_template('add_article.html', others=False, form=form)
 
     @staticmethod
-    @login_required
+    @requires_auth
     def post():
-        title = request.form['title']
-        body = request.form['body']
-        category = request.form['category']
-        readTime = request.form['readTime']
-        author = session.get('username')
+        title = str(request.form['title'])
+        body = str(request.form['body'])
+        category = str(request.form['category'])
+        readTime = str(request.form['readTime'])
+        author = str(session.get(PROFILE_KEY)['username'])   # Get user information stored in session and get only username
         bodyUpdated = False
 
         # Create Mongodb connection
@@ -186,13 +164,13 @@ class AddArticleEndpoint(MethodView):
         )
 
         flash(f"Blog posted {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('dashboard')), 301
+        return redirect(url_for('dashboard'))
 
 
 # View for edit article
 class EditArticleEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -206,16 +184,16 @@ class EditArticleEndpoint(MethodView):
         form.category.data = query["category"]
         form.readTime.data = query["readTime"]
 
-        return render_template('edit_article.html', others=False, form=form), 200
+        return render_template('edit_article.html', others=False, form=form)
 
     @staticmethod
-    @login_required
+    @requires_auth
     def post(blog_id):
-        title = request.form['title']
-        body = request.form['body']
+        title = str(request.form['title'])
+        body = str(request.form['body'])
         bodyUpdated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
-        category = request.form['category']
-        readTime = request.form['readTime']
+        category = str(request.form['category'])
+        readTime = str(request.form['readTime'])
         dateUpdated = dt.now()
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -235,13 +213,13 @@ class EditArticleEndpoint(MethodView):
             upsert=False,
         )
         flash(f"Article Updated {emojize(':grinning_face_with_big_eyes:')}", 'success')
-        return redirect(url_for('dashboard')), 301
+        return redirect(url_for('dashboard'))
 
 
 # View for deleting article
 class DeleteArticleEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -249,13 +227,13 @@ class DeleteArticleEndpoint(MethodView):
         articles.find_one_and_delete({"_id": ObjectId(blog_id)})
         flash(f"Article Deleted {emojize(':grinning_face_with_big_eyes:')}", 'success')
 
-        return redirect(url_for('dashboard')), 301
+        return redirect(url_for('dashboard'))
 
 
-# View for approving comments
+# View for comment status
 class CommentStatusEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -264,12 +242,13 @@ class CommentStatusEndpoint(MethodView):
             "comments": {'$elemMatch': {'approved': False}}
         }).sort("{'comments': { '$elemMatch': 'datePosted'}}", DESCENDING)
         results = [item for item in query]
-        return render_template('comments.html', results=results), 200
+        return render_template('comments.html', results=results)
 
 
+# View for comment approval
 class CommentApprovalEndpoint(MethodView):
     @staticmethod
-    @login_required
+    @requires_auth
     def get():
         ids = request.args.get('IDs', type=str)
         blog_id, commentIndex, _ = ids.split('_')
@@ -287,7 +266,7 @@ class CommentApprovalEndpoint(MethodView):
                     },
                 upsert=False,)     
             status = 200
-            return {'status': status}, 200
+            return {'status': status}
 
         else:
             # Create Mongodb connection
@@ -300,7 +279,41 @@ class CommentApprovalEndpoint(MethodView):
                     },
                 {'multi': True})
             status = 200
-            return {'status': status}, 200
+            return {'status': status}
+
+
+# View for registering new users
+class RegisterUserEndpoint(MethodView):
+    @staticmethod
+    @requires_auth
+    def get():
+        form = SignupForm(request.form)
+        return render_template('register.html', others=False, form=form)
+
+    @staticmethod
+    @requires_auth
+    def post():
+        # Get data entered by user
+        last_name = str(request.form['last_name'])
+        first_name = str(request.form['first_name'])
+        user_email = str(request.form.get('email', None, type=str))
+        username = str(request.form['username'])
+        gender = str(request.form['gender'])
+        password = str(request.form['password'])
+        
+        salted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
+
+        # Create Mongodb connection
+        users = mongo.get_collection(name='admin_user')
+        # Insert data in mongo database
+        users.insert_one({
+            'lastName': last_name, 'firstName': first_name, 'password': salted_password,
+            'email': user_email, 'username': username, 'gender': gender, 'decryptedPswd': password,
+            'dateCreated': dt.now(), 'dateModified': dt.now()
+        })
+        
+        flash(f"New User Account Created {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        return redirect(url_for('dashboard'))
 
 
 # ERROR PAGES
@@ -314,3 +327,9 @@ def error_404(error):
 @app.errorhandler(500)
 def error_500(error):
     return render_template('error.html', others=True), 500
+
+# @app.errorhandler(Exception)
+# def handle_auth_error(error):
+#     status_code = (error.code if isinstance(error, HTTPException) else 500)
+#     if status_code:
+#         return render_template('error.html', others=True)

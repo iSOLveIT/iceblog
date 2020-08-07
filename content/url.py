@@ -1,6 +1,6 @@
 from .user_views import *
 from content import app
-# from .admin_views import *
+from .admin_views import *
 
 # USER ROUTES
 # Route for index
@@ -22,13 +22,19 @@ app.add_url_rule('/blogpost/<string:blog_id>/',
 # Route for likes
 app.add_url_rule('/likes', view_func=LikesEndpoint.as_view("likes"))
 
-'''
+
 # ADMIN ROUTES
 # Route for admin_login
-app.add_url_rule('/admin', view_func=AdminLoginEndpoint.as_view("admin"))
+app.add_url_rule('/login', view_func=AdminLoginEndpoint.as_view("login"))
+
+# Route for callback_handler
+app.add_url_rule('/callback', view_func=CallbackHandler.as_view("callback_handling"))
 
 # Route for admin dashboard
-app.add_url_rule('/admin_dashboard', view_func=AdminEndpoint.as_view("dashboard"))
+app.add_url_rule('/admin_dashboard', view_func=AdminDashboardEndpoint.as_view("dashboard"))
+
+# Route for registering new user
+app.add_url_rule('/admin_dashboard/create_user', view_func=RegisterUserEndpoint.as_view("sign_up"))
 
 # Route for admin dashboard
 app.add_url_rule('/admin_dashboard/profile', view_func=AdminProfileEndpoint.as_view("profile"))
@@ -55,4 +61,4 @@ app.add_url_rule('/admin_dashboard/comments',
 # Route for comment approval
 app.add_url_rule('/admin_dashboard/commentsapproval',
                  view_func=CommentApprovalEndpoint.as_view("commentsapproval"))
-'''
+

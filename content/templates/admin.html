@@ -9,10 +9,10 @@
     <div class="row dash">
       <div class="col-md-6 mb-2">
         <span>Dashboard</span>
-        {% if session.get('gender') == 'M' %}
-          <h3>Welcome Mr. {{ session.get('lastName') }}</h3>
+        {% if user_info['gender'] == 'M' %}
+          <h3>Welcome Mr. {{ user_info['lastName'] }}</h3>
         {% else %}
-          <h3>Welcome Miss {{ session.get('lastName') }}</h3>
+          <h3>Welcome Miss {{ user_info['lastName'] }}</h3>
         {% endif %}
         <a href="/admin_dashboard/add_article" aria-label="Add Article link" class="btn text-black" style=" color:#fff; padding: 4px; border-radius: 8px;">
           Add Article
