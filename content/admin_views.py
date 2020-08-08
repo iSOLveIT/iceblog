@@ -300,6 +300,7 @@ class RegisterUserEndpoint(MethodView):
         username = str(request.form['username'])
         gender = str(request.form['gender'])
         password = str(request.form['password'])
+        bio = str(request.form['bio'])
         
         salted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
 
@@ -307,7 +308,7 @@ class RegisterUserEndpoint(MethodView):
         users = mongo.get_collection(name='admin_user')
         # Insert data in mongo database
         users.insert_one({
-            'lastName': last_name, 'firstName': first_name, 'password': salted_password,
+            'lastName': last_name, 'firstName': first_name, 'password': salted_password, 'biography': bio,
             'email': user_email, 'username': username, 'gender': gender, 'decryptedPswd': password,
             'dateCreated': dt.now(), 'dateModified': dt.now()
         })

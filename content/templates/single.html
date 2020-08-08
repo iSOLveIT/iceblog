@@ -9,7 +9,7 @@
     <div class="row same-height justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="post-entry text-center">
-          <span class="post-category text-black bg-{{ color.get(article['category'], 'secondary') }} mb-3">{{ article['category'] }}</span>
+          <span class="post-category text-white bg-{{ color.get(article['category'], 'secondary') }} mb-3">{{ article['category'] }}</span>
           <h1 class="mb-4 text-black">{{ article['title'] }}</h1>
           <div class="post-meta align-items-center text-center">
             <figure class="author-figure mb-0 mr-3 d-inline-block">
@@ -86,12 +86,12 @@
 
               <div class="form-group">
                 {{ form.name.label(for="Cname") }}
-                {{ form.name(class_="form-control", id="Cname") }}
+                {{ form.name(class_="form-control", id="Cname", placeholder="Firstname or Nickname") }}
               </div>
 
               <div class="form-group">
                 {{ form.msg.label(for="message") }}
-                {{ form.msg(class_="form-control", id="message",cols="30", rows="10") }}
+                {{ form.msg(class_="form-control", id="message",cols="30", rows="10", placeholder="Write your comment here.") }}
               </div>
               <div class="form-group">
                 <p>Fields with * are required</p>
@@ -116,10 +116,8 @@
             <img src="{{ url_for('static', filename='images/webp/randy.webp') }}" alt="Image Placeholder" class="img-fluid mb-5">
             <div class="bio-body">
               <h2>{{ article['author'] }}</h2>
-              <p class="mb-4">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem facilis sunt
-                repellendus excepturi beatae porro debitis voluptate nulla quo veniam fuga sit molestias minus.</p>
                 <!-- // TODO: Add a placeover element that shows the bio of the author -->
-              <p><a href="/about" aria-label="Read author's biography" class="btn btn-sm rounded px-4 py-2" style="color: #101010;">Read my bio</a></p>
+              <p><a href="/about#meet-team" aria-label="Read author's biography" class="btn btn-sm rounded px-4 py-2" style="color: #101010;">Read my bio</a></p>
               <p class="social">
                 <a href="#" aria-label="Author's facebook link" class="p-2"><span class="icon-facebook"></span></a>
                 <a href="#" aria-label="Author's instagram link" class="p-2"><span class="icon-instagram"></span></a>

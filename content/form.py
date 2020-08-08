@@ -70,4 +70,9 @@ class SignupForm(FlaskForm):
         validators.DataRequired(),
         validators.Length(min=8, max=30)
     ])
+    bio = TextAreaField('Biography *', [
+        validators.InputRequired(),
+        validators.DataRequired(),
+        validators.Length(min=1, max=255)
+    ])
 
