@@ -26,7 +26,7 @@ class IndexEndpoint(MethodView):
                     "$gt": dt.strptime('2019,12,31', '%Y,%m,%d')
                 }
             }
-        ).limit(6)
+        ).limit(3)
         # Execute query to fetch data
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
@@ -91,7 +91,7 @@ class CategoryEndpoint(MethodView):
     @staticmethod
     def get():
         offset = int(request.args['page'])
-        limit = 12
+        limit = 9
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         _total_doc = articles.count_documents({})
