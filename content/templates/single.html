@@ -145,7 +145,7 @@
 <!--          <div class="post-entry-sidebar">-->
 <!--            <ul>-->
 <!--                <li>-->
-<!--                  <a href="/blogpost/{{ today_post['_id'] }}/" aria-label="Link to blog post">-->
+<!--                  <a href="/blog_post/{{ today_post['_id'] }}/" aria-label="Link to blog post">-->
 <!--                    <img src="{{ url_for('static', filename='images/webp/iceb.webp') }}" alt="Image placeholder" class="mr-4">-->
 <!--                    <div class="text">-->
 <!--                      <h4>{{ today_post['title'] }}</h4>-->
@@ -199,7 +199,7 @@
       <div class="row align-items-stretch retro-layout">
 
         <div class="col-md-5 order-md-2">
-          <a href="/blogpost/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" class="hentry img-1 h-100 gradient"
+          <a href="/blog_post/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" class="hentry img-1 h-100 gradient"
             style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
             <span class="post-category text-black bg-{{ color.get(related_post[0]['category'], 'secondary') }}">
               {{ related_post[0]['category'] }}
@@ -213,7 +213,7 @@
 
         <div class="col-md-7">
 
-          <a href="/blogpost/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" class="hentry img-2 v-height mb30 gradient"
+          <a href="/blog_post/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" class="hentry img-2 v-height mb30 gradient"
             style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
             <span class="post-category text-black bg-{{ color.get(related_post[1]['category'], 'secondary') }}">
               {{ related_post[1]['category'] }}
@@ -225,7 +225,7 @@
           </a>
 
           <div class="two-col d-block d-md-flex">
-            <a href="/blogpost/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 gradient"
+            <a href="/blog_post/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 gradient"
               style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
               <span class="post-category text-black bg-{{ color.get(related_post[2]['category'], 'secondary') }}">
                 {{ related_post[2]['category'] }}
@@ -235,7 +235,7 @@
                 <span>{{ related_post[2]['datePosted'].strftime('%B %d, %Y') }}</span>
               </div>
             </a>
-            <a href="/blogpost/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 ml-auto gradient"
+            <a href="/blog_post/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 ml-auto gradient"
               style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
               <span class="post-category text-black bg-{{ color.get(related_post[3]['category'], 'secondary') }}">
                 {{ related_post[3]['category'] }}
