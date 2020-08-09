@@ -117,21 +117,17 @@
             <div class="bio-body">
               <h2>{{ article['author'] }}</h2>
               <p><a href="/about#meet-team" aria-label="Read author's biography" class="btn btn-sm rounded px-4 py-2" style="color: #101010;">Read my bio</a></p>
-              <p class="social">
-                <a href="#" aria-label="Author's facebook link" class="p-2"><span class="icon-facebook"></span></a>
-                <a href="#" aria-label="Author's instagram link" class="p-2"><span class="icon-instagram"></span></a>
-                <a href="#" aria-label="Author's twitter link" class="p-2"><span class="icon-twitter"></span></a>
-              </p>
+
             </div>
           </div>
         </div>
         <!-- END sidebar-box -->
         <div class="sidebar-box">
-          <h3 class="heading">Motivational quote of the day</h3>
+          <h3 class="heading">Quote of the day</h3>
           <div class="post-entry-sidebar">
             <blockquote>
-              <span class="icon-quote-left"></span> &nbsp; &nbsp;
-              {{ inspire[0]['text'] }} &nbsp; &nbsp;
+              <span class="icon-quote-left"></span> &nbsp;
+              {{ inspire[0]['text'] }} &nbsp;
               <span class="icon-quote-right"></span>
             </blockquote> 
             <p class="text-black" style="float: right;"> - {{ inspire[0]['author'] }}</p>
