@@ -1,9 +1,10 @@
 from flask.views import MethodView
-from flask import render_template, request, redirect, url_for, flash, session, jsonify
-from content import mongo, app
+from flask import render_template, request, redirect, url_for, flash, jsonify
+from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
-from pymongo import DESCENDING, ASCENDING
+from pymongo import ASCENDING
 from .form import CommentForm
+from .contact import send_email, reply_message
 from datetime import datetime as dt
 from emoji import emojize
 from .commentIDgenerator import random_string
@@ -16,9 +17,9 @@ class IndexEndpoint(MethodView):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
-        random_posts = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
+        random_post = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
         # Loop through random_posts and store as a list
-        random_post = [item for item in random_posts]
+        # random_post = [item for item in random_posts]
         # Execute query to fetch data
         recent_posts = articles.find(
             {
@@ -43,8 +44,8 @@ class IndexEndpoint(MethodView):
     @staticmethod
     def post():
         e_mail = request.form['newsletter']
-        dB = mongo.get_collection(name='newsletter_subscribers')
-        dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+        db = mongo.get_collection(name='newsletter_subscribers')
+        db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
         flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
         return redirect(url_for('index', _anchor='newsletter'))
 
@@ -61,6 +62,22 @@ class ContactEndpoint(MethodView):
     @staticmethod
     def get():
         return render_template('contact.html', others=False)
+
+    @staticmethod
+    def post():
+        # Receive data inputs from contact form
+        full_name = request.form.get('user_full_name', 'User', type=str)
+        email = request.form.get('user_email', 'example@gmail.com', type=str)
+        subject = request.form.get('user_subject', 'Subject', type=str)
+        message = request.form.get('message', 'I love IceBlog', type=str)
+
+        # Send message to IceBlog team
+        send_email(_name=full_name, _subject=subject, _email=email, _body=message)
+        # Reply user with message received from IceBlog team
+        reply_message(_email=email, _sender=full_name)
+        # Send a notification on the contact page for the user
+        flash(f"Your message is received {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        return redirect(url_for('contact', _anchor='flash'))
 
 
 # View for blog category
@@ -92,11 +109,6 @@ class CategoryEndpoint(MethodView):
                 "Health": "success"
             }
 
-            # # select category color
-            # cat_info = []
-            # if category in category_info:
-            #     cat_info = category_info.get(category)
-
         return render_template('category.html', posts=posts,
                                _previous=_previous, _next=_next,
                                others=False, color=category_color)
@@ -113,7 +125,7 @@ class SingleEndpoint(MethodView):
         # Execute query to fetch data
         today_post = articles.find_one({"likes": {'$gt': 16}})
         # Number of comments
-        len_comments = len([comment for comment in article['comments'] if comment['approved'] == True])
+        len_comments = len([comment for comment in article['comments'] if comment['approved'] is True])
         # Execute query to fetch data
         related_posts = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
         related_post = [item for item in related_posts]
@@ -139,7 +151,7 @@ class SingleEndpoint(MethodView):
         if 'name' and 'msg' in request.form:
             name = request.form['name']
             message = request.form['msg']
-            datePosted = dt.now()
+            date_posted = dt.now()
             approval = False
             comment_id = random_string()
             # Create Mongodb connection
@@ -151,7 +163,7 @@ class SingleEndpoint(MethodView):
                     "$push": {
                         "comments": {
                             "name": name,
-                            "datePosted": datePosted,
+                            "datePosted": date_posted,
                             "message": message,
                             "approved": approval,
                             "commentId": comment_id
@@ -159,14 +171,14 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='comment-section'))
+            return redirect(url_for('blog_post', blog_id=blog_id, _anchor='comment-section'))
 
         elif 'newsletter' in request.form:
             e_mail = request.form['newsletter']
-            dB = mongo.get_collection(name='newsletter_subscribers')
-            dB.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+            db = mongo.get_collection(name='newsletter_subscribers')
+            db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
             flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-            return redirect(url_for('blogpost', blog_id=blog_id, _anchor='newsletter'))
+            return redirect(url_for('blog_post', blog_id=blog_id, _anchor='newsletter'))
 
 
 # View for likes

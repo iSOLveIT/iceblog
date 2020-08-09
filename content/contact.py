@@ -1,12 +1,14 @@
 from flask_mail import Message
 from datetime import datetime as dt
-#from content import mail
+from content import mail
+import os
 
 
-def sendemail(_name, _subject, _email, _body):
+def send_email(_name, _subject, _email, _body):
+    
     # SEND EMAIL
-    _recipient = 'isiceblog@gmail.com'
-    msg = Message(_subject, sender=('IceBlog Contact', 'isiceblog@gmail.com'), recipients=[_recipient])
+    _recipient = str(os.environ.get('MAIL_USERNAME'))
+    msg = Message(_subject, sender=('IceBlog Contact', str(os.environ.get('MAIL_USERNAME'))), recipients=[_recipient])
     msg.body = f'''{_body}
 
 
@@ -18,10 +20,10 @@ Date Sent:  {dt.now().strftime('%B %d, %Y, %H:%M ') + 'GMT'}
     return 'OK'
 
 
-def replymessage(_email, _sender):
+def reply_message(_email, _sender):
     # REPLY EMAIL
     _subj = 'Message Received'
-    msg = Message(_subj, sender=('IceBlog Contact', 'isiceblog@gmail.com'), recipients=[_email])
+    msg = Message(_subj, sender=('IceBlog Contact', str(os.environ.get('MAIL_USERNAME'))), recipients=[_email])
     msg.body = f'''Hello {_sender},
 The message sent by {_sender} to IceBlog has been received. IceBlog will contact you within 24 hours.
 
