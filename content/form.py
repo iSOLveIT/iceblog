@@ -75,4 +75,3 @@ class SignupForm(FlaskForm):
         validators.DataRequired(),
         validators.Length(min=1, max=255)
     ])
-

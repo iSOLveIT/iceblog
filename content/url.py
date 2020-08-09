@@ -17,7 +17,7 @@ app.add_url_rule('/category', view_func=CategoryEndpoint.as_view("category"))
 
 # Route for single blog
 app.add_url_rule('/blogpost/<string:blog_id>/',
-                 view_func=SingleEndpoint.as_view("blogpost"))
+                 view_func=SingleEndpoint.as_view("blog_post"))
 
 # Route for likes
 app.add_url_rule('/likes', view_func=LikesEndpoint.as_view("likes"))
@@ -44,21 +44,20 @@ app.add_url_rule('/admin_dashboard/logout', view_func=AdminLogoutEndpoint.as_vie
 
 # Route for add article
 app.add_url_rule('/admin_dashboard/add_article',
-                 view_func=AddArticleEndpoint.as_view("addarticle"))
+                 view_func=AddArticleEndpoint.as_view("add_article"))
 
 # Route for edit article
 app.add_url_rule('/admin_dashboard/edit_article/<string:blog_id>/',
-                 view_func=EditArticleEndpoint.as_view("editarticle"))
+                 view_func=EditArticleEndpoint.as_view("edit_article"))
 
 # Route for delete article
-app.add_url_rule('/admin_dashboard/delete/<string:blog_id>/',
-                 view_func=DeleteArticleEndpoint.as_view("deletearticle"))
+app.add_url_rule('/admin_dashboard/delete_article/<string:blog_id>/',
+                 view_func=DeleteArticleEndpoint.as_view("delete_article"))
 
 # Route for comment status
 app.add_url_rule('/admin_dashboard/comments',
                  view_func=CommentStatusEndpoint.as_view("comments"))
 
 # Route for comment approval
-app.add_url_rule('/admin_dashboard/commentsapproval',
-                 view_func=CommentApprovalEndpoint.as_view("commentsapproval"))
-
+app.add_url_rule('/admin_dashboard/comments_approval',
+                 view_func=CommentApprovalEndpoint.as_view("comments_approval"))

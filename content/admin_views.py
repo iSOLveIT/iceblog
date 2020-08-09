@@ -7,7 +7,6 @@ from datetime import datetime as dt
 from functools import wraps
 from pymongo import DESCENDING
 from emoji import emojize
-from werkzeug.exceptions import HTTPException
 from six.moves.urllib.parse import urlencode
 
 
@@ -44,10 +43,10 @@ class CallbackHandler(MethodView):
         session['logged_in'] = True
         session[PROFILE_KEY] = {
             'user_id': str(user_info['sub']).split('|')[1],
-            'username' : user_info['nickname'],
+            'username': user_info['nickname'],
             'firstName': user_info['name'].split(' ')[0],
             'lastName': user_info['name'].split(' ')[1],
-            'gender' : user_info['gender'],
+            'gender': user_info['gender'],
             'picture': user_info['picture']
         }
         
@@ -79,8 +78,7 @@ class AdminLogoutEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def get():
-        session.clear() # Clear all data in session
-        # flash(f"Logged out {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        session.clear()     # Clear all data in session
         params = {'returnTo': url_for('index', _external=True), 'client_id': AUTH0_CLIENT_ID}
         # Logout user and redirect user to homepage
         return redirect(auth0.api_base_url + '/v2/logout?' + urlencode(params))
@@ -102,8 +100,8 @@ class AdminProfileEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def post():
-        lname = str(request.form['LName'])
-        fname = str(request.form['FName'])
+        last_name = str(request.form['LName'])
+        first_name = str(request.form['FName'])
         email = str(request.form['Email'])
         gender = str(request.form['Gender'])
         password = str(request.form['password'])
@@ -113,16 +111,16 @@ class AdminProfileEndpoint(MethodView):
         users = mongo.get_collection(name='admin_user')
         # Get user information stored in session and get only username
         username = session.get(PROFILE_KEY)['username']
-        session['lastName'] = lname
-        session['firstName'] = fname
-        session['gender'] = gender
+        session[PROFILE_KEY]['lastName'] = last_name
+        session[PROFILE_KEY]['firstName'] = first_name
+        session[PROFILE_KEY]['gender'] = gender
         session.modified = True
         users.find_one_and_update(
             {'username': username},
             {
                 '$set': {
-                    'lastName': lname, 'firstName': fname, 'password': _password,
-                    'email': email, 'gender': gender, 'decryptedPswd': password,
+                    'lastName': last_name, 'firstName': first_name, 'password': _password,
+                    'email': email, 'gender': gender, 'decryptedPasswd': password,
                     'dateModified': dt.now()
                 }
             },
@@ -146,9 +144,9 @@ class AddArticleEndpoint(MethodView):
         title = str(request.form['title'])
         body = str(request.form['body'])
         category = str(request.form['category'])
-        readTime = str(request.form['readTime'])
-        author = str(session.get(PROFILE_KEY)['username'])   # Get user information stored in session and get only username
-        bodyUpdated = False
+        read_time = str(request.form['readTime'])
+        author = str(session.get(PROFILE_KEY)['username'])   # Get user info stored in session and get only username
+        body_updated = False
 
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -157,9 +155,9 @@ class AddArticleEndpoint(MethodView):
         # Execute query to fetch data
         articles.insert_one(
             {
-                "title": title, "body": body, "bodyUpdated": bodyUpdated, "author": author,
+                "title": title, "body": body, "bodyUpdated": body_updated, "author": author,
                 "datePosted": dt.now(), "dateUpdated": dt.now(), "likes": 0, "comments": [],
-                "category": category, "category_num": category_num, "readTime": readTime
+                "category": category, "category_num": category_num, "readTime": read_time
             }
         )
 
@@ -191,10 +189,10 @@ class EditArticleEndpoint(MethodView):
     def post(blog_id):
         title = str(request.form['title'])
         body = str(request.form['body'])
-        bodyUpdated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
+        body_updated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
         category = str(request.form['category'])
-        readTime = str(request.form['readTime'])
-        dateUpdated = dt.now()
+        read_time = str(request.form['readTime'])
+        date_updated = dt.now()
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # Execute query to fetch data
@@ -204,10 +202,10 @@ class EditArticleEndpoint(MethodView):
                 '$set': {
                     'title': title,
                     'body': body,
-                    'bodyUpdated': bodyUpdated,
+                    'bodyUpdated': body_updated,
                     'category': category,
-                    'readTime': readTime,
-                    'dateUpdated': dateUpdated,
+                    'readTime': read_time,
+                    'dateUpdated': date_updated,
                 }
             },
             upsert=False,
@@ -251,7 +249,7 @@ class CommentApprovalEndpoint(MethodView):
     @requires_auth
     def get():
         ids = request.args.get('IDs', type=str)
-        blog_id, commentIndex, _ = ids.split('_')
+        blog_id, comment_index, _ = ids.split('_')
         approved = request.args.get('approval', None, type=str)
         comment_id = request.args.get('commentID', None, type=str)
            
@@ -262,7 +260,7 @@ class CommentApprovalEndpoint(MethodView):
             articles.find_one_and_update(
                 {'_id': ObjectId(blog_id)},
                 {
-                    '$set': {f'comments.{commentIndex}.approved': True}
+                    '$set': {f'comments.{comment_index}.approved': True}
                     },
                 upsert=False,)     
             status = 200
@@ -308,9 +306,9 @@ class RegisterUserEndpoint(MethodView):
         users = mongo.get_collection(name='admin_user')
         # Insert data in mongo database
         users.insert_one({
-            'lastName': last_name, 'firstName': first_name, 'password': salted_password, 'biography': bio,
-            'email': user_email, 'username': username, 'gender': gender, 'decryptedPswd': password,
-            'dateCreated': dt.now(), 'dateModified': dt.now()
+            'lastName': last_name, 'firstName': first_name, 'password': salted_password,
+            'biography': bio, 'email': user_email, 'username': username, 'gender': gender,
+            'decryptedPasswd': password, 'dateCreated': dt.now(), 'dateModified': dt.now()
         })
         
         flash(f"New User Account Created {emojize(':grinning_face_with_big_eyes:')}", 'success')
@@ -328,9 +326,3 @@ def error_404(error):
 @app.errorhandler(500)
 def error_500(error):
     return render_template('error.html', others=True), 500
-
-# @app.errorhandler(Exception)
-# def handle_auth_error(error):
-#     status_code = (error.code if isinstance(error, HTTPException) else 500)
-#     if status_code:
-#         return render_template('error.html', others=True)

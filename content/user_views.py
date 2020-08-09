@@ -16,10 +16,9 @@ class IndexEndpoint(MethodView):
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
+        quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch data
         random_post = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
-        # Loop through random_posts and store as a list
-        # random_post = [item for item in random_posts]
         # Execute query to fetch data
         recent_posts = articles.find(
             {
@@ -28,6 +27,8 @@ class IndexEndpoint(MethodView):
                 }
             }
         ).limit(6)
+        # Execute query to fetch data
+        inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
         # color codes for category
         category_color = {
@@ -38,7 +39,8 @@ class IndexEndpoint(MethodView):
             "Health": "success"
         }
         return render_template('index.html', random_post=random_post, others=False,
-                               recent_posts=recent_posts, catColor=category_color
+                               recent_posts=recent_posts, catColor=category_color,
+                               inspire=inspiration
                                )
 
     @staticmethod
@@ -54,7 +56,11 @@ class IndexEndpoint(MethodView):
 class AboutEndpoint(MethodView):
     @staticmethod
     def get():
-        return render_template('about.html', others=False)
+        # Create Mongodb connection
+        users = mongo.get_collection(name='admin_user')
+        # Execute query to fetch data
+        team = users.find()
+        return render_template('about.html', others=False, team=team)
 
 
 # View for contact
@@ -120,15 +126,16 @@ class SingleEndpoint(MethodView):
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
+        quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch data
         article = articles.find_one({"_id": ObjectId(blog_id)})
-        # Execute query to fetch data
-        today_post = articles.find_one({"likes": {'$gt': 16}})
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] is True])
         # Execute query to fetch data
-        related_posts = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
-        related_post = [item for item in related_posts]
+        related_post = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
+        # Execute query to fetch data
+        inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
+
         # color codes for category
         category_color = {
             "Lifestyle": "primary",
@@ -142,8 +149,7 @@ class SingleEndpoint(MethodView):
 
         return render_template('single.html', article=article,
                                len_comments=len_comments, form=form,
-                               today_post=today_post,
-                               related_post=related_post,
+                               related_post=related_post, inspire=inspiration,
                                others=False, color=category_color)
 
     @staticmethod

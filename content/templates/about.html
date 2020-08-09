@@ -48,46 +48,36 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 col-lg-4 mb-5 text-center">
-          <img src="{{ url_for('static', filename='images/webp/person_1.webp') }}" alt="Image" class="img-fluid w-50 rounded-circle mb-4">
-          <h2 class="mb-3 h5">Kate Hampton</h2>
-          <h4 class="mb-3 h6">CodedName</h4>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum neque nobis eos quam necessitatibus rerum aliquid est tempore, cupiditate iure at voluptatum dolore, voluptates. Debitis accusamus, beatae ipsam excepturi mollitia.</p>
-
-          <p class="mt-5">
-            <a href="#" aria-label="Author's facebook link" class="p-3"><span class="icon-facebook"></span></a>
-            <a href="#" aria-label="Author's instagram link" class="p-3"><span class="icon-instagram"></span></a>
-            <a href="#" aria-label="Author's twitter link" class="p-3"><span class="icon-twitter"></span></a>
-          </p>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5 text-center">
-          <img src="{{ url_for('static', filename='images/webp/randy.webp') }}" alt="Image" class="img-fluid w-50 rounded-circle mb-4">
-          <h2 class="mb-3 h5">Randy Duodu</h2>
-          <h4 class="mb-3 h6">iSOLveIT</h4>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum neque nobis eos quam necessitatibus rerum aliquid est tempore, cupiditate iure at voluptatum dolore, voluptates. Debitis accusamus, beatae ipsam excepturi mollitia.</p>
-
-          <p class="mt-5">
-            <a href="#" aria-label="Author's facebook link" class="p-3"><span class="icon-facebook"></span></a>
-            <a href="#" aria-label="Author's instagram link" class="p-3"><span class="icon-instagram"></span></a>
-            <a href="#" aria-label="Author's twitter link" class="p-3"><span class="icon-twitter"></span></a>
-          </p>
-        </div>
-
-        <div class="col-md-6 col-lg-4 mb-5 text-center">
-          <img src="{{ url_for('static', filename='images/webp/person_3.webp') }}" alt="Image" class="img-fluid w-50 rounded-circle mb-4">
-          <h2 class="mb-3 h5">Kevin Peters</h2>
-          <h4 class="mb-3 h6">CodedName</h4>
-
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum neque nobis eos quam necessitatibus rerum aliquid est tempore, cupiditate iure at voluptatum dolore, voluptates. Debitis accusamus, beatae ipsam excepturi mollitia.</p>
-
-          <p class="mt-5">
-            <a href="#" aria-label="Author's facebook link" class="p-3"><span class="icon-facebook"></span></a>
-            <a href="#" aria-label="Author's instagram link" class="p-3"><span class="icon-instagram"></span></a>
-            <a href="#" aria-label="Author's twitter link" class="p-3"><span class="icon-twitter"></span></a>
-          </p>
-        </div>
+        {% for member in team %}
+          {% if member.get('twitter', None) is None %}
+            <div class="col-md-6 col-lg-4 mb-5 text-center">
+              <img src="{{ url_for('static', filename='images/webp/iceblog_2.webp') }}" alt="Image" class="img-fluid w-50 rounded-circle mb-4">
+              <h2 class="mb-3 h5">{{ member['firstName'] }} {{ member['lastName'] }}</h2>
+              <h4 class="mb-3 h6">{{ member['username'] }}</h4>
+    
+              <p>{{ member['biography'] }}</p>
+    
+              <p class="mt-5">
+                <a href="mailto:{{ member['email'] }}" aria-label="Author's email address" class="p-3"><span class="icon-at"></span></a>
+                <a href="https://instagram.com/{{ member['instagram'] }}" aria-label="Author's instagram link" class="p-3"><span class="icon-instagram"></span></a>
+              </p>
+            </div>
+          {% else %}
+            <div class="col-md-6 col-lg-4 mb-5 text-center">
+              <img src="{{ url_for('static', filename='images/webp/iceblog_2.webp') }}" alt="Image" class="img-fluid w-50 rounded-circle mb-4">
+              <h2 class="mb-3 h5">{{ member['firstName'] }} {{ member['lastName'] }}</h2>
+              <h4 class="mb-3 h6">{{ member['username'] }}</h4>
+    
+              <p>{{ member['biography'] }}</p>
+    
+              <p class="mt-5">
+                <a href="mailto:{{ member['email'] }}" aria-label="Author's email address" class="p-3"><span class="icon-at"></span></a>
+                <a href="https://instagram.com/{{ member['instagram'] }}" aria-label="Author's instagram link" class="p-3"><span class="icon-instagram"></span></a>
+                <a href="https://twitter.com/@{{ member['twitter'] }}" aria-label="Author's twitter link" class="p-3"><span class="icon-twitter"></span></a>
+              </p>
+            </div>
+          {% endif %}
+        {% endfor %}
       </div>
     </div>
   </div>

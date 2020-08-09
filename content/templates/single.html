@@ -132,33 +132,32 @@
           <div class="post-entry-sidebar">
             <blockquote>
               <span class="icon-quote-left"></span> &nbsp; &nbsp;
-              Nam scelerisque est sit amet laoreet pharetra. Vivamus quis ligula sed lacus mattis mollis. 
-              Vivamus facilisis orci rutrum nulla porta dignissim. Fusce fermentum id nibh laoreet volutpat. &nbsp; &nbsp;
+              {{ inspire[0]['text'] }} &nbsp; &nbsp;
               <span class="icon-quote-right"></span>
             </blockquote> 
-            <p class="text-black" style="float: right;"> - Randy Duodu</p>
+            <p class="text-black" style="float: right;"> - {{ inspire[0]['author'] }}</p>
             
           </div>
         </div>
         <!-- END sidebar-box -->
-        <div class="sidebar-box">
-          <h3 class="heading">What is Today?</h3>
-          <div class="post-entry-sidebar">
-            <ul>
-                <li>
-                  <a href="/blogpost/{{ today_post['_id'] }}/" aria-label="Link to blog post">
-                    <img src="{{ url_for('static', filename='images/webp/iceb.webp') }}" alt="Image placeholder" class="mr-4">
-                    <div class="text">
-                      <h4>{{ today_post['title'] }}</h4>
-                      <div class="post-meta">
-                        <span class="mr-2">{{ today_post['datePosted'].strftime('%B %d, %Y') }}</span>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-            </ul>
-          </div>
-        </div>
+<!--        <div class="sidebar-box">-->
+<!--          <h3 class="heading">What is Today?</h3>-->
+<!--          <div class="post-entry-sidebar">-->
+<!--            <ul>-->
+<!--                <li>-->
+<!--                  <a href="/blogpost/{{ today_post['_id'] }}/" aria-label="Link to blog post">-->
+<!--                    <img src="{{ url_for('static', filename='images/webp/iceb.webp') }}" alt="Image placeholder" class="mr-4">-->
+<!--                    <div class="text">-->
+<!--                      <h4>{{ today_post['title'] }}</h4>-->
+<!--                      <div class="post-meta">-->
+<!--                        <span class="mr-2">{{ today_post['datePosted'].strftime('%B %d, %Y') }}</span>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </a>-->
+<!--                </li>-->
+<!--            </ul>-->
+<!--          </div>-->
+<!--        </div>-->
         <!-- END sidebar-box -->
 
 
