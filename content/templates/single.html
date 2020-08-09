@@ -116,7 +116,6 @@
             <img src="{{ url_for('static', filename='images/webp/randy.webp') }}" alt="Image Placeholder" class="img-fluid mb-5">
             <div class="bio-body">
               <h2>{{ article['author'] }}</h2>
-                <!-- // TODO: Add a placeover element that shows the bio of the author -->
               <p><a href="/about#meet-team" aria-label="Read author's biography" class="btn btn-sm rounded px-4 py-2" style="color: #101010;">Read my bio</a></p>
               <p class="social">
                 <a href="#" aria-label="Author's facebook link" class="p-2"><span class="icon-facebook"></span></a>
@@ -139,28 +138,6 @@
             
           </div>
         </div>
-        <!-- END sidebar-box -->
-<!--        <div class="sidebar-box">-->
-<!--          <h3 class="heading">What is Today?</h3>-->
-<!--          <div class="post-entry-sidebar">-->
-<!--            <ul>-->
-<!--                <li>-->
-<!--                  <a href="/blog_post/{{ today_post['_id'] }}/" aria-label="Link to blog post">-->
-<!--                    <img src="{{ url_for('static', filename='images/webp/iceb.webp') }}" alt="Image placeholder" class="mr-4">-->
-<!--                    <div class="text">-->
-<!--                      <h4>{{ today_post['title'] }}</h4>-->
-<!--                      <div class="post-meta">-->
-<!--                        <span class="mr-2">{{ today_post['datePosted'].strftime('%B %d, %Y') }}</span>-->
-<!--                      </div>-->
-<!--                    </div>-->
-<!--                  </a>-->
-<!--                </li>-->
-<!--            </ul>-->
-<!--          </div>-->
-<!--        </div>-->
-        <!-- END sidebar-box -->
-
-
 
         <div class="sidebar-box" id="newsletter">
           <div class="text-center">
