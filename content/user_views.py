@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
-from pymongo import ASCENDING
+from pymongo import ASCENDING, DESCENDING
 from .form import CommentForm
 from .contact import send_email, reply_message
 from datetime import datetime as dt
@@ -20,13 +20,7 @@ class IndexEndpoint(MethodView):
         # Execute query to fetch data
         random_post = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
         # Execute query to fetch data
-        recent_posts = articles.find(
-            {
-                "datePosted": {
-                    "$gt": dt.strptime('2019,12,31', '%Y,%m,%d')
-                }
-            }
-        ).limit(3)
+        recent_posts = articles.find().limit(3).sort('datePosted', DESCENDING)
         # Execute query to fetch data
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
