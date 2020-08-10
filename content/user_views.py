@@ -85,7 +85,7 @@ class CategoryEndpoint(MethodView):
     @staticmethod
     def get():
         offset = int(request.args['page'])
-        limit = 9
+        limit = 6
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         _total_doc = articles.count_documents({})
