@@ -31,14 +31,14 @@
                             {{ form.last_name.label(for="last_name", class_="form-control-label") }}
 
                             {% if form.last_name.errors %}
-                                {{ form.last_name(class_="form-control is-invalid", id="last_name", placeholder="Enter your last name") }}
+                                {{ form.last_name(class_="form-control is-invalid", id="last_name", placeholder="Enter your last name", maxlength="30") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.last_name.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.last_name(class_="form-control", id="last_name", placeholder="Enter your last name") }}
+                                {{ form.last_name(class_="form-control", id="last_name", placeholder="Enter your last name", maxlength="30") }}
                             {% endif %}
                             
                         </div>
@@ -46,14 +46,14 @@
                             {{ form.first_name.label(for="first_name", class_="form-control-label") }}
 
                             {% if form.first_name.errors %}
-                                {{ form.first_name(class_="form-control is-invalid", id="first_name", placeholder="Enter your first name") }}
+                                {{ form.first_name(class_="form-control is-invalid", id="first_name", placeholder="Enter your first name", maxlength="30") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.first_name.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.first_name(class_="form-control", id="first_name", placeholder="Enter your first name") }}
+                                {{ form.first_name(class_="form-control", id="first_name", placeholder="Enter your first name", maxlength="30") }}
                             {% endif %}
                 
                         </div>
@@ -64,14 +64,14 @@
                             {{ form.email.label(for="email", class_="form-control-label") }}
 
                             {% if form.email.errors %}
-                                {{ form.email(class_="form-control is-invalid", id="email", placeholder="userexample@ghmail.com") }}
+                                {{ form.email(class_="form-control is-invalid", id="email", placeholder="userexample@ghmail.com", maxlength="100") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.email.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.email(class_="form-control", id="email", placeholder="userexample@ghmail.com") }}
+                                {{ form.email(class_="form-control", id="email", placeholder="userexample@ghmail.com", maxlength="100") }}
                             {% endif %}
                             
                         </div>
@@ -80,14 +80,14 @@
                             {{ form.username.label(for="username", class_="form-control-label") }}
 
                             {% if form.username.errors %}
-                                {{ form.username(class_="form-control is-invalid", id="username", placeholder="Nickname e.g. DThompson") }}
+                                {{ form.username(class_="form-control is-invalid", id="username", placeholder="Nickname e.g. DThompson", maxlength="40") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.username.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.username(class_="form-control", id="username", placeholder="Nickname e.g. DThompson") }}
+                                {{ form.username(class_="form-control", id="username", placeholder="Nickname e.g. DThompson", maxlength="40") }}
                             {% endif %}
                             
                         </div>
@@ -99,14 +99,14 @@
                             {{ form.password.label(for="password", class_="form-control-label") }}
 
                             {% if form.password.errors %}
-                                {{ form.password(class_="form-control is-invalid", id="password", placeholder="Enter your password") }}
+                                {{ form.password(class_="form-control is-invalid", id="password", placeholder="Enter your password", minlength="8", maxlength="30") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.password.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.password(class_="form-control", id="password", placeholder="Enter your password") }}
+                                {{ form.password(class_="form-control", id="password", placeholder="Enter your password", minlength="8", maxlength="30") }}
                             {% endif %}
                             
                         </div>
@@ -125,14 +125,14 @@
                             {{ form.bio.label(for="biography", class_="form-control-label") }}
 
                             {% if form.bio.errors %}
-                                {{ form.bio(class_="form-control", id="biography",cols="30", rows="10", placeholder="Write your biography here. Keep it simple") }}
+                                {{ form.bio(class_="form-control", id="biography",cols="30", rows="10", placeholder="Write your biography here. Keep it simple", maxlength="300") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.bio.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.bio(class_="form-control", id="biography",cols="30", rows="10", placeholder="Write your biography here. Keep it simple") }}
+                                {{ form.bio(class_="form-control", id="biography",cols="30", rows="10", placeholder="Write your biography here. Keep it simple", maxlength="300") }}
                             {% endif %}
                         </div>
                     </div>

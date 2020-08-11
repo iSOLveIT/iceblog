@@ -113,6 +113,7 @@ class AdminProfileEndpoint(MethodView):
         email = str(request.form['Email'])
         gender = str(request.form['Gender'])
         password = str(request.form['password'])
+        bio = str(request.form['bio'])
 
         _password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
 
@@ -129,7 +130,7 @@ class AdminProfileEndpoint(MethodView):
                 '$set': {
                     'lastName': last_name, 'firstName': first_name, 'password': _password,
                     'email': email, 'gender': gender, 'decryptedPasswd': password,
-                    'dateModified': dt.now()
+                    'biography': bio, 'dateModified': dt.now()
                 }
             },
             upsert=False,

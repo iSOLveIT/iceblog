@@ -31,11 +31,13 @@ class ArticleForm(FlaskForm):
     ])
     category = StringField('Category', [
         validators.DataRequired(),
-        validators.InputRequired(message="Please provide category for article")
+        validators.InputRequired(message="Please provide category for article"),
+        validators.Length(max=15)
     ])
     readTime = StringField('Minutes spent reading', [
         validators.DataRequired(),
-        validators.InputRequired()
+        validators.InputRequired(),
+        validators.Length(max=2)
     ])
 
 

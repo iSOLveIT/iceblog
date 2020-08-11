@@ -86,12 +86,12 @@
 
               <div class="form-group">
                 {{ form.name.label(for="Cname") }}
-                {{ form.name(class_="form-control", id="Cname", placeholder="Firstname or Nickname") }}
+                {{ form.name(class_="form-control", id="Cname", placeholder="Firstname or Nickname", maxlength="20") }}
               </div>
 
               <div class="form-group">
                 {{ form.msg.label(for="message") }}
-                {{ form.msg(class_="form-control", id="message",cols="30", rows="10", placeholder="Write your comment here.") }}
+                {{ form.msg(class_="form-control", id="message",cols="30", rows="10", placeholder="Write your comment here.", maxlength="200") }}
               </div>
               <div class="form-group">
                 <p>Fields with * are required</p>
@@ -146,7 +146,7 @@
               No spam ever. Unsubscribe any time. Curated by the IceBlog 😉.
             </p>
             <form action="" method="POST">
-              <input type="email" name="newsletter" id="news_subscribe" class="form-control mb-2" placeholder="Enter your email address">
+              <input type="email" name="newsletter" id="news_subscribe" class="form-control mb-2" placeholder="Enter your email address" maxlength="60">
               <input type="submit" class="btn" value="Subscribe">
             </form>
           </div>

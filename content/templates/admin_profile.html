@@ -30,19 +30,19 @@
                         <div class="form-group col-md-6">
                             <label for="inputLName">Last Name</label>
                             <input type="text" class="form-control" id="inputLName" name="LName" value="{{ user['lastName'] }}"
-                                maxlength="255" required>
+                                maxlength="30" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputFName">First Name</label>
                             <input type="text" class="form-control" id="inputFName" name="FName" value="{{ user['firstName'] }}"
-                                maxlength="255" required>
+                                maxlength="30" required>
                         </div>
                     </div>
 
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="inputEmail">Email Address</label>
-                            <input type="email" class="form-control" id="inputEmail" name="Email" value="{{ user['email'] }}" maxlength="255">
+                            <input type="email" class="form-control" id="inputEmail" name="Email" value="{{ user['email'] }}" maxlength="100">
                         </div>
 
                         <div class="form-group col-md-6">
@@ -56,6 +56,15 @@
                                     <option selected value="F">Female</option>
                                 {% endif %}
                             </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-12">
+                            <label for="biography">Biography</label>
+                            <textarea name="bio" id="biography" cols="30" rows="10" class="form-control" placeholder="Write your biography here. Keep it simple" maxlength="300" required>
+                                {{ user['biography'] }}
+                            </textarea>
                         </div>
                     </div>
 
@@ -76,8 +85,8 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputPassword">Password</label>
-                            <input type="password" class="form-control" id="inputPassword" name="password" value="{{ user['decryptedPswd'] }}"
-                                maxlength="50" minlength="8">
+                            <input type="password" class="form-control" id="inputPassword" name="password" value="{{ user['decryptedPasswd'] }}"
+                                maxlength="30" minlength="8">
                         </div>
                     </div>
 
