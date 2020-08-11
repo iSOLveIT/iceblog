@@ -33,8 +33,8 @@ def login(client, username, password):
     Returns:
         str -- returns the response received from request made
     """
-    app.config['SECRET_KEY'] = os.urandom(20000)
-    return client.post('/admin', data=dict(
+    app.config['SECRET_KEY'] = os.urandom(2000002923)
+    return client.post('/login', data=dict(
         username=username,
         password=password
     ), follow_redirects=True)

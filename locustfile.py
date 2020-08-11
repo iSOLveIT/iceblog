@@ -26,30 +26,26 @@ class UserBehaviour(TaskSet):
     def category(self):
         """Task that sends get request to the each category page
         """
-        self.client.get("/category/Lifestyle/?page=0")
-        self.client.get("/category/Health/?page=36")
-        self.client.get("/category/Tech/?page=0")
-        self.client.get("/category/Entertainment/?page=0")
-        self.client.get("/category/Sports/?page=0")
+        self.client.get("/category?page=0")
 
     @task
     def single_blog(self):
         """Task that sends get request to the a single blog page
         """
-        self.client.get("/category/Lifestyle/blogpost/5eae68d06779b0be24dc4730/")
+        self.client.get("/blog_post/5eae68d06779b0be24dc4730/")
 
     @task
     def comment(self):
         """Task that sends comments for the a single blog
         """
-        self.client.post("/category/Lifestyle/blogpost/5eae68d06779b0be24dc4730/",
+        self.client.post("/blog_post/5eae68d06779b0be24dc4730/",
                          {"name": "John Doe", "msg": "The article was written well."})
 
     @task
     def newsletter(self):
         """Task that sends newsletter subscription
         """
-        self.client.post("/category/Lifestyle/blogpost/5eae68d06779b0be24dc4730/",
+        self.client.post("/blog_post/5eae68d06779b0be24dc4730/",
                          {"newsletter": "test100@gmail.com"})
 
 
@@ -63,7 +59,7 @@ class AdminTask(TaskSequence):
     def login(self):
         """The first sequence. This task emulates an admin login.
         """
-        self.client.post("/admin", {"username": "USERNAME", "password": "PASSWORD"})
+        self.client.post("/login", {"username": "USERNAME", "password": "PASSWORD"})
 
     @seq_task(2)
     def get_dashboard(self):
@@ -78,14 +74,13 @@ class AdminTask(TaskSequence):
         self.client.post("/admin_dashboard/add_article", {
             "title": "The New Blog",
             "body": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            "link": "https://images.unsplash.com/",
             "category": "Food",
             "readTime": 10
         })
 
     @seq_task(4)
     def delete_article(self):
-        self.client.post("/admin_dashboard/delete/5eae68d06779b0be24dc4730/")
+        self.client.post("/admin_dashboard/delete/4eae68d06779b0be24dc4730/")
 
 
 class WebsiteUser(HttpLocust):

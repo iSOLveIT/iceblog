@@ -25,6 +25,10 @@ def requires_auth(f):
 class AdminLoginEndpoint(MethodView):
     @staticmethod
     def get():
+        # Redirects app to the callback url (i.e. the apps auth0 login link)
+        # After the user has entered login details,
+        # if details are correct an authorized access token is sent to the apps
+        # callback handler by auth0
         return auth0.authorize_redirect(redirect_uri=AUTH0_CALLBACK_URL)
 
 
@@ -93,28 +97,32 @@ class AdminProfileEndpoint(MethodView):
         users = mongo.get_collection(name='admin_user')
         # Get user information stored in session and get only username
         username = session.get(PROFILE_KEY)['username']
-        # Execute query to fetch data
+        # Execute query to fetch only one data
         user_details = users.find_one({'username': username})
         return render_template('admin_profile.html', others=False, user=user_details)
 
     @staticmethod
     @requires_auth
     def post():
+        # Create Mongodb connection
+        users = mongo.get_collection(name='admin_user')
+
+        # Receive inputs sent through forms
         last_name = str(request.form['LName'])
         first_name = str(request.form['FName'])
         email = str(request.form['Email'])
         gender = str(request.form['Gender'])
         password = str(request.form['password'])
-        
+
         _password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
-        # Create Mongodb connection
-        users = mongo.get_collection(name='admin_user')
+
         # Get user information stored in session and get only username
         username = session.get(PROFILE_KEY)['username']
         session[PROFILE_KEY]['lastName'] = last_name
         session[PROFILE_KEY]['firstName'] = first_name
         session[PROFILE_KEY]['gender'] = gender
         session.modified = True
+        # Execute query to find and update data
         users.find_one_and_update(
             {'username': username},
             {
@@ -141,6 +149,10 @@ class AddArticleEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def post():
+        # Create Mongodb connection
+        articles = mongo.get_collection(name='articles')
+
+        # Receive inputs sent through forms
         title = str(request.form['title'])
         body = str(request.form['body'])
         category = str(request.form['category'])
@@ -148,8 +160,7 @@ class AddArticleEndpoint(MethodView):
         author = str(session.get(PROFILE_KEY)['username'])   # Get user info stored in session and get only username
         body_updated = False
 
-        # Create Mongodb connection
-        articles = mongo.get_collection(name='articles')
+        # Execute query to count data
         query = articles.count_documents({})
         category_num = query + 1
         # Execute query to fetch data
@@ -172,7 +183,7 @@ class EditArticleEndpoint(MethodView):
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data
+        # Execute query to fetch only one data
         query = articles.find_one({"_id": ObjectId(blog_id)})
         # Get form
         form = ArticleForm(request.form)
@@ -187,15 +198,18 @@ class EditArticleEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def post(blog_id):
+        # Create Mongodb connection
+        articles = mongo.get_collection(name='articles')
+
+        # Receive inputs sent through forms
         title = str(request.form['title'])
         body = str(request.form['body'])
         body_updated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
         category = str(request.form['category'])
         read_time = str(request.form['readTime'])
         date_updated = dt.now()
-        # Create Mongodb connection
-        articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data
+
+        # Execute query to find and update data
         articles.find_one_and_update(
             {'_id': ObjectId(blog_id)},
             {
@@ -221,7 +235,7 @@ class DeleteArticleEndpoint(MethodView):
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data
+        # Execute query to find and delete data
         articles.find_one_and_delete({"_id": ObjectId(blog_id)})
         flash(f"Article Deleted {emojize(':grinning_face_with_big_eyes:')}", 'success')
 
@@ -235,7 +249,8 @@ class CommentStatusEndpoint(MethodView):
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data
+        # Execute query to fetch data where value for the approved field is false and
+        # it is sorted in a descending order based the date posted
         query = articles.find({
             "comments": {'$elemMatch': {'approved': False}}
         }).sort("{'comments': { '$elemMatch': 'datePosted'}}", DESCENDING)
@@ -248,6 +263,9 @@ class CommentApprovalEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def get():
+        # The clients send json data to the comment approval endpoint asynchronously using jquery, then
+        # we receive the data and then reply the client with a json data
+        # which is rendered in the template file using javascript
         ids = request.args.get('IDs', type=str)
         blog_id, comment_index, _ = ids.split('_')
         approved = request.args.get('approval', None, type=str)
@@ -256,7 +274,7 @@ class CommentApprovalEndpoint(MethodView):
         if approved == 'true':
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
-            # Execute query
+            # Execute query to find and update data
             articles.find_one_and_update(
                 {'_id': ObjectId(blog_id)},
                 {
@@ -264,12 +282,12 @@ class CommentApprovalEndpoint(MethodView):
                     },
                 upsert=False,)     
             status = 200
-            return {'status': status}
+            return {'status': status}   # dict object is transformed into a json object when received by client
 
         else:
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
-            # Execute query
+            # Execute query to find and update data
             articles.find_one_and_update(
                 {'_id': ObjectId(blog_id)},
                 { 
@@ -277,7 +295,7 @@ class CommentApprovalEndpoint(MethodView):
                     },
                 {'multi': True})
             status = 200
-            return {'status': status}
+            return {'status': status}   # dict object is transformed into a json object when received by client
 
 
 # View for registering new users
@@ -291,6 +309,9 @@ class RegisterUserEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def post():
+        # Create Mongodb connection
+        users = mongo.get_collection(name='admin_user')
+
         # Get data entered by user
         last_name = str(request.form['last_name'])
         first_name = str(request.form['first_name'])
@@ -299,11 +320,10 @@ class RegisterUserEndpoint(MethodView):
         gender = str(request.form['gender'])
         password = str(request.form['password'])
         bio = str(request.form['bio'])
-        
+
+        # Encrypt the raw password
         salted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
 
-        # Create Mongodb connection
-        users = mongo.get_collection(name='admin_user')
         # Insert data in mongo database
         users.insert_one({
             'lastName': last_name, 'firstName': first_name, 'password': salted_password,
