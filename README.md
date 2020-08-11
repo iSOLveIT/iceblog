@@ -35,6 +35,7 @@
 * Readers can contact the team through the contact form which sends an email straight into the teams inbox. 
 * The app has an authentication system for the blog writers. 
 * The writers have a nice and simple admin interface that indicates the number of blog a writer has and manages the adding, editing and deleting of blog. 
+* The site has a nice user interface with features like motivational quotes section and comments sections
 
 ## How the app was designed to achieve that?
 * The app was designed with the Python web framework called Flask.
