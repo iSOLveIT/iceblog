@@ -65,7 +65,7 @@
                     <img src="{{ url_for('static', filename='images/webp/comments.webp') }}" alt="Image placeholder">
                   </div>
                   <div class="comment-body">
-                    <h5>{{ comment['name'] }}</h5>
+                    <h6>{{ comment['name'] }}</h6>
                     <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
                     <p>{{ comment['message'] }}</p>
                   </div>
