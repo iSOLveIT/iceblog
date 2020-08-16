@@ -19,7 +19,7 @@
 </div>
 
 <div style="background-color: #f5e9eb;" >
-    <div class="row bg-white mb-5" style="margin-right: 0; margin-left: 0;">
+    <div class="row mb-5" style="margin-right: 0; margin-left: 0;">
         <div class="container">
             <div class="col-md-8 col-md-offset-4">
                 <form method="post" action="">
@@ -40,14 +40,14 @@
                         {{ form.readTime(class_="form-control", id="readtime", placeholder="Time it takes to finish reading the blog post") }}
                     </div>
                     <div class="form-group">
-                     <p>Note: Add the <b>https://</b> protocol to the link if it is not added</p>
+                     <p>Note: Add the <b>https://</b> protocol to the link if it is not added already</p>
                     </div>
                     <div class="form-group">
                         <label for="JPEG">JPEG format</label>
                         <input class="form-control" id="JPEG" name="jpg_cover" placeholder="Link for image in JPEG format" type="url" minlength="10" maxlength="255" required>
                     </div>
                     <div class="form-group">
-                        <label for="WEBP">JPEG format</label>
+                        <label for="WEBP">WEBP format</label>
                         <input class="form-control" id="WEBP" name="webp_cover" placeholder="Link for image in WEBP format" type="url" minlength="10" maxlength="255" required>
                     </div>
                     <div class="form-group">
@@ -55,7 +55,7 @@
                         <input class="form-control" id="ImageAltText" name="image_alt_text" placeholder="Text to describe the image to people with disability" type="text" minlength="10" maxlength="50" required>
                     </div>
 
-                    <input type="submit" class= "btn text-black" style="background-color: #ff69b4; color: #fff; padding: 8px; border-radius: 8px;" value="Submit">
+                    <input type="submit" class= "btn text-black" style="padding: 8px; border-radius: 8px;" value="Submit">
                 </form>
             </div>
         </div>
