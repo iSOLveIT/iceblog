@@ -103,7 +103,7 @@
                   <figure class="author-figure mb-0 mr-3 float-left">
                     <picture>
 	                  <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + post['author'] + '.webp') }}">
-                      <img src="{{ url_for('static', filename='images/jpg/' + post['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid">
+                      <img src="{{ url_for('static', filename='images/jpg/' + post['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid" style="height: 330px;width: 500px;">
                     </picture>
                   </figure>
                   <span class="d-inline-block mt-1">By {{ post['author'] }}</span>
