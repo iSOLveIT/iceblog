@@ -32,9 +32,10 @@ class IndexEndpoint(MethodView):
             "Entertainment": "warning",
             "Health": "success"
         }
+
         return render_template('index.html', random_post=random_post, others=False,
                                recent_posts=recent_posts, catColor=category_color,
-                               inspire=inspiration
+                               inspire=inspiration, year=dt.now().year
                                )
 
     @staticmethod
@@ -57,14 +58,14 @@ class AboutEndpoint(MethodView):
         users = mongo.get_collection(name='admin_user')
         # Execute query to fetch all data in the database
         team = users.find()
-        return render_template('about.html', others=False, team=team)
+        return render_template('about.html', others=False, team=team, year=dt.now().year)
 
 
 # View for contact
 class ContactEndpoint(MethodView):
     @staticmethod
     def get():
-        return render_template('contact.html', others=False)
+        return render_template('contact.html', others=False, year=dt.now().year)
 
     @staticmethod
     def post():
@@ -113,7 +114,7 @@ class CategoryEndpoint(MethodView):
                 "Health": "success"
             }
 
-        return render_template('category.html', posts=posts,
+        return render_template('category.html', posts=posts, year=dt.now().year,
                                _previous=_previous, _next=_next,
                                others=False, color=category_color)
 
@@ -145,7 +146,7 @@ class SingleEndpoint(MethodView):
         # Comment form
         form = CommentForm()
 
-        return render_template('single.html', article=article,
+        return render_template('single.html', article=article, year=dt.now().year,
                                len_comments=len_comments, form=form,
                                related_post=related_post, inspire=inspiration,
                                others=False, color=category_color)
