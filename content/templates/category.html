@@ -4,7 +4,7 @@
 
 {% block content %}
 
-  <div class="py-5 bg-light">
+  <div class="py-5">
     <div class="container">
       <div class="row">
         <div class="col-md-6">
@@ -15,20 +15,29 @@
     </div>
   </div>
 
-  <div class="site-section bg-white">
+  <div class="site-section" style="background-color: #f5e9eb;">
     <div class="container">
       <div class="row">
         {% for post in posts %}
           <div class="col-lg-4 mb-4">
             <div class="entry2">
-              <a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog post link"><img src="{{ url_for('static', filename='images/webp/iceblog_2.webp') }}" alt="Image" class="img-fluid rounded"></a>
+              <a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog post link">
+                <picture>
+	              <source type="image/webp" srcset="{{ post['webp_cover'] }}">
+	              <img src="{{ post['jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded">
+                </picture>
+              </a>
               <div class="excerpt">
-                <span class="post-category text-white bg-{{ color.get(post['category'], 'secondary') }} mb-3">{{ post['category'] }}</span>
+                <span class="post-category text-white bg-{{ color.get(post['category'], 'iceblog') }} mb-3">{{ post['category'] }}</span>
 
                 <h2><a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog post link">{{ post['title'] }}</a></h2>
                 <div class="post-meta align-items-center text-left clearfix">
-                  <figure class="author-figure mb-0 mr-3 float-left"><img src="{{ url_for('static', filename='images/webp/' + post['author'] + '.webp') }}" alt="Image"
-                      class="img-fluid"></figure>
+                  <figure class="author-figure mb-0 mr-3 float-left">
+                    <picture>
+	                  <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + post['author'] + '.webp') }}">
+                      <img src="{{ url_for('static', filename='images/jpg/' + post['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid">
+                    </picture>
+                  </figure>
                   <span class="d-inline-block mt-1">By {{ post['author'] }}</span>
                   <span>&nbsp;-&nbsp; {{ post['datePosted'].strftime('%B %d, %Y') }}</span>
                 </div>
@@ -41,17 +50,16 @@
         {% endfor %}
       </div>
 
-      <div class="row text-center pt-5 border-top">
+      <hr style="border-top: 1px dotted #8a334b;">
+
+      <div class="row text-center pt-5">
         <div class="col-md-12">
           <div class="custom-pagination">
             <a href="/category?page={{_previous}}" aria-label="Previous button"><span class="icon-skip_previous"></span></a>
             <span>Previous | Next</span>
-            <a href="/category?page={{_next}}" aria-label="Next button"><span class="icon-skip_next"></span></a></a>
+            <a href="/category?page={{_next}}" aria-label="Next button"><span class="icon-skip_next"></span></a>
           </div>
         </div>
-        <!-- <div class="col-md-12 mt-4" style="height: 250px; background-color:#ff69b4;">
-          <p class="text-center" style="font-weight: 600;">Height = 250px</p>
-        </div> -->
       </div>
     </div>
   </div>

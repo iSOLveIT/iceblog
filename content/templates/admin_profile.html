@@ -3,7 +3,7 @@
 {% block title %}User Profile | IceBlog{% endblock %}
 
 {% block content %}
-<div class="py-5 bg-light mb-4">
+<div class="py-5 mb-4">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="bg-light">
+<div style="background-color: #f5e9eb;">
     <div class="row bg-white mb-5" style="margin-right: 0; margin-left: 0;">
         <div class="container">
             <div class="col-md-8 col-md-offset-4">
@@ -80,13 +80,12 @@
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="inputID">Username</label>
-                            <input type="numeric" class="form-control" id="inputID" value="{{ user['username'] }}" readonly
-                                disabled required>
+                            <input type="text" class="form-control" id="inputID" value="{{ user['username'] }}" readonly
+                                disabled>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputPassword">Password</label>
-                            <input type="password" class="form-control" id="inputPassword" name="password" value="{{ user['decryptedPasswd'] }}"
-                                maxlength="30" minlength="8">
+                            <input type="password" class="form-control" id="inputPassword" name="password" value="{{ user['decryptedPasswd'] }}" readonly disabled>
                         </div>
                     </div>
 

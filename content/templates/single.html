@@ -9,11 +9,14 @@
     <div class="row same-height justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="post-entry text-center">
-          <span class="post-category text-white bg-{{ color.get(article['category'], 'secondary') }} mb-3">{{ article['category'] }}</span>
+          <span class="post-category text-white bg-{{ color.get(article['category'], 'iceblog') }} mb-3">{{ article['category'] }}</span>
           <h2 class="mb-4 text-black text-uppercase">{{ article['title'] }}</h2>
           <div class="post-meta align-items-center text-center">
             <figure class="author-figure mb-0 mr-3 d-inline-block">
-              <img src="{{ url_for('static', filename='images/webp/' + article['author'] + '.webp') }}" alt="Image" class="img-fluid">
+              <picture>
+                <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + article['author'] + '.webp') }}">
+                <img src="{{ url_for('static', filename='images/jpg/' + article['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid">
+              </picture>
             </figure>
             <span class="d-inline-block mt-1 text-black">By {{ article['author'] }}</span>
             {% if article['bodyUpdated'] == True %}
@@ -74,30 +77,35 @@
             {% endfor %}
             
           </ul>
+          <button id="showComments" class="view">Click to View All Comments &downarrow;</button>
+
           <!-- END comment-list -->
 
           <div class="comment-form-wrap pt-5 mb-4">
             <h4>Leave a comment </h4>
             <p class="mb-5" style="font-size: large;">
-              Comments are reviewed before they are published.
+              We review comments before we publish them.
               Be cool. Be helpful. Be polite. Let's all have fun. 
             </p>
-            <form action="" method="POST" class="p-5 bg-light">
+            <form class="p-5 bg-light">
+               <div class="form-group" id="comment-alert" style="display:none;">
+                 <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
+               </div>
 
               <div class="form-group">
-                {{ form.name.label(for="Cname") }}
-                {{ form.name(class_="form-control", id="Cname", placeholder="Firstname or Nickname", maxlength="20") }}
+                {{ form.comment_name.label(for="comment_name") }}
+                {{ form.comment_name(class_="form-control", id="comment_name", placeholder="Firstname or Nickname", maxlength="20") }}
               </div>
 
               <div class="form-group">
-                {{ form.msg.label(for="message") }}
-                {{ form.msg(class_="form-control", id="message",cols="30", rows="10", placeholder="Write your comment here.", maxlength="200") }}
+                {{ form.comment_msg.label(for="comment_msg") }}
+                {{ form.comment_msg(class_="form-control", id="comment_msg",cols="30", rows="10", placeholder="Write your comment here.", maxlength="200") }}
               </div>
               <div class="form-group">
                 <p>Fields with * are required</p>
               </div>
               <div class="form-group">
-                <input type="submit" value="Post Comment" class="btn">
+                <input type="submit" id="btnPostComment" name="{{ article['_id'] }}" value="Post Comment" class="btn">
               </div>
 
             </form>
@@ -113,7 +121,11 @@
         <!-- END sidebar-box -->
         <div class="sidebar-box">
           <div class="bio text-center">
-            <img src="{{ url_for('static', filename='images/webp/' + article['author'] + '.webp') }}" alt="Image Placeholder" class="img-fluid mb-5">
+            <picture>
+              <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + article['author'] + '.webp') }}">
+              <img src="{{ url_for('static', filename='images/jpg/' + article['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid mb-5">
+            </picture>
+
             <div class="bio-body">
               <h2>{{ article['author'] }}</h2>
               <p><a href="/about#meet-team" aria-label="Read author's biography" class="btn btn-sm rounded px-4 py-2" style="color: #101010;">Read my bio</a></p>
@@ -136,18 +148,19 @@
         </div>
 
         <div class="sidebar-box" id="newsletter">
+          <div class="form-group" id="newsletter-alert" style="display:none;">
+            <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
+          </div>
+
           <div class="text-center">
-            <div class="col">
-                {% include 'includes/_message.html'%}
-              </div>
             <h2><label for="news_subscribe">Subscribe to our newsletter</label></h2>
             <p class="mb-5">
               Get informative blogs delivered to your inbox every week. 
               No spam ever. Unsubscribe any time. Curated by the IceBlog 😉.
             </p>
-            <form action="" method="POST">
-              <input type="email" name="newsletter" id="news_subscribe" class="form-control mb-2" placeholder="Enter your email address" maxlength="60">
-              <input type="submit" class="btn" value="Subscribe">
+            <form>
+              <input type="email" id="news_subscribe" class="form-control mb-2" placeholder="Enter your email address" maxlength="60" required>
+              <input type="submit" class="btn" id="btnSubscribe" name="{{ article['_id'] }}" value="Subscribe">
             </form>
           </div>
         </div>
@@ -160,7 +173,7 @@
   </div>
   </section>
 
-  <div class="site-section bg-light">
+  <div class="site-section" style="background-color: #f5e9eb;">
     <div class="container">
 
       <div class="row mb-5">
@@ -173,8 +186,8 @@
 
         <div class="col-md-5 order-md-2">
           <a href="/blog_post/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" class="hentry img-1 h-100 gradient"
-            style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
-            <span class="post-category text-black bg-{{ color.get(related_post[0]['category'], 'secondary') }}">
+            style="background-image: url('{{ related_post[0]['webp_cover'] }}');">
+            <span class="post-category text-white bg-{{ color.get(related_post[0]['category'], 'iceblog') }}">
               {{ related_post[0]['category'] }}
             </span>
             <div class="text">
@@ -187,8 +200,8 @@
         <div class="col-md-7">
 
           <a href="/blog_post/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" class="hentry img-2 v-height mb30 gradient"
-            style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
-            <span class="post-category text-black bg-{{ color.get(related_post[1]['category'], 'secondary') }}">
+            style="background-image: url('{{ related_post[1]['webp_cover'] }}');">
+            <span class="post-category text-white bg-{{ color.get(related_post[1]['category'], 'iceblog') }}">
               {{ related_post[1]['category'] }}
             </span>
             <div class="text text-sm">
@@ -199,8 +212,8 @@
 
           <div class="two-col d-block d-md-flex">
             <a href="/blog_post/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 gradient"
-              style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
-              <span class="post-category text-black bg-{{ color.get(related_post[2]['category'], 'secondary') }}">
+              style="background-image: url('{{ related_post[2]['webp_cover'] }}');">
+              <span class="post-category text-white bg-{{ color.get(related_post[2]['category'], 'iceblog') }}">
                 {{ related_post[2]['category'] }}
               </span>
               <div class="text text-sm">
@@ -209,8 +222,8 @@
               </div>
             </a>
             <a href="/blog_post/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 ml-auto gradient"
-              style="background-image: url('{{ url_for('static', filename='images/webp/iceblog_2.webp') }}');">
-              <span class="post-category text-black bg-{{ color.get(related_post[3]['category'], 'secondary') }}">
+              style="background-image: url('{{ related_post[3]['webp_cover'] }}');">
+              <span class="post-category text-white bg-{{ color.get(related_post[3]['category'], 'iceblog') }}">
                 {{ related_post[3]['category'] }}
               </span>
               <div class="text text-sm">
@@ -225,6 +238,5 @@
 
     </div>
   </div>
-
 
 {% endblock %}

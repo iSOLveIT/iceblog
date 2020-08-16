@@ -6,12 +6,12 @@ from wtforms.fields.html5 import EmailField
 
 # Form for Comments
 class CommentForm(FlaskForm):
-    name = StringField('Name *', [
+    comment_name = StringField('Name *', [
         validators.InputRequired(),
         validators.DataRequired(),
         validators.Length(min=5, max=30)
     ])
-    msg = TextAreaField('Message *', [
+    comment_msg = TextAreaField('Message *', [
         validators.InputRequired(),
         validators.DataRequired(),
         validators.Length(min=1, max=255)
@@ -21,6 +21,7 @@ class CommentForm(FlaskForm):
 # Form for Blog Post
 class ArticleForm(FlaskForm):
     title = StringField('Title', [
+        validators.InputRequired(),
         validators.Length(max=225),
         validators.DataRequired()
     ])
@@ -56,7 +57,6 @@ class SignupForm(FlaskForm):
     ])
 
     email = EmailField('Email Address', [
-        validators.InputRequired(),
         validators.DataRequired(),
         validators.Length(min=20, max=100)
     ])
@@ -70,7 +70,7 @@ class SignupForm(FlaskForm):
     password = PasswordField('Password *', [
         validators.InputRequired(),
         validators.DataRequired(),
-        validators.Length(min=8, max=30)
+        validators.Length(min=12)
     ])
     bio = TextAreaField('Biography *', [
         validators.InputRequired(),

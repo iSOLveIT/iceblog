@@ -50,18 +50,7 @@
     {% endblock %}
 
     {% if session.logged_in %}
-    <div class="site-footer" style="padding: .5em 0;">
-      <div class="container">
-        <div class="row">
-          <div class="col-12 text-center">
-            <p style="margin-bottom: 0;">
-              Copyright &copy;
-              <b id="footer_date"></b> All rights reserved | IceBlog
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <div class="site-footer" style="display:none;"></div>
     {% else %}
     <div class="site-footer">
       <div class="container">
@@ -79,11 +68,12 @@
             <div>
               <h3 class="footer-heading mb-4">Connect With Us</h3>
               <p>
-                <a href="https://instagram.com/ice_blog_gh" aria-label="IceBlog's instagram link"><span class="icon-instagram p-2"  style="font-size:larger"></span></a>
+                <a href="https://instagram.com/ice_blog_gh" aria-label="IceBlog's instagram link"><span class="icon-instagram p-2"  style="font-size:larger"></span>ice_blog_gh</a>
               </p>
             </div>
           </div>
         </div>
+        <hr style="border-top: 1px dotted rgb(245,233,235);">
         <div class="row">
           <div class="col-12 text-center">
             <p>

@@ -40,12 +40,12 @@ class IndexEndpoint(MethodView):
     @staticmethod
     def post():
         # Create Mongodb connection
-        db = mongo.get_collection(name='newsletter_subscribers')
+        # db = mongo.get_collection(name='newsletter_subscribers')
         # Receive the email entered by the user in the subscription section at the home page
-        e_mail = request.form['newsletter']
+        e_mail = str(request.form['newsletter'])
         # Execute query to insert data
-        db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
-        flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        # db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+        flash(f"Thanks for subscribing {emojize(':grinning_face_with_big_eyes:')}", 'info')
         return redirect(url_for('index', _anchor='newsletter'))
 
 
@@ -69,17 +69,17 @@ class ContactEndpoint(MethodView):
     @staticmethod
     def post():
         # Receive data inputs from contact form
-        full_name = request.form.get('user_full_name', 'User', type=str)
-        email = request.form.get('user_email', 'example@gmail.com', type=str)
-        subject = request.form.get('user_subject', 'Subject', type=str)
-        message = request.form.get('message', 'I love IceBlog', type=str)
+        full_name = str(request.form.get('user_full_name', None, type=str))
+        email = str(request.form.get('user_email', None, type=str))
+        subject = str(request.form.get('user_subject', None, type=str))
+        message = str(request.form.get('message', None, type=str))
 
         # Send message to IceBlog team
         send_email(_name=full_name, _subject=subject, _email=email, _body=message)
         # Reply user with message received from IceBlog team
         reply_message(_email=email, _sender=full_name)
         # Send a notification on the contact page for the user
-        flash(f"Your message is received {emojize(':grinning_face_with_big_eyes:')}", 'success')
+        flash(f"Your message has been received {emojize(':grinning_face_with_big_eyes:')}", 'info')
         return redirect(url_for('contact', _anchor='flash'))
 
 
@@ -154,14 +154,19 @@ class SingleEndpoint(MethodView):
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        db = mongo.get_collection(name='newsletter_subscribers')
+        # db = mongo.get_collection(name='newsletter_subscribers')
 
         # On a single blog post page, we have the comment form and the subscription form.
+        # The client makes a post requests to the single blog endpoint asynchronously using jquery.
+
         # In order to differentiate which form data we are receiving, we check with an if-else
-        # clause to identify if the form data sent has a certain input or not
-        if 'name' and 'msg' in request.form:
-            name = request.form['name']
-            message = request.form['msg']
+        # clause to identify if the form data sent has a certain input or not.
+
+        # We receive the data and then reply the client with a json data
+        # which is rendered in the template file using javascript
+        if 'comment_name' and 'comment_msg' in request.form:
+            comment_name = str(request.form['comment_name'])
+            comment_msg = str(request.form['comment_msg'])
             date_posted = dt.now()
             approval = False
             comment_id = random_string()
@@ -172,23 +177,26 @@ class SingleEndpoint(MethodView):
                 {
                     "$push": {
                         "comments": {
-                            "name": name,
+                            "name": comment_name,
                             "datePosted": date_posted,
-                            "message": message,
+                            "message": comment_msg,
                             "approved": approval,
                             "commentId": comment_id
                         }
                     }
                 }
             )
-            return redirect(url_for('blog_post', blog_id=blog_id, _anchor='comment-section'))
+            alert = f"Comment sent. The team will now review it. {emojize(':grinning_face_with_big_eyes:')}"
+            return {"result": alert}
 
-        elif 'newsletter' in request.form:
-            e_mail = request.form['newsletter']
+        elif 'subscriber_email' in request.form:
+            e_mail = str(request.form['subscriber_email'])
             # Execute query to insert data
-            db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
-            flash(f"Email received {emojize(':grinning_face_with_big_eyes:')}", 'success')
-            return redirect(url_for('blog_post', blog_id=blog_id, _anchor='newsletter'))
+            # db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
+            alert = f"Thanks for subscribing {emojize(':grinning_face_with_big_eyes:')}"
+            return {"result": alert}
+        else:
+            return redirect(url_for('blog_post', blog_id=blog_id))
 
 
 # View for likes
@@ -198,11 +206,11 @@ class LikesEndpoint(MethodView):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
 
-        # The clients send json data to the likes endpoint asynchronously using jquery, then
+        # The client sends json data to the likes endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        blog_id = request.args.get('blog_id', type=str)
-        likes = request.args.get('no_likes', 0, type=int)
+        blog_id = str(request.args.get('blog_id', type=str))
+        likes = str(request.args.get('no_likes', 0, type=int))
         likes = int(likes)
 
         # Execute query to update data

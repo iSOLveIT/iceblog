@@ -3,7 +3,7 @@
 {% block title %}Sign Up | IceBlog{% endblock %}
 
 {% block content %}
-<div class="py-5 bg-light mb-4">
+<div class="py-5 mb-4">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -18,7 +18,7 @@
     </div>
 </div>
 
-<div class="bg-light">
+<div style="background-color: #f5e9eb;">
     <div class="row bg-white mb-5" style="margin-right: 0; margin-left: 0;">
         <div class="container">
             <div class="col-md-8 col-md-offset-4">
@@ -99,14 +99,14 @@
                             {{ form.password.label(for="password", class_="form-control-label") }}
 
                             {% if form.password.errors %}
-                                {{ form.password(class_="form-control is-invalid", id="password", placeholder="Enter your password", minlength="8", maxlength="30") }}
+                                {{ form.password(class_="form-control is-invalid", id="password", placeholder="Enter your password", minlength="12") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.password.errors %}
                                         <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                             {% else %}
-                                {{ form.password(class_="form-control", id="password", placeholder="Enter your password", minlength="8", maxlength="30") }}
+                                {{ form.password(class_="form-control", id="password", placeholder="Enter your password", minlength="12") }}
                             {% endif %}
                             
                         </div>

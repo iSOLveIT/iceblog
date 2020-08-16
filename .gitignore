@@ -5,12 +5,6 @@
 .idea/
 test_run.py
 locustfile.py
-content/admin_views.py
-content/templates/admin.html
-content/templates/admin_profile.html
-content/templates/add_article.html
-content/templates/comments.html
-content/templates/edit_article.html
 content/templates/login.html
 .pytest_cache
 *pytest_cache

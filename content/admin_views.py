@@ -47,11 +47,11 @@ class CallbackHandler(MethodView):
         session['logged_in'] = True
         session[PROFILE_KEY] = {
             'user_id': str(user_info['sub']).split('|')[1],
-            'username': user_info['nickname'],
-            'firstName': user_info['name'].split(' ')[0],
-            'lastName': user_info['name'].split(' ')[1],
-            'gender': user_info['gender'],
-            'picture': user_info['picture']
+            'username': str(user_info['nickname']),
+            'firstName': str(user_info['name'].split(' ')[0]),
+            'lastName': str(user_info['name'].split(' ')[1]),
+            'gender': str(user_info['gender']),
+            'picture': str(user_info['picture'])
         }
         
         flash(f"Logged in successfully {emojize(':grinning_face_with_big_eyes:')}", 'success')
@@ -63,15 +63,12 @@ class AdminDashboardEndpoint(MethodView):
     @staticmethod
     @requires_auth
     def get():
-        # Get user information stored in session
-        user_info = session.get(PROFILE_KEY)
-
-        # Get username from user info
-        author = user_info['username']
-
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-
+        # Get user information stored in session
+        user_info = session.get(PROFILE_KEY)
+        # Get username from user info
+        author = user_info['username']
         # Execute query to fetch data from database
         posts = articles.find({"author": author}).sort('datePosted', DESCENDING)
         return render_template('admin.html', others=False, posts=posts, user_info=user_info)
@@ -115,7 +112,7 @@ class AdminProfileEndpoint(MethodView):
         password = str(request.form['password'])
         bio = str(request.form['bio'])
 
-        _password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
+        encrypted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
 
         # Get user information stored in session and get only username
         username = session.get(PROFILE_KEY)['username']
@@ -128,7 +125,7 @@ class AdminProfileEndpoint(MethodView):
             {'username': username},
             {
                 '$set': {
-                    'lastName': last_name, 'firstName': first_name, 'password': _password,
+                    'lastName': last_name, 'firstName': first_name, 'password': encrypted_password,
                     'email': email, 'gender': gender, 'decryptedPasswd': password,
                     'biography': bio, 'dateModified': dt.now()
                 }
@@ -159,7 +156,17 @@ class AddArticleEndpoint(MethodView):
         category = str(request.form['category'])
         read_time = str(request.form['readTime'])
         author = str(session.get(PROFILE_KEY)['username'])   # Get user info stored in session and get only username
+        image_in_jpg_received = str(request.form['jpg_cover'])
+        image_in_webp_received = str(request.form['webp_cover'])
+        image_alt_text = str(request.form['image_alt_text'])
         body_updated = False
+
+        # Replace some parts of the string (links for the image)
+        # This will help us render the image on our website
+        image_in_jpg = image_in_jpg_received.replace(
+            'file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '')
+        image_in_webp = image_in_webp_received.replace(
+            'file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '')
 
         # Execute query to count data
         query = articles.count_documents({})
@@ -169,7 +176,9 @@ class AddArticleEndpoint(MethodView):
             {
                 "title": title, "body": body, "bodyUpdated": body_updated, "author": author,
                 "datePosted": dt.now(), "dateUpdated": dt.now(), "likes": 0, "comments": [],
-                "category": category, "category_num": category_num, "readTime": read_time
+                "category": category, "category_num": category_num, "readTime": read_time,
+                "jpg_cover": image_in_jpg, "webp_cover": image_in_webp,
+                "imageAltText": image_alt_text
             }
         )
 
@@ -189,10 +198,10 @@ class EditArticleEndpoint(MethodView):
         # Get form
         form = ArticleForm(request.form)
         # populate form fields
-        form.title.data = query["title"]
-        form.body.data = query["body"]
-        form.category.data = query["category"]
-        form.readTime.data = query["readTime"]
+        form.title.data = str(query["title"])
+        form.body.data = str(query["body"])
+        form.category.data = str(query["category"])
+        form.readTime.data = str(query["readTime"])
 
         return render_template('edit_article.html', others=False, form=form)
 
@@ -236,6 +245,7 @@ class DeleteArticleEndpoint(MethodView):
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
+        blog_id = str(blog_id)
         # Execute query to find and delete data
         articles.find_one_and_delete({"_id": ObjectId(blog_id)})
         flash(f"Article Deleted {emojize(':grinning_face_with_big_eyes:')}", 'success')
@@ -267,10 +277,10 @@ class CommentApprovalEndpoint(MethodView):
         # The clients send json data to the comment approval endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        ids = request.args.get('IDs', type=str)
+        ids = str(request.args.get('IDs', type=str))
         blog_id, comment_index, _ = ids.split('_')
-        approved = request.args.get('approval', None, type=str)
-        comment_id = request.args.get('commentID', None, type=str)
+        approved = str(request.args.get('approval', None, type=str))
+        comment_id = str(request.args.get('commentID', None, type=str))
            
         if approved == 'true':
             # Create Mongodb connection
@@ -316,18 +326,18 @@ class RegisterUserEndpoint(MethodView):
         # Get data entered by user
         last_name = str(request.form['last_name'])
         first_name = str(request.form['first_name'])
-        user_email = str(request.form.get('email', None, type=str))
+        user_email = str(request.form.get('email', None, type=str))     # Email is optional
         username = str(request.form['username'])
         gender = str(request.form['gender'])
         password = str(request.form['password'])
         bio = str(request.form['bio'])
 
         # Encrypt the raw password
-        salted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
+        encrypted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
 
         # Insert data in mongo database
         users.insert_one({
-            'lastName': last_name, 'firstName': first_name, 'password': salted_password,
+            'lastName': last_name, 'firstName': first_name, 'password': encrypted_password,
             'biography': bio, 'email': user_email, 'username': username, 'gender': gender,
             'decryptedPasswd': password, 'dateCreated': dt.now(), 'dateModified': dt.now()
         })
