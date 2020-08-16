@@ -92,7 +92,7 @@
               <a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog Post link" >
                 <picture>
 	              <source type="image/webp" srcset="{{ post['webp_cover'] }}">
-	              <img src="{{ post['jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded">
+	              <img src="{{ post['jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded" style="height: 330px !important;width: 500px !important;">
                 </picture>
               </a>
               <div class="excerpt">
@@ -103,7 +103,7 @@
                   <figure class="author-figure mb-0 mr-3 float-left">
                     <picture>
 	                  <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + post['author'] + '.webp') }}">
-                      <img src="{{ url_for('static', filename='images/jpg/' + post['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid" style="height: 330px;width: 500px;">
+                      <img src="{{ url_for('static', filename='images/jpg/' + post['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid">
                     </picture>
                   </figure>
                   <span class="d-inline-block mt-1">By {{ post['author'] }}</span>
