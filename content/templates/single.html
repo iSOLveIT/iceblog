@@ -88,9 +88,6 @@
               Be cool. Be helpful. Be polite. Let's all have fun. 
             </p>
             <form class="p-5 bg-light">
-               <div class="form-group" id="comment-alert" style="display:none;">
-                 <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
-               </div>
 
               <div class="form-group">
                 {{ form.comment_name.label(for="comment_name") }}
@@ -104,6 +101,11 @@
               <div class="form-group">
                 <p>Fields with * are required</p>
               </div>
+
+              <div class="form-group" id="comment-alert" style="display:none;">
+                 <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
+               </div>
+
               <div class="form-group">
                 <input type="submit" id="btnPostComment" name="{{ article['_id'] }}" value="Post Comment" class="btn">
               </div>
@@ -148,9 +150,6 @@
         </div>
 
         <div class="sidebar-box" id="newsletter">
-          <div class="form-group" id="newsletter-alert" style="display:none;">
-            <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
-          </div>
 
           <div class="text-center">
             <h2><label for="news_subscribe">Subscribe to our newsletter</label></h2>
@@ -158,6 +157,9 @@
               Get informative blogs delivered to your inbox every week. 
               No spam ever. Unsubscribe any time. Curated by the IceBlog 😉.
             </p>
+            <div class="form-group" id="newsletter-alert" style="display:none;">
+              <div class="alert alert-info text-center" style="font-size: 12pt;" role="alert"></div>
+            </div>
             <form>
               <input type="email" id="news_subscribe" class="form-control mb-2" placeholder="Enter your email address" maxlength="60" required>
               <input type="submit" class="btn" id="btnSubscribe" name="{{ article['_id'] }}" value="Subscribe">
@@ -185,8 +187,9 @@
       <div class="row align-items-stretch retro-layout">
 
         <div class="col-md-5 order-md-2">
-          <a href="/blog_post/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" class="hentry img-1 h-100 gradient"
-            style="background-image: url('{{ related_post[0]['webp_cover'] }}');">
+          <a href="/blog_post/{{ related_post[0]['_id'] }}/" aria-label="Link to blog post" id="related_1" class="hentry img-1 h-100 gradient"
+          style="--webp-related-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[0]['id_webp_cover'] }});
+--jpg-related-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[0]['id_jpg_cover'] }});">
             <span class="post-category text-white bg-{{ color.get(related_post[0]['category'], 'iceblog') }}">
               {{ related_post[0]['category'] }}
             </span>
@@ -199,8 +202,9 @@
 
         <div class="col-md-7">
 
-          <a href="/blog_post/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" class="hentry img-2 v-height mb30 gradient"
-            style="background-image: url('{{ related_post[1]['webp_cover'] }}');">
+          <a href="/blog_post/{{ related_post[1]['_id'] }}/" aria-label="Link to blog post" id="related_2" class="hentry img-2 v-height mb30 gradient"
+          style="--webp-related-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[1]['id_webp_cover'] }});
+--jpg-related-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[1]['id_jpg_cover'] }});">
             <span class="post-category text-white bg-{{ color.get(related_post[1]['category'], 'iceblog') }}">
               {{ related_post[1]['category'] }}
             </span>
@@ -211,8 +215,9 @@
           </a>
 
           <div class="two-col d-block d-md-flex">
-            <a href="/blog_post/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 gradient"
-              style="background-image: url('{{ related_post[2]['webp_cover'] }}');">
+            <a href="/blog_post/{{ related_post[2]['_id'] }}/" aria-label="Link to blog post" id="related_3" class="hentry v-height img-2 gradient"
+            style="--webp-related-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[2]['id_webp_cover'] }});
+--jpg-related-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[2]['id_jpg_cover'] }});">
               <span class="post-category text-white bg-{{ color.get(related_post[2]['category'], 'iceblog') }}">
                 {{ related_post[2]['category'] }}
               </span>
@@ -221,8 +226,9 @@
                 <span>{{ related_post[2]['datePosted'].strftime('%B %d, %Y') }}</span>
               </div>
             </a>
-            <a href="/blog_post/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" class="hentry v-height img-2 ml-auto gradient"
-              style="background-image: url('{{ related_post[3]['webp_cover'] }}');">
+            <a href="/blog_post/{{ related_post[3]['_id'] }}/" aria-label="Link to blog post" id="related_4" class="hentry v-height img-2 ml-auto gradient"
+            style="--webp-related-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[3]['id_webp_cover'] }});
+--jpg-related-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[3]['id_jpg_cover'] }});">
               <span class="post-category text-white bg-{{ color.get(related_post[3]['category'], 'iceblog') }}">
                 {{ related_post[3]['category'] }}
               </span>

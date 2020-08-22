@@ -34,7 +34,7 @@ class IndexEndpoint(MethodView):
         }
 
         return render_template('index.html', random_post=random_post, others=False,
-                               recent_posts=recent_posts, catColor=category_color,
+                               recent_posts=recent_posts, category_color=category_color,
                                inspire=inspiration, year=dt.now().year
                                )
 
@@ -56,8 +56,13 @@ class AboutEndpoint(MethodView):
     def get():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
-        # Execute query to fetch all data in the database
-        team = users.find()
+        # Execute query to fetch all data but exclude some fields
+        team = users.find({}, {
+            "password": 0, "decryptedPasswd": 0,
+            "dateCreated": 0, "dateModified": 0,
+            "gender": 0, "_id": 0
+        })  # Return collection but excludes the fields stated above
+        # 0 = exclude specified field and 1 = include specified field
         return render_template('about.html', others=False, team=team, year=dt.now().year)
 
 
@@ -166,8 +171,8 @@ class SingleEndpoint(MethodView):
         # We receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
         if 'comment_name' and 'comment_msg' in request.form:
-            comment_name = str(request.form['comment_name'])
-            comment_msg = str(request.form['comment_msg'])
+            comment_name = str(request.form['comment_name']).capitalize()
+            comment_msg = str(request.form['comment_msg']).capitalize()
             date_posted = dt.now()
             approval = False
             comment_id = random_string()
@@ -187,7 +192,7 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            alert = f"Comment sent. The team will now review it. {emojize(':grinning_face_with_big_eyes:')}"
+            alert = f"Comment received. The team will review before publishing. {emojize(':grinning_face_with_big_eyes:')}"
             return {"result": alert}
 
         elif 'subscriber_email' in request.form:

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from pymongo import MongoClient
 from authlib.integrations.flask_client import OAuth
 from flask_ckeditor import CKEditor
@@ -19,7 +19,7 @@ PERMANENT_SESSION_LIFETIME = 36000  # Expiration time for session (10 hours)
 # Config and Instantiate Mongo
 user = str(os.environ.get('MONGODB_USERNAME'))
 passwd = str(os.environ.get('MONGODB_PASSWORD'))
-uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"   # Mongo connection string
+uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"    # Mongo connection str
 client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
 
 mongo = client.get_database(name=str(os.environ.get('MONGO_DBNAME')))
@@ -46,6 +46,8 @@ auth0 = oauth.register(
         'scope': 'openid profile email',
     },
 )
+os.environ['MAIL_USERNAME'] = 'iceblog100@gmail.com'
+os.environ['MAIL_PASSWORD'] = 'Hilda001'
 
 # Config Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
@@ -67,14 +69,6 @@ app.config['CKEDITOR_PKG_TYPE'] = 'full'
 app.config['CKEDITOR_SERVE_LOCAL'] = True
 ckeditor = CKEditor(app)
 
-# Configure Flask Compress
-# Types of files to compress
-app.config['COMPRESS_MIMETYPES'] = ['text/html', 'text/css', 'text/javascript', 'application/javascript',
-                                    'application/json', 'application/vnd.ms-fontobject',
-                                    'image/svg+xml', 'font/ttf', 'font/woff', 'font/woff2']
-
-Compress(app)  # Instantiate Flask Compress into app
-
 
 # Security measures
 @app.after_request
@@ -88,15 +82,29 @@ def apply_headers(response):
          * X-Frame-Options:
          * Referrer-Policy:
          * Cache-Control:
+         * X-Content-Type-Options:
 
     """
+    compression = request.headers["Accept-Encoding"]
+    algorithm = x if (x := 'br') in compression else 'gzip'
+    app.config['COMPRESS_ALGORITHM'] = algorithm  # configure compress algorithm
+
     response.headers["Strict-Transport-Security"] = "max-age=63072000; includeSubdomains; preload"
     response.headers["X-XSS-Protection"] = "1; mode=block"
     response.headers["X-Frame-Options"] = "SAMEORIGIN"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
     response.headers["Cache-Control"] = "max-age=10368000"  # 4 months
+    response.headers["X-Content-Type-Options"] = "nosniff"
 
     return response
 
+
+# Configure Flask Compress
+# Types of files to compress
+app.config['COMPRESS_MIMETYPES'] = ['text/html', 'text/css', 'text/javascript', 'application/javascript',
+                                    'application/json', 'application/vnd.ms-fontobject',
+                                    'image/svg+xml', 'font/ttf', 'font/woff', 'font/woff2']
+
+Compress(app)  # Instantiate Flask Compress into app
 
 from content import url

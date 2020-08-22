@@ -6,16 +6,18 @@
     <div class="container">
       <div class="row align-items-stretch retro-layout-2">
         <div class="col-md-4">
-          <a href="/blog_post/{{ random_post[0]['_id'] }}/" aria-label="Blog Post link" class="h-entry mb-30 v-height gradient"
-            style="background-image: url('{{ random_post[0]['webp_cover'] }}');">
+          <a href="/blog_post/{{ random_post[0]['_id'] }}/" aria-label="Blog Post link" id="random1" class="h-entry mb-30 v-height gradient"
+            style="--webp-random-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[0]['id_webp_cover'] }});
+--jpg-random-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[0]['id_jpg_cover'] }});">
 
             <div class="text">
               <h2>{{ random_post[0]['title'] }}</h2>
               <span class="date">{{ random_post[0]['datePosted'].strftime('%B %d, %Y') }}</span>
             </div>
           </a>
-          <a href="/blog_post/{{ random_post[1]['_id'] }}/" aria-label="Blog Post link" class="h-entry mb-30 v-height gradient"
-            style="background-image: url('{{ random_post[1]['webp_cover'] }}');">
+          <a href="/blog_post/{{ random_post[1]['_id'] }}/" aria-label="Blog Post link" id="random2" class="h-entry mb-30 v-height gradient"
+            style="--webp-random-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[1]['id_webp_cover'] }});
+--jpg-random-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[1]['id_jpg_cover'] }});">
 
             <div class="text">
               <h2>{{ random_post[1]['title'] }}</h2>
@@ -24,8 +26,9 @@
           </a>
         </div>
         <div class="col-md-4">
-          <a href="/blog_post/{{ random_post[2]['_id'] }}/" aria-label="Blog Post link" class="h-entry img-5 h-100 gradient"
-            style="background-image: url('{{ random_post[2]['webp_cover'] }}');">
+          <a href="/blog_post/{{ random_post[2]['_id'] }}/" aria-label="Blog Post link" id="random3" class="h-entry img-5 h-100 gradient"
+            style="--webp-random-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[2]['id_webp_cover'] }});
+--jpg-random-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[2]['id_jpg_cover'] }});">
 
             <div class="text">
               <div class="post-categories mb-3">
@@ -37,16 +40,18 @@
           </a>
         </div>
         <div class="col-md-4">
-          <a href="/blog_post/{{ random_post[3]['_id'] }}/" aria-label="Blog Post link" class="h-entry mb-30 v-height gradient"
-            style="background-image: url('{{ random_post[3]['webp_cover'] }}');">
+          <a href="/blog_post/{{ random_post[3]['_id'] }}/" aria-label="Blog Post link" id="random4" class="h-entry mb-30 v-height gradient"
+            style="--webp-random-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[3]['id_webp_cover'] }});
+--jpg-random-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[3]['id_jpg_cover'] }});">
 
             <div class="text">
               <h2>{{ random_post[3]['title'] }}</h2>
               <span class="date">{{ random_post[3]['datePosted'].strftime('%B %d, %Y') }}</span>
             </div>
           </a>
-          <a href="/blog_post/{{ random_post[4]['_id'] }}/" aria-label="Blog Post link" class="h-entry mb-30 v-height gradient"
-            style="background-image: url('{{ random_post[4]['webp_cover'] }}');">
+          <a href="/blog_post/{{ random_post[4]['_id'] }}/" aria-label="Blog Post link" id="random5" class="h-entry mb-30 v-height gradient"
+            style="--webp-random-post-five: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[4]['id_webp_cover'] }});
+--jpg-random-post-five: url({{ 'https://drive.google.com/uc?export=view&id=' + random_post[4]['id_jpg_cover'] }});">
 
             <div class="text">
               <h2>{{ random_post[4]['title'] }}</h2>
@@ -91,12 +96,12 @@
             <div class="entry2">
               <a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog Post link" >
                 <picture>
-	              <source type="image/webp" srcset="{{ post['webp_cover'] }}">
-	              <img src="{{ post['jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded" style="height: 330px !important;width: 500px !important;">
+	              <source type="image/webp" srcset="{{ 'https://drive.google.com/uc?export=view&id=' + post['id_webp_cover'] }}">
+	              <img src="{{ 'https://drive.google.com/uc?export=view&id=' + post['id_jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded" style="height: 330px !important;width: 500px !important;">
                 </picture>
               </a>
               <div class="excerpt">
-                <span class="post-category text-white bg-{{catColor.get(post['category'], 'iceblog')}} mb-3">{{ post['category'] }}</span>
+                <span class="post-category text-white bg-{{category_color.get(post['category'], 'iceblog')}} mb-3">{{ post['category'] }}</span>
 
                 <h2><a href="/blog_post/{{ post['_id'] }}/" aria-label="Blog Post link">{{ post['title'] }}</a></h2>
                 <div class="post-meta align-items-center text-left clearfix">

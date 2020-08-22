@@ -109,10 +109,10 @@ class AdminProfileEndpoint(MethodView):
         first_name = str(request.form['FName'])
         email = str(request.form['Email'])
         gender = str(request.form['Gender'])
-        password = str(request.form['password'])
         bio = str(request.form['bio'])
 
-        encrypted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')  # Hash (encrypt) password
+        # Hash (encrypt) password
+        # encrypted_password = bcrypt.generate_password_hash(str(password), rounds=10).decode('utf-8')
 
         # Get user information stored in session and get only username
         username = session.get(PROFILE_KEY)['username']
@@ -125,8 +125,8 @@ class AdminProfileEndpoint(MethodView):
             {'username': username},
             {
                 '$set': {
-                    'lastName': last_name, 'firstName': first_name, 'password': encrypted_password,
-                    'email': email, 'gender': gender, 'decryptedPasswd': password,
+                    'lastName': last_name, 'firstName': first_name,
+                    'email': email, 'gender': gender,
                     'biography': bio, 'dateModified': dt.now()
                 }
             },
@@ -163,10 +163,8 @@ class AddArticleEndpoint(MethodView):
 
         # Replace some parts of the string (links for the image)
         # This will help us render the image on our website
-        image_in_jpg = image_in_jpg_received.replace(
-            'file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '')
-        image_in_webp = image_in_webp_received.replace(
-            'file/d/', 'uc?export=view&id=').replace('/view?usp=sharing', '')
+        jpg_image_id = image_in_jpg_received.split('/')[5]
+        webp_image_id = image_in_webp_received.split('/')[5]
 
         # Execute query to count data
         query = articles.count_documents({})
@@ -177,7 +175,7 @@ class AddArticleEndpoint(MethodView):
                 "title": title, "body": body, "bodyUpdated": body_updated, "author": author,
                 "datePosted": dt.now(), "dateUpdated": dt.now(), "likes": 0, "comments": [],
                 "category": category, "category_num": category_num, "readTime": read_time,
-                "jpg_cover": image_in_jpg, "webp_cover": image_in_webp,
+                "id_jpg_cover": jpg_image_id, "id_webp_cover": webp_image_id,
                 "imageAltText": image_alt_text
             }
         )
@@ -260,7 +258,7 @@ class CommentStatusEndpoint(MethodView):
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
-        # Execute query to fetch data where value for the approved field is false and
+        # Execute query to fetch data from an array where value for the approved field is false and
         # it is sorted in a descending order based the date posted
         query = articles.find({
             "comments": {'$elemMatch': {'approved': False}}
