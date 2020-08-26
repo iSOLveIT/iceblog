@@ -55,7 +55,7 @@
 
 
 ## Directory Structure
-![Directory Structure](./content/static/images/blog.png)
+![Directory Structure](./content/static/images/blog.jpg)
 
 ## Preview Link
 [IceBlog](https://iceblog-gh.herokuapp.com/)
