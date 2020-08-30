@@ -35,6 +35,7 @@
           <th>Date Posted</th>
           <th>Title</th>
           <th>Category</th>
+          <th>Status</th>
           <th>Likes</th>
           <th>Date Updated</th>
           <th></th>
@@ -47,18 +48,21 @@
               <tr>
                   <td>{{article.datePosted.strftime('%B %d, %Y')}}</td>
                   <td>
-                    <a href="/blog_post/{{article._id}}/" aria-label="Blog Post link" target="blank" style="text-decoration: none;">
-                      <u>{{article.title}}</u>
-                    </a>
+                    <b>
+                        <a href="/blog_post/{{ article['title'].lower().replace(' ', '-') }}/{{ article['slug'] }}" aria-label="Blog Post link" target="blank" style="text-decoration: none;">
+                            <u>{{article.title}}</u>
+                        </a>
+                    </b>
                   </td>
                   <td>{{article.category}}</td>
+                  <td>{{article.status.capitalize()}}</td>
                   <td>{{article.likes}} likes</td>
                   <td>{{article.dateUpdated.strftime('%B %d, %Y')}}</td>
                   <td>
-                    <a href='/admin_dashboard/edit_article/{{article._id}}/' aria-label="Edit Article link" class="pull-right" style="color:#242424">Edit</a>
+                    <a href='/admin_dashboard/edit_article/{{article._id}}' aria-label="Edit Article link" class="btn btn-success pull-right" style="color:#242424">Edit</a>
                   </td>
                   <td>
-                  <form action="/admin_dashboard/delete_article/{{article._id}}/" method="POST">
+                  <form action="/admin_dashboard/delete_article/{{article._id}}" method="POST">
                       <input type="hidden" name="_method" value="DELETE">
                       <input type="submit" class="btn-danger" style="padding: 1px; border-radius: 8px;" value="Delete">
                   </form>

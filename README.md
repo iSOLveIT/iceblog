@@ -1,4 +1,4 @@
-# ICEBLOG
+# ICE BLOG
 *A blog website that elaborates on topics about lifestyle, health, entertainment, tech and sports.*
 
 ## Installation

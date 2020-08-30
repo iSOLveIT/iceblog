@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask
 from pymongo import MongoClient
 from authlib.integrations.flask_client import OAuth
 from flask_ckeditor import CKEditor
@@ -17,11 +17,12 @@ SESSION_COOKIE_NAME = "ice_blog"
 PERMANENT_SESSION_LIFETIME = 36000  # Expiration time for session (10 hours)
 
 # Config and Instantiate Mongo
-user = str(os.environ.get('MONGODB_USERNAME'))
-passwd = str(os.environ.get('MONGODB_PASSWORD'))
-uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"    # Mongo connection str
-client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-
+# user = str(os.environ.get('MONGODB_USERNAME'))
+# passwd = str(os.environ.get('MONGODB_PASSWORD'))
+# uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"    # Mongo connection str
+# client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+os.environ['MONGO_DBNAME'] = 'ICEBLOG'
+client = MongoClient()
 mongo = client.get_database(name=str(os.environ.get('MONGO_DBNAME')))
 
 
@@ -49,6 +50,9 @@ auth0 = oauth.register(
 os.environ['MAIL_USERNAME'] = 'iceblog100@gmail.com'
 os.environ['MAIL_PASSWORD'] = 'Hilda001'
 
+# os.environ['MAIL_USERNAME'] = str(os.environ.get('MAIL_USERNAME'))
+# os.environ['MAIL_PASSWORD'] = str(os.environ.get('MAIL_PASSWORD'))
+
 # Config Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
@@ -59,6 +63,15 @@ app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 app.config['MAIL_MAX_EMAILS'] = 1000
 
 mail = Mail(app)
+
+
+# Configure Flask Compress
+# Types of files to compress
+app.config['COMPRESS_MIMETYPES'] = ['text/html', 'text/css', 'text/javascript', 'application/javascript',
+                                    'application/json', 'application/vnd.ms-fontobject',
+                                    'image/svg+xml', 'font/ttf', 'font/woff', 'font/woff2']
+
+Compress(app)  # Instantiate Flask Compress into app
 
 
 # Bcrypt Configuration
@@ -94,13 +107,5 @@ def apply_headers(response):
 
     return response
 
-
-# Configure Flask Compress
-# Types of files to compress
-app.config['COMPRESS_MIMETYPES'] = ['text/html', 'text/css', 'text/javascript', 'application/javascript',
-                                    'application/json', 'application/vnd.ms-fontobject',
-                                    'image/svg+xml', 'font/ttf', 'font/woff', 'font/woff2']
-
-Compress(app)  # Instantiate Flask Compress into app
 
 from content import url

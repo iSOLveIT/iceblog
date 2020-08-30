@@ -21,38 +21,56 @@
 <div style="background-color: #f5e9eb;" >
     <div class="row mb-5" style="margin-right: 0; margin-left: 0;">
         <div class="container">
-            <div class="col-md-8 col-md-offset-4">
+            <div class="col-md-12 col-md-offset-4">
                 <form method="post" action="">
-                    <div class="form-group">
-                        {{ form.title.label(for="title") }}
-                        {{ form.title(class_="form-control", id="title", placeholder="Blog post title") }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            {{ form.title.label(for="title") }}
+                            {{ form.title(class_="form-control", id="title", placeholder="Blog post title") }}
+                        </div>
+                        <div class="form-group col-md-6">
+                            {{ form.keywords.label(for="keywords") }}
+                            {{ form.keywords(class_="form-control", id="keywords", placeholder="Words relevant to your blog post's context. Eg: synonyms") }}
+                        </div>
                     </div>
+
                     <div class="form-group">
                         {{ form.body.label(for="body") }}
                         {{ form.body(class_="form-control", id="body", rows=50, cols=20, placeholder="Write blog content here") }}
                     </div>
-                    <div class="form-group">
-                        {{ form.category.label(for="category") }}
-                        {{ form.category(class_="form-control", id="category", placeholder="E.g. Health, Education, Lifestyle, Tech, and more") }}
-                    </div>
-                    <div class="form-group">
-                        {{ form.readTime.label(for="readtime") }}
-                        {{ form.readTime(class_="form-control", id="readtime", placeholder="Time it takes to finish reading the blog post") }}
-                    </div>
+
                     <div class="form-group">
                      <p>Note: Add the <b>https://</b> protocol to the link if it is not added already</p>
                     </div>
-                    <div class="form-group">
-                        <label for="JPEG">JPEG format</label>
-                        <input class="form-control" id="JPEG" name="jpg_cover" placeholder="Link for image in JPEG format" type="url" minlength="10" maxlength="255" required>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="JPEG">JPEG format</label>
+                            <input class="form-control" id="JPEG" name="jpg_cover" placeholder="Link for image in JPEG format" type="url" minlength="10" maxlength="255" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="WEBP">WEBP format</label>
+                            <input class="form-control" id="WEBP" name="webp_cover" placeholder="Link for image in WEBP format" type="url" minlength="10" maxlength="255" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="ImageAltText">Image Alt Text</label>
+                            <input class="form-control" id="ImageAltText" name="image_alt_text" placeholder="Text to describe the image to people with disability" type="text" minlength="10" maxlength="50" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="WEBP">WEBP format</label>
-                        <input class="form-control" id="WEBP" name="webp_cover" placeholder="Link for image in WEBP format" type="url" minlength="10" maxlength="255" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="ImageAltText">Image Alt Text</label>
-                        <input class="form-control" id="ImageAltText" name="image_alt_text" placeholder="Text to describe the image to people with disability" type="text" minlength="10" maxlength="50" required>
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            {{ form.category.label(for="category") }}
+                            {{ form.category(class_="form-control", id="category", placeholder="E.g. Health, Education, Lifestyle, Tech, and more") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form.readTime.label(for="readtime") }}
+                            {{ form.readTime(class_="form-control", id="readtime", placeholder="Example: 10 or 6") }}
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{ form.status.label(for="status") }}
+                            {{ form.status(class_="form-control", id="status") }}
+                        </div>
                     </div>
 
                     <input type="submit" class= "btn text-black" style="padding: 8px; border-radius: 8px;" value="Submit">

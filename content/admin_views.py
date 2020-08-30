@@ -8,6 +8,7 @@ from functools import wraps
 from pymongo import DESCENDING
 from emoji import emojize
 from six.moves.urllib.parse import urlencode
+from .commentIDgenerator import random_string
 
 
 # Check if user is logged in
@@ -61,7 +62,7 @@ class CallbackHandler(MethodView):
 # View for admin dashboard
 class AdminDashboardEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -77,7 +78,7 @@ class AdminDashboardEndpoint(MethodView):
 # View for admin logout
 class AdminLogoutEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         session.clear()     # Clear all data in session
         params = {'returnTo': url_for('index', _external=True), 'client_id': AUTH0_CLIENT_ID}
@@ -88,7 +89,7 @@ class AdminLogoutEndpoint(MethodView):
 # View for admin account details
 class AdminProfileEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
@@ -99,7 +100,7 @@ class AdminProfileEndpoint(MethodView):
         return render_template('admin_profile.html', others=False, user=user_details)
 
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def post():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
@@ -139,19 +140,21 @@ class AdminProfileEndpoint(MethodView):
 # View for add article
 class AddArticleEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         form = ArticleForm(request.form)
         return render_template('add_article.html', others=False, form=form)
 
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def post():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
 
         # Receive inputs sent through forms
-        title = str(request.form['title'])
+        slug = str(random_string())
+        title = str(request.form['title']).upper()
+        keywords = str(request.form['keywords'])
         body = str(request.form['body'])
         category = str(request.form['category'])
         read_time = str(request.form['readTime'])
@@ -159,6 +162,7 @@ class AddArticleEndpoint(MethodView):
         image_in_jpg_received = str(request.form['jpg_cover'])
         image_in_webp_received = str(request.form['webp_cover'])
         image_alt_text = str(request.form['image_alt_text'])
+        status = str(request.form.get('status', 'draft'))
         body_updated = False
 
         # Replace some parts of the string (links for the image)
@@ -172,11 +176,13 @@ class AddArticleEndpoint(MethodView):
         # Execute query to fetch data
         articles.insert_one(
             {
-                "title": title, "body": body, "bodyUpdated": body_updated, "author": author,
+                "slug": slug, "title": title, "body": body, "bodyUpdated": body_updated,
+                "author": author,
                 "datePosted": dt.now(), "dateUpdated": dt.now(), "likes": 0, "comments": [],
                 "category": category, "category_num": category_num, "readTime": read_time,
                 "id_jpg_cover": jpg_image_id, "id_webp_cover": webp_image_id,
-                "imageAltText": image_alt_text
+                "imageAltText": image_alt_text, "status": status,
+                "keywords": keywords
             }
         )
 
@@ -187,7 +193,7 @@ class AddArticleEndpoint(MethodView):
 # View for edit article
 class EditArticleEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -196,25 +202,29 @@ class EditArticleEndpoint(MethodView):
         # Get form
         form = ArticleForm(request.form)
         # populate form fields
-        form.title.data = str(query["title"])
+        form.title.data = str(query["title"]).upper()
+        form.keywords.data = str(query["keywords"])
         form.body.data = str(query["body"])
         form.category.data = str(query["category"])
         form.readTime.data = str(query["readTime"])
+        form.status.data = str(query["status"])
 
         return render_template('edit_article.html', others=False, form=form)
 
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
 
         # Receive inputs sent through forms
-        title = str(request.form['title'])
+        title = str(request.form['title']).upper()
+        keywords = str(request.form['keywords'])
         body = str(request.form['body'])
         body_updated = True if request.form.get('bodyUpdated', 'off', type=str) == 'on' else False
         category = str(request.form['category'])
         read_time = str(request.form['readTime'])
+        status = str(request.form['status'])
         date_updated = dt.now()
 
         # Execute query to find and update data
@@ -228,6 +238,8 @@ class EditArticleEndpoint(MethodView):
                     'category': category,
                     'readTime': read_time,
                     'dateUpdated': date_updated,
+                    'status': status,
+                    'keywords': keywords
                 }
             },
             upsert=False,
@@ -239,7 +251,7 @@ class EditArticleEndpoint(MethodView):
 # View for deleting article
 class DeleteArticleEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -254,7 +266,7 @@ class DeleteArticleEndpoint(MethodView):
 # View for comment status
 class CommentStatusEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -270,7 +282,7 @@ class CommentStatusEndpoint(MethodView):
 # View for comment approval
 class CommentApprovalEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         # The clients send json data to the comment approval endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
@@ -310,13 +322,13 @@ class CommentApprovalEndpoint(MethodView):
 # View for registering new users
 class RegisterUserEndpoint(MethodView):
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def get():
         form = SignupForm(request.form)
         return render_template('register.html', others=False, form=form)
 
     @staticmethod
-    @requires_auth
+    # @requires_auth
     def post():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')

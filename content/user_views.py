@@ -2,12 +2,12 @@ from flask.views import MethodView
 from flask import render_template, request, redirect, url_for, flash, jsonify
 from content import mongo
 from bson.objectid import ObjectId  # Import for using mongo id
-from pymongo import ASCENDING, DESCENDING
+from pymongo import DESCENDING
 from .form import CommentForm
 from .contact import send_email, reply_message
 from datetime import datetime as dt
 from emoji import emojize
-from .commentIDgenerator import random_string
+from .commentIDgenerator import comments_id
 
 
 # View for index
@@ -18,9 +18,17 @@ class IndexEndpoint(MethodView):
         articles = mongo.get_collection(name='articles')
         quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch 5 random data from the database
-        random_post = [d for d in articles.aggregate([{'$sample': {'size': 5}}])]
+        random_posts = articles.aggregate([
+            {'$sample': {'size': 5}},
+            {'$project': {"_id": 0, "title": 1, "slug": 1, "datePosted": 1,
+                          "category": 1, "id_jpg_cover": 1, "id_webp_cover": 1}}
+        ])
+        random_post = [item for item in random_posts]
         # Execute query to fetch 3 data which is sorted in a descending order
-        recent_posts = articles.find().limit(3).sort('datePosted', DESCENDING)
+        recent_posts = articles.find(
+            {},
+            {"_id": 0, "bodyUpdated": 0, "dateUpdated": 0, "comments": 0, "likes": 0, "status": 0}
+        ).limit(3).sort('datePosted', DESCENDING)
         # Execute query to fetch 1 random data from the database
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
@@ -104,8 +112,9 @@ class CategoryEndpoint(MethodView):
         else:
             # Execute query to fetch limited data which is sorted in a ascending order
             posts = articles.find(
-                {"category_num": {'$gte': offset}}
-            ).limit(limit).sort('category_num', ASCENDING)
+                {"category_num": {'$gte': offset}},
+                {"_id": 0, "bodyUpdated": 0, "dateUpdated": 0, "comments": 0, "likes": 0, "status": 0}
+            ).limit(limit).sort('category_num', DESCENDING)
 
             _previous = int(offset) - limit
             _next = int(offset) + limit
@@ -127,16 +136,28 @@ class CategoryEndpoint(MethodView):
 # View for single blog
 class SingleEndpoint(MethodView):
     @staticmethod
-    def get(blog_id):
+    def get(blog_title, slug):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch only 1 data
-        article = articles.find_one({"_id": ObjectId(blog_id)})
+        topic = str(blog_title).upper().replace('-', ' ')
+        get_id = articles.find_one({"slug": slug}, {"_id": 1})
+        article = articles.find_one({
+            "$and": [{"_id": ObjectId(get_id["_id"])}, {"title": topic}],
+            },
+            {"_id": 0, "category_num": 0}
+        )
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] is True])
         # Execute query to fetch 4 random data from the database
-        related_post = [d for d in articles.aggregate([{'$sample': {'size': 4}}])]
+        related_post = [d for d in articles.aggregate(
+            [
+                {'$sample': {'size': 4}},
+                {'$project': {"_id": 0, "title": 1, "slug": 1, "datePosted": 1,
+                              "category": 1, "id_jpg_cover": 1, "id_webp_cover": 1}}
+            ]
+        )]
         # Execute query to fetch 1 random data from the database
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
@@ -157,10 +178,13 @@ class SingleEndpoint(MethodView):
                                others=False, color=category_color)
 
     @staticmethod
-    def post(blog_id):
+    def post(blog_title, slug):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # db = mongo.get_collection(name='newsletter_subscribers')
+
+        topic = str(blog_title).upper().replace('-', ' ')
+        blog_id = articles.find_one({"slug": slug}, {"_id": 1})
 
         # On a single blog post page, we have the comment form and the subscription form.
         # The client makes a post requests to the single blog endpoint asynchronously using jquery.
@@ -175,11 +199,11 @@ class SingleEndpoint(MethodView):
             comment_msg = str(request.form['comment_msg']).capitalize()
             date_posted = dt.now()
             approval = False
-            comment_id = random_string()
+            comment_id = comments_id()
 
             # Execute query to update data
             articles.find_one_and_update(
-                {"_id": ObjectId(blog_id)},
+                {"$and": [{"_id": ObjectId(blog_id["_id"])}, {"title": topic}]},
                 {
                     "$push": {
                         "comments": {
@@ -192,7 +216,7 @@ class SingleEndpoint(MethodView):
                     }
                 }
             )
-            alert = f"Comment received. The team will review before publishing. {emojize(':grinning_face_with_big_eyes:')}"
+            alert = f"Comment received. The team will review before publishing {emojize(':grinning_face_with_big_eyes:')}"
             return {"result": alert}
 
         elif 'subscriber_email' in request.form:
@@ -215,16 +239,15 @@ class LikesEndpoint(MethodView):
         # The client sends json data to the likes endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        blog_id = str(request.args.get('blog_id', type=str))
-        likes = str(request.args.get('no_likes', 0, type=int))
-        likes = int(likes)
+        slug_id = str(request.args.get('slug', type=str))
+        likes = int(request.args.get('no_likes', 0, type=int))
 
         # Execute query to update data
         articles.find_one_and_update(
-            {'_id': ObjectId(blog_id)},
+            {'slug': slug_id},
             {'$inc': {'likes': likes}}
         )
-        query = articles.find_one({'_id': ObjectId(blog_id)})
+        query = articles.find_one({'slug': slug_id})
         result = query['likes']
         if likes == +1:
             return jsonify(result=result)

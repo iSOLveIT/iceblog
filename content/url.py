@@ -16,7 +16,7 @@ app.add_url_rule('/contact', view_func=ContactEndpoint.as_view("contact"))
 app.add_url_rule('/category', view_func=CategoryEndpoint.as_view("category"))
 
 # Route for single blog
-app.add_url_rule('/blog_post/<string:blog_id>/',
+app.add_url_rule('/blog_post/<string:blog_title>/<string:slug>',
                  view_func=SingleEndpoint.as_view("blog_post"))
 
 # Route for likes
@@ -47,11 +47,11 @@ app.add_url_rule('/admin_dashboard/add_article',
                  view_func=AddArticleEndpoint.as_view("add_article"))
 
 # Route for edit article
-app.add_url_rule('/admin_dashboard/edit_article/<string:blog_id>/',
+app.add_url_rule('/admin_dashboard/edit_article/<string:blog_id>',
                  view_func=EditArticleEndpoint.as_view("edit_article"))
 
 # Route for delete article
-app.add_url_rule('/admin_dashboard/delete_article/<string:blog_id>/',
+app.add_url_rule('/admin_dashboard/delete_article/<string:blog_id>',
                  view_func=DeleteArticleEndpoint.as_view("delete_article"))
 
 # Route for comment status

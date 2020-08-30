@@ -1,4 +1,4 @@
-from wtforms import StringField, validators, TextAreaField, PasswordField
+from wtforms import StringField, validators, TextAreaField, PasswordField, SelectField
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
 from wtforms.fields.html5 import EmailField
@@ -25,6 +25,11 @@ class ArticleForm(FlaskForm):
         validators.Length(max=225),
         validators.DataRequired()
     ])
+    keywords = StringField('Keywords', [
+        validators.InputRequired(),
+        validators.Length(min=7, max=250),
+        validators.DataRequired()
+    ])
     body = CKEditorField('Body', [
         validators.DataRequired(),
         validators.InputRequired(),
@@ -35,11 +40,15 @@ class ArticleForm(FlaskForm):
         validators.InputRequired(message="Please provide category for article"),
         validators.Length(max=15)
     ])
-    readTime = StringField('Minutes spent reading', [
+    readTime = StringField('Read Time (in Min)', [
         validators.DataRequired(),
         validators.InputRequired(),
         validators.Length(max=2)
     ])
+    status = SelectField('Status', [validators.DataRequired()], choices=[
+        ('draft', 'Draft'),
+        ('published', 'Published')
+    ], default='draft')
 
 
 # Form for Login
