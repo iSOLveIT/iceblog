@@ -3,7 +3,7 @@
 {% block title %}{{ article['title'] }}{% endblock %}
 
 {% block keywords %}
-  {{"IceBlog, Blog, Ghana, " + article.get('keywords', 'Post, Information, Content, Details about topic') }}
+  {{"IceBlog, Blog, Ghana, " + article.get('keywords', 'Post, Information, Content, Details about ' + article["title"]) }}
 {% endblock %}
 
 {% block author %}{{article['author']}}{% endblock %}
@@ -21,7 +21,8 @@
             <figure class="author-figure mb-0 mr-3 d-inline-block">
               <picture>
                 <source type="image/webp" srcset="{{ url_for('static', filename='images/webp/' + article['author'] + '.webp') }}">
-                <img src="{{ url_for('static', filename='images/jpg/' + article['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid">
+                <img src="{{ url_for('static', filename='images/jpg/' + article['author'] + '.jpg') }}" alt="Image with the username of the author" class="img-fluid"
+                width="30" height="30">
               </picture>
             </figure>
             <span class="d-inline-block mt-1 text-black">By {{ article['author'] }}</span>

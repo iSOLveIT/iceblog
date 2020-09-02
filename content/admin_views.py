@@ -1,14 +1,20 @@
-from flask.views import MethodView
-from flask import render_template, redirect, request, url_for, flash, session
-from content import mongo, app, bcrypt, auth0, AUTH0_CALLBACK_URL, AUTH0_CLIENT_ID, PROFILE_KEY
-from bson.objectid import ObjectId
-from .form import ArticleForm, SignupForm
+# Local modules
 from datetime import datetime as dt
 from functools import wraps
+
+
+# User-defined modules
+from content import mongo, app, bcrypt, auth0, AUTH0_CALLBACK_URL, AUTH0_CLIENT_ID, PROFILE_KEY
+from .form import ArticleForm, SignupForm
+from .commentIDgenerator import random_string
+
+# Third-party modules
+from flask.views import MethodView
+from flask import render_template, redirect, request, url_for, flash, session
+from bson.objectid import ObjectId
 from pymongo import DESCENDING
 from emoji import emojize
 from six.moves.urllib.parse import urlencode
-from .commentIDgenerator import random_string
 
 
 # Check if user is logged in
@@ -62,7 +68,7 @@ class CallbackHandler(MethodView):
 # View for admin dashboard
 class AdminDashboardEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -78,7 +84,7 @@ class AdminDashboardEndpoint(MethodView):
 # View for admin logout
 class AdminLogoutEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         session.clear()     # Clear all data in session
         params = {'returnTo': url_for('index', _external=True), 'client_id': AUTH0_CLIENT_ID}
@@ -89,7 +95,7 @@ class AdminLogoutEndpoint(MethodView):
 # View for admin account details
 class AdminProfileEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
@@ -100,7 +106,7 @@ class AdminProfileEndpoint(MethodView):
         return render_template('admin_profile.html', others=False, user=user_details)
 
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def post():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')
@@ -140,13 +146,13 @@ class AdminProfileEndpoint(MethodView):
 # View for add article
 class AddArticleEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         form = ArticleForm(request.form)
         return render_template('add_article.html', others=False, form=form)
 
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def post():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -193,7 +199,7 @@ class AddArticleEndpoint(MethodView):
 # View for edit article
 class EditArticleEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -203,7 +209,7 @@ class EditArticleEndpoint(MethodView):
         form = ArticleForm(request.form)
         # populate form fields
         form.title.data = str(query["title"]).upper()
-        form.keywords.data = str(query["keywords"])
+        form.keywords.data = str(query.get("keywords", ""))
         form.body.data = str(query["body"])
         form.category.data = str(query["category"])
         form.readTime.data = str(query["readTime"])
@@ -212,7 +218,7 @@ class EditArticleEndpoint(MethodView):
         return render_template('edit_article.html', others=False, form=form)
 
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -251,7 +257,7 @@ class EditArticleEndpoint(MethodView):
 # View for deleting article
 class DeleteArticleEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def post(blog_id):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -266,7 +272,7 @@ class DeleteArticleEndpoint(MethodView):
 # View for comment status
 class CommentStatusEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
@@ -282,7 +288,7 @@ class CommentStatusEndpoint(MethodView):
 # View for comment approval
 class CommentApprovalEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         # The clients send json data to the comment approval endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
@@ -322,13 +328,13 @@ class CommentApprovalEndpoint(MethodView):
 # View for registering new users
 class RegisterUserEndpoint(MethodView):
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def get():
         form = SignupForm(request.form)
         return render_template('register.html', others=False, form=form)
 
     @staticmethod
-    # @requires_auth
+    @requires_auth
     def post():
         # Create Mongodb connection
         users = mongo.get_collection(name='admin_user')

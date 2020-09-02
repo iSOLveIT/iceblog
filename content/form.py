@@ -1,3 +1,8 @@
+# Local modules
+
+# User-defined modules
+
+# Third-party modules
 from wtforms import StringField, validators, TextAreaField, PasswordField, SelectField
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm

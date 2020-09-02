@@ -1,7 +1,12 @@
-from flask_mail import Message
+# Local modules
 from datetime import datetime as dt
-from content import mail
 import os
+
+# User-defined modules
+from content import mail
+
+# Third-party modules
+from flask_mail import Message
 
 
 def send_email(_name, _subject, _email, _body):

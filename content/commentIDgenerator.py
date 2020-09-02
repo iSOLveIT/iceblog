@@ -1,5 +1,11 @@
-from content import mongo
+# Local modules
 import random
+
+# User-defined modules
+from content import mongo
+
+# Third-party modules
+
 
 # Create Mongodb connection
 articles = mongo.get_collection(name='articles')

@@ -1,13 +1,18 @@
-from flask.views import MethodView
-from flask import render_template, request, redirect, url_for, flash, jsonify
+# Local modules
+from datetime import datetime as dt
+
+# User-defined modules
 from content import mongo
-from bson.objectid import ObjectId  # Import for using mongo id
-from pymongo import DESCENDING
 from .form import CommentForm
 from .contact import send_email, reply_message
-from datetime import datetime as dt
-from emoji import emojize
 from .commentIDgenerator import comments_id
+
+# Third-party modules
+from flask.views import MethodView
+from flask import render_template, request, redirect, url_for, flash
+from bson.objectid import ObjectId  # Import for using mongo id
+from pymongo import DESCENDING
+from emoji import emojize
 
 
 # View for index
@@ -232,24 +237,24 @@ class SingleEndpoint(MethodView):
 # View for likes
 class LikesEndpoint(MethodView):
     @staticmethod
-    def get():
+    def post():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
 
         # The client sends json data to the likes endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        slug_id = str(request.args.get('slug', type=str))
-        likes = int(request.args.get('no_likes', 0, type=int))
+        slug_id = str(request.form.get('slug', type=str))
+        likes = int(request.form.get('no_likes', 0, type=int))
 
         # Execute query to update data
         articles.find_one_and_update(
             {'slug': slug_id},
             {'$inc': {'likes': likes}}
         )
-        query = articles.find_one({'slug': slug_id})
+        query = articles.find_one({'slug': slug_id}, {"likes": 1})
         result = query['likes']
-        if likes == +1:
-            return jsonify(result=result)
+        if likes == 1:
+            return {'result': result}
         else:
-            return jsonify(result=result)
+            return {'result': result}

@@ -1,3 +1,10 @@
+# Local modules
+import os
+import ssl
+
+# User-defined modules
+
+# Third-party modules
 from flask import Flask
 from pymongo import MongoClient
 from authlib.integrations.flask_client import OAuth
@@ -5,8 +12,6 @@ from flask_ckeditor import CKEditor
 from flask_bcrypt import Bcrypt
 from flask_compress import Compress
 from flask_mail import Mail
-import os
-import ssl
 
 
 # Instantiate flask and secret key
@@ -17,12 +22,11 @@ SESSION_COOKIE_NAME = "ice_blog"
 PERMANENT_SESSION_LIFETIME = 36000  # Expiration time for session (10 hours)
 
 # Config and Instantiate Mongo
-# user = str(os.environ.get('MONGODB_USERNAME'))
-# passwd = str(os.environ.get('MONGODB_PASSWORD'))
-# uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"    # Mongo connection str
-# client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
-os.environ['MONGO_DBNAME'] = 'ICEBLOG'
-client = MongoClient()
+user = str(os.environ.get('MONGODB_USERNAME'))
+passwd = str(os.environ.get('MONGODB_PASSWORD'))
+uri = f"mongodb+srv://{user}:{passwd}@agms01-vtxt7.mongodb.net/?retryWrites=true&w=majority"    # Mongo connection str
+client = MongoClient(uri, ssl=True, ssl_cert_reqs=ssl.CERT_NONE)
+
 mongo = client.get_database(name=str(os.environ.get('MONGO_DBNAME')))
 
 
@@ -47,11 +51,6 @@ auth0 = oauth.register(
         'scope': 'openid profile email',
     },
 )
-os.environ['MAIL_USERNAME'] = 'iceblog100@gmail.com'
-os.environ['MAIL_PASSWORD'] = 'Hilda001'
-
-# os.environ['MAIL_USERNAME'] = str(os.environ.get('MAIL_USERNAME'))
-# os.environ['MAIL_PASSWORD'] = str(os.environ.get('MAIL_PASSWORD'))
 
 # Config Mail
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'

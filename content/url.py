@@ -1,6 +1,12 @@
+# Local modules
+
+# User-defined modules
 from .user_views import *
 from content import app
 from .admin_views import *
+
+# Third-party modules
+
 
 # USER ROUTES
 # Route for index
