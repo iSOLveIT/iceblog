@@ -24,6 +24,7 @@ class IndexEndpoint(MethodView):
         quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch 5 random data from the database
         random_posts = articles.aggregate([
+            {'$match': {'status': "published"}},
             {'$sample': {'size': 5}},
             {'$project': {"_id": 0, "title": 1, "slug": 1, "datePosted": 1,
                           "category": 1, "id_jpg_cover": 1, "id_webp_cover": 1}}
@@ -117,7 +118,7 @@ class CategoryEndpoint(MethodView):
         else:
             # Execute query to fetch limited data which is sorted in a ascending order
             posts = articles.find(
-                {"category_num": {'$gte': offset}},
+                {"$and": [{"category_num": {'$gte': offset}}, {"status": "published"}]},
                 {"_id": 0, "bodyUpdated": 0, "dateUpdated": 0, "comments": 0, "likes": 0, "status": 0}
             ).limit(limit).sort('category_num', DESCENDING)
 
@@ -158,6 +159,7 @@ class SingleEndpoint(MethodView):
         # Execute query to fetch 4 random data from the database
         related_post = [d for d in articles.aggregate(
             [
+                {'$match': {'status': "published"}},
                 {'$sample': {'size': 4}},
                 {'$project': {"_id": 0, "title": 1, "slug": 1, "datePosted": 1,
                               "category": 1, "id_jpg_cover": 1, "id_webp_cover": 1}}
