@@ -15,7 +15,7 @@
     <div class="row same-height justify-content-center">
       <div class="col-md-12 col-lg-10">
         <div class="post-entry text-center">
-          <span class="post-category text-white bg-{{ color.get(article['category'], 'iceblog') }} mb-3">{{ article['category'] }}</span>
+          <span class="post-category text-white bg-{{ article['category'] }} mb-3">{{ article['category'] }}</span>
           <h3 class="mb-4 text-black text-uppercase">{{ article['title'] }}</h3>
           <div class="post-meta align-items-center text-center">
             <figure class="author-figure mb-0 mr-3 d-inline-block">
@@ -197,7 +197,7 @@
           <a href="/blog_post/{{ related_post[0]['title'].lower().replace(' ', '-') }}/{{ related_post[0]['slug'] }}" aria-label="Link to blog post" id="related_1" class="hentry img-1 h-100 gradient"
           style="--webp-related-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[0]['id_webp_cover'] }});
 --jpg-related-post-one: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[0]['id_jpg_cover'] }});">
-            <span class="post-category text-white bg-{{ color.get(related_post[0]['category'], 'iceblog') }}">
+            <span class="post-category text-white bg-{{ related_post[0]['category'] }}">
               {{ related_post[0]['category'] }}
             </span>
             <div class="text">
@@ -212,7 +212,7 @@
           <a href="/blog_post/{{ related_post[1]['title'].lower().replace(' ', '-') }}/{{ related_post[1]['slug'] }}" aria-label="Link to blog post" id="related_2" class="hentry img-2 v-height mb30 gradient"
           style="--webp-related-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[1]['id_webp_cover'] }});
 --jpg-related-post-two: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[1]['id_jpg_cover'] }});">
-            <span class="post-category text-white bg-{{ color.get(related_post[1]['category'], 'iceblog') }}">
+            <span class="post-category text-white bg-{{ related_post[1]['category'] }}">
               {{ related_post[1]['category'] }}
             </span>
             <div class="text text-sm">
@@ -225,7 +225,7 @@
             <a href="/blog_post/{{ related_post[2]['title'].lower().replace(' ', '-') }}/{{ related_post[2]['slug'] }}" aria-label="Link to blog post" id="related_3" class="hentry v-height img-2 gradient"
             style="--webp-related-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[2]['id_webp_cover'] }});
 --jpg-related-post-three: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[2]['id_jpg_cover'] }});">
-              <span class="post-category text-white bg-{{ color.get(related_post[2]['category'], 'iceblog') }}">
+              <span class="post-category text-white bg-{{ related_post[2]['category'] }}">
                 {{ related_post[2]['category'] }}
               </span>
               <div class="text text-sm">
@@ -236,7 +236,7 @@
             <a href="/blog_post/{{ related_post[3]['title'].lower().replace(' ', '-') }}/{{ related_post[3]['slug'] }}" aria-label="Link to blog post" id="related_4" class="hentry v-height img-2 ml-auto gradient"
             style="--webp-related-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[3]['id_webp_cover'] }});
 --jpg-related-post-four: url({{ 'https://drive.google.com/uc?export=view&id=' + related_post[3]['id_jpg_cover'] }});">
-              <span class="post-category text-white bg-{{ color.get(related_post[3]['category'], 'iceblog') }}">
+              <span class="post-category text-white bg-{{ related_post[3]['category'] }}">
                 {{ related_post[3]['category'] }}
               </span>
               <div class="text text-sm">

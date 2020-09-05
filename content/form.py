@@ -40,11 +40,16 @@ class ArticleForm(FlaskForm):
         validators.InputRequired(),
         validators.Length(min=30)
     ])
-    category = StringField('Category', [
+
+    category = SelectField('Category', [
         validators.DataRequired(),
-        validators.InputRequired(message="Please provide category for article"),
-        validators.Length(max=15)
-    ])
+        validators.InputRequired(message="Please select category for article"),
+    ], choices=[
+        ('iceblog', 'Ice Blog'), ('lifestyle', 'Lifestyle'),
+        ('tech', 'Technology'), ('education', 'Education'),
+        ('entertainment', 'Entertainment'), ('health', 'Health')
+    ], default='iceblog')
+
     readTime = StringField('Read Time (in Min)', [
         validators.DataRequired(),
         validators.InputRequired(),

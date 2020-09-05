@@ -162,7 +162,7 @@ class AddArticleEndpoint(MethodView):
         title = str(request.form['title']).upper()
         keywords = str(request.form['keywords'])
         body = str(request.form['body'])
-        category = str(request.form['category'])
+        category = str(request.form.get('category', 'iceblog'))
         read_time = str(request.form['readTime'])
         author = str(session.get(PROFILE_KEY)['username'])   # Get user info stored in session and get only username
         image_in_jpg_received = str(request.form['jpg_cover'])

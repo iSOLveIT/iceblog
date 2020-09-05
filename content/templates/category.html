@@ -32,7 +32,7 @@
                 </picture>
               </a>
               <div class="excerpt">
-                <span class="post-category text-white bg-{{ color.get(post['category'], 'iceblog') }} mb-3">{{ post['category'] }}</span>
+                <span class="post-category text-white bg-{{ post['category'] }} mb-3">{{ post['category'] }}</span>
 
                 <h2><a href="/blog_post/{{ post['title'].lower().replace(' ', '-') }}/{{ post['slug'] }}" aria-label="Blog post link">{{ post['title'] }}</a></h2>
                 <div class="post-meta align-items-center text-left clearfix">

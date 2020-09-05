@@ -11,7 +11,7 @@ from .commentIDgenerator import comments_id
 from flask.views import MethodView
 from flask import render_template, request, redirect, url_for, flash
 from bson.objectid import ObjectId  # Import for using mongo id
-from pymongo import DESCENDING
+from pymongo import DESCENDING, ASCENDING
 from emoji import emojize
 
 
@@ -32,25 +32,15 @@ class IndexEndpoint(MethodView):
         random_post = [item for item in random_posts]
         # Execute query to fetch 3 data which is sorted in a descending order
         recent_posts = articles.find(
-            {},
+            {"status": "published"},
             {"_id": 0, "bodyUpdated": 0, "dateUpdated": 0, "comments": 0, "likes": 0, "status": 0}
         ).limit(3).sort('datePosted', DESCENDING)
         # Execute query to fetch 1 random data from the database
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
 
-        # color codes for category
-        category_color = {
-            "Lifestyle": "primary",
-            "Tech": "danger",
-            "Education": "info",
-            "Entertainment": "warning",
-            "Health": "success"
-        }
-
         return render_template('index.html', random_post=random_post, others=False,
-                               recent_posts=recent_posts, category_color=category_color,
-                               inspire=inspiration, year=dt.now().year
-                               )
+                               recent_posts=recent_posts, inspire=inspiration,
+                               year=dt.now().year)
 
     @staticmethod
     def post():
@@ -77,6 +67,7 @@ class AboutEndpoint(MethodView):
             "gender": 0, "_id": 0
         })  # Return collection but excludes the fields stated above
         # 0 = exclude specified field and 1 = include specified field
+
         return render_template('about.html', others=False, team=team, year=dt.now().year)
 
 
@@ -112,31 +103,22 @@ class CategoryEndpoint(MethodView):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # Execute query to count data
-        _total_doc = articles.count_documents({})
+        _total_doc = articles.count_documents({"status": "published"})
         if offset < 0 or offset >= int(_total_doc):
             return redirect(url_for('category', page=0))
         else:
             # Execute query to fetch limited data which is sorted in a ascending order
             posts = articles.find(
-                {"$and": [{"category_num": {'$gte': offset}}, {"status": "published"}]},
+                {"$and": [{"category_num": {'$gt': offset}}, {"status": "published"}]},
                 {"_id": 0, "bodyUpdated": 0, "dateUpdated": 0, "comments": 0, "likes": 0, "status": 0}
-            ).limit(limit).sort('category_num', DESCENDING)
+            ).limit(limit).sort('category_num', ASCENDING)
 
             _previous = int(offset) - limit
             _next = int(offset) + limit
 
-            # color codes for category
-            category_color = {
-                "Lifestyle": "primary",
-                "Tech": "danger",
-                "Education": "info",
-                "Entertainment": "warning",
-                "Health": "success"
-            }
-
         return render_template('category.html', posts=posts, year=dt.now().year,
                                _previous=_previous, _next=_next,
-                               others=False, color=category_color)
+                               others=False)
 
 
 # View for single blog
@@ -167,22 +149,13 @@ class SingleEndpoint(MethodView):
         )]
         # Execute query to fetch 1 random data from the database
         inspiration = [d for d in quotes.aggregate([{'$sample': {'size': 1}}])]
-
-        # color codes for category
-        category_color = {
-            "Lifestyle": "primary",
-            "Tech": "danger",
-            "Education": "info",
-            "Entertainment": "warning",
-            "Health": "success"
-        }
         # Comment form
         form = CommentForm()
 
         return render_template('single.html', article=article, year=dt.now().year,
                                len_comments=len_comments, form=form,
                                related_post=related_post, inspire=inspiration,
-                               others=False, color=category_color)
+                               others=False)
 
     @staticmethod
     def post(blog_title, slug):
@@ -256,7 +229,4 @@ class LikesEndpoint(MethodView):
         )
         query = articles.find_one({'slug': slug_id}, {"likes": 1})
         result = query['likes']
-        if likes == 1:
-            return {'result': result}
-        else:
-            return {'result': result}
+        return {'result': result}
