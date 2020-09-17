@@ -49,7 +49,7 @@
                   <td>{{article.datePosted.strftime('%B %d, %Y')}}</td>
                   <td>
                     <b>
-                        <a href="/blog_post/{{ article['title'].lower().replace(' ', '-') }}/{{ article['slug'] }}" aria-label="Blog Post link" target="blank" style="text-decoration: none;">
+                        <a href="/blog_post/{{ article['title'].lower().replace(' ', '_') }}/{{ article['slug'] }}" aria-label="Blog Post link" target="blank" style="text-decoration: none;">
                             <u>{{article.title}}</u>
                         </a>
                     </b>

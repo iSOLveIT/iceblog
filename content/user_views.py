@@ -129,7 +129,7 @@ class SingleEndpoint(MethodView):
         articles = mongo.get_collection(name='articles')
         quotes = mongo.get_collection(name='quotes')
         # Execute query to fetch only 1 data
-        topic = str(blog_title).upper().replace('-', ' ')
+        topic = str(blog_title).upper().replace('_', ' ')
         get_id = articles.find_one({"slug": slug}, {"_id": 1})
         article = articles.find_one({
             "$and": [{"_id": ObjectId(get_id["_id"])}, {"title": topic}],
@@ -163,7 +163,7 @@ class SingleEndpoint(MethodView):
         articles = mongo.get_collection(name='articles')
         # db = mongo.get_collection(name='newsletter_subscribers')
 
-        topic = str(blog_title).upper().replace('-', ' ')
+        topic = str(blog_title).upper().replace('_', ' ')
         blog_id = articles.find_one({"slug": slug}, {"_id": 1})
 
         # On a single blog post page, we have the comment form and the subscription form.
