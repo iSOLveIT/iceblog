@@ -47,7 +47,8 @@ class ArticleForm(FlaskForm):
     ], choices=[
         ('iceblog', 'Ice Blog'), ('lifestyle', 'Lifestyle'),
         ('tech', 'Technology'), ('education', 'Education'),
-        ('entertainment', 'Entertainment'), ('health', 'Health')
+        ('entertainment', 'Entertainment'), ('health', 'Health'),
+        ('fashion', 'Fashion'), ('business', 'Business')
     ], default='iceblog')
 
     readTime = StringField('Read Time (in Min)', [
