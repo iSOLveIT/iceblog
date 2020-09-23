@@ -176,7 +176,7 @@ class SingleEndpoint(MethodView):
         # which is rendered in the template file using javascript
         if 'comment_name' and 'comment_msg' in request.form:
             comment_name = str(request.form['comment_name']).title()
-            comment_msg_received = str(request.form['comment_msg']).lower().split('. ')
+            comment_msg_received = str(request.form['comment_msg']).split('. ')
             comment_msg = '. '.join([i.capitalize() for i in comment_msg_received])
             date_posted = dt.now()
             approval = False
