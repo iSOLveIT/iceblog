@@ -124,7 +124,7 @@ class CategoryEndpoint(MethodView):
 # View for single blog
 class SingleEndpoint(MethodView):
     @staticmethod
-    def get(blog_title, slug):
+    def get(blog_category, blog_title, slug):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         quotes = mongo.get_collection(name='quotes')
@@ -155,10 +155,10 @@ class SingleEndpoint(MethodView):
         return render_template('single.html', article=article, year=dt.now().year,
                                len_comments=len_comments, form=form,
                                related_post=related_post, inspire=inspiration,
-                               others=False)
+                               others=False, category=blog_category)
 
     @staticmethod
-    def post(blog_title, slug):
+    def post(blog_category, blog_title, slug):
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
         # db = mongo.get_collection(name='newsletter_subscribers')
@@ -206,7 +206,8 @@ class SingleEndpoint(MethodView):
             alert = f"Thanks for subscribing {emojize(':grinning_face_with_big_eyes:')}"
             return {"result": alert}
         else:
-            return redirect(url_for('blog_post', blog_id=blog_id))
+            return redirect(url_for('blog_category', blog_category=blog_category,
+                                    blog_title=blog_title, slug=slug))
 
 
 # View for likes

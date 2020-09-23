@@ -22,8 +22,8 @@ app.add_url_rule('/contact', view_func=ContactEndpoint.as_view("contact"))
 app.add_url_rule('/category', view_func=CategoryEndpoint.as_view("category"))
 
 # Route for single blog
-app.add_url_rule('/blog_post/<string:blog_title>/<string:slug>',
-                 view_func=SingleEndpoint.as_view("blog_post"))
+app.add_url_rule('/<string:blog_category>/<string:blog_title>/<string:slug>',
+                 view_func=SingleEndpoint.as_view("blog_category"))
 
 # Route for likes
 app.add_url_rule('/likes', view_func=LikesEndpoint.as_view("likes"))

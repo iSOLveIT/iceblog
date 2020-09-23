@@ -25,7 +25,7 @@
         {% for post in posts %}
           <div class="col-lg-4 mb-4">
             <div class="entry2">
-              <a href="/blog_post/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link">
+              <a href="/{{ post['category'] }}/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link">
                 <picture>
 	              <source type="image/webp" srcset="{{ 'https://drive.google.com/uc?export=view&id=' + post['id_webp_cover'] }}">
 	              <img src="{{ 'https://drive.google.com/uc?export=view&id=' + post['id_jpg_cover'] }}" alt="{{ post['imageAltText'] }}" class="img-fluid rounded" style="height: 330px !important;width: 500px !important;">
@@ -34,7 +34,7 @@
               <div class="excerpt">
                 <span class="post-category text-white bg-{{ post['category'] }} mb-3">{{ post['category'] }}</span>
 
-                <h2><a href="/blog_post/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link">{{ post['title'] }}</a></h2>
+                <h2><a href="/{{ post['category'] }}/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link">{{ post['title'] }}</a></h2>
                 <div class="post-meta align-items-center text-left clearfix">
                   <figure class="author-figure mb-0 mr-3 float-left">
                     <picture>
@@ -47,7 +47,7 @@
                 </div>
 
                 <p>{{ post['body'][:200] | safe }}...</p>
-                <p><a href="/blog_post/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link" style="font-weight: 600;">Continue to read blog post</a></p>
+                <p><a href="/{{ post['category'] }}/{{ post['title'].lower().replace(' ', '_') }}/{{ post['slug'] }}" aria-label="Blog post link" style="font-weight: 600;">Continue to read blog post</a></p>
               </div>
             </div>
           </div>
