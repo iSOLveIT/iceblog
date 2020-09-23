@@ -56,7 +56,8 @@
           <p>
             Categories: <span style="color: #ab0256;">{{ article['category'] }}</span> &nbsp;&nbsp;
 
-            <button class="btn_like" id="{{ article['slug'] }}" aria-label="Like button" value="+1" style="background: transparent; border: none;">
+            <button class="btn_like" id="{{ article['slug'] }}" aria-label="Like button" value="+1"
+                    style="background: transparent; border: none; outline: none;">
               <span class="icon-heart dislike" id="user_like"></span>
             </button> 
             <span id="current_like">{{ article['likes'] }}</span> likes
