@@ -72,10 +72,17 @@ class AdminDashboardEndpoint(MethodView):
     def get():
         # Create Mongodb connection
         articles = mongo.get_collection(name='articles')
+        users = mongo.get_collection(name='admin_user')
         # Get user information stored in session
         user_info = session.get(PROFILE_KEY)
         # Get username from user info
         author = user_info['username']
+        # Grant the admin access to view all blogs in database
+        user = users.find_one({'username': author}, {"isAdmin": 1, "_id": 0})
+        if user['isAdmin']:     # Check if user is admin
+            # Execute query to fetch data from database
+            posts = articles.find({}).sort('datePosted', DESCENDING)
+            return render_template('admin.html', others=False, posts=posts, user_info=user_info)
         # Execute query to fetch data from database
         posts = articles.find({"author": author}).sort('datePosted', DESCENDING)
         return render_template('admin.html', others=False, posts=posts, user_info=user_info)
