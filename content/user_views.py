@@ -9,7 +9,7 @@ from .commentIDgenerator import comments_id
 
 # Third-party modules
 from flask.views import MethodView
-from flask import render_template, request, redirect, url_for, flash, session, abort
+from flask import render_template, request, redirect, url_for, flash
 from bson.objectid import ObjectId  # Import for using mongo id
 from pymongo import DESCENDING, ASCENDING
 from emoji import emojize
@@ -136,9 +136,10 @@ class SingleEndpoint(MethodView):
             },
             {"_id": 0, "category_num": 0}
         )
+        # TODO
         # Blog can't be viewed if status is draft or the session logged_in is False
-        if article['status'] == 'draft' or session.get('logged_in') is False:
-            return abort(404)
+        # if article['status'] == 'draft' or session.get('logged_in') is False:
+        # return abort(404)
 
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] is True])
