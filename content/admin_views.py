@@ -306,7 +306,7 @@ class CommentApprovalEndpoint(MethodView):
         approved = str(request.form.get('approval', None, type=str))
         comment_id = str(request.form.get('commentID', None, type=str))
 
-        if reply_msg is not None:
+        if reply_msg and approved is None:
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
             # Execute query to find and update data
@@ -323,7 +323,7 @@ class CommentApprovalEndpoint(MethodView):
                 upsert=False, )
             result = "Comment replied!"
             return {'result': result}  # dict object is transformed into a json object when received by client
-        elif approved == 'true':
+        elif approved == 'true' and reply_msg is None:
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
             # Execute query to find and update data
