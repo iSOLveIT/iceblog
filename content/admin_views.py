@@ -296,16 +296,34 @@ class CommentStatusEndpoint(MethodView):
 class CommentApprovalEndpoint(MethodView):
     @staticmethod
     @requires_auth
-    def get():
+    def post():
         # The clients send json data to the comment approval endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        ids = str(request.args.get('IDs', type=str))
+        ids = str(request.form.get('IDs', type=str))
         blog_id, comment_index, _ = ids.split('_')
-        approved = str(request.args.get('approval', None, type=str))
-        comment_id = str(request.args.get('commentID', None, type=str))
-           
-        if approved == 'true':
+        reply_msg = str(request.form.get('reply_msg', None, type=str))
+        approved = str(request.form.get('approval', None, type=str))
+        comment_id = str(request.form.get('commentID', None, type=str))
+
+        if reply_msg is not None:
+            # Create Mongodb connection
+            articles = mongo.get_collection(name='articles')
+            # Execute query to find and update data
+            articles.find_one_and_update(
+                {'_id': ObjectId(blog_id)},
+                {
+                    '$set': {
+                        f'comments.{comment_index}.approved': True,
+                        f'comments.{comment_index}.replied': True,
+                        f'comments.{comment_index}.replyMessage': reply_msg,
+                        f'comments.{comment_index}.dateReplied': dt.now()
+                    }
+                },
+                upsert=False, )
+            result = "Comment replied!"
+            return {'result': result}  # dict object is transformed into a json object when received by client
+        elif approved == 'true':
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
             # Execute query to find and update data
