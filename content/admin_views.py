@@ -330,7 +330,7 @@ class CommentApprovalEndpoint(MethodView):
             return {'status': 200}   # dict object is transformed into a json object when received by client
 
 
-# View for comment approval
+# View for comment reply
 class CommentReplyEndpoint(MethodView):
     @staticmethod
     @requires_auth
