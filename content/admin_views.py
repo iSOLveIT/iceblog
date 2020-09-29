@@ -296,15 +296,15 @@ class CommentStatusEndpoint(MethodView):
 class CommentApprovalEndpoint(MethodView):
     @staticmethod
     @requires_auth
-    def get():
+    def post():
         # The clients send json data to the comment approval endpoint asynchronously using jquery, then
         # we receive the data and then reply the client with a json data
         # which is rendered in the template file using javascript
-        ids = str(request.args.get('IDs', type=str))
+        ids = str(request.form.get('IDs', type=str))
         blog_id, comment_index, _ = ids.split('_')
-        approved = str(request.args.get('approval', None, type=str))
-        comment_id = str(request.args.get('commentID', None, type=str))
-           
+        approved = str(request.form.get('approval', None, type=str))
+        comment_id = str(request.form.get('commentID', None, type=str))
+
         if approved == 'true':
             # Create Mongodb connection
             articles = mongo.get_collection(name='articles')
@@ -315,8 +315,7 @@ class CommentApprovalEndpoint(MethodView):
                     '$set': {f'comments.{comment_index}.approved': True}
                     },
                 upsert=False,)     
-            status = 200
-            return {'status': status}   # dict object is transformed into a json object when received by client
+            return {'status': 200}   # dict object is transformed into a json object when received by client
 
         else:
             # Create Mongodb connection
@@ -324,12 +323,41 @@ class CommentApprovalEndpoint(MethodView):
             # Execute query to find and update data
             articles.find_one_and_update(
                 {'_id': ObjectId(blog_id)},
-                { 
+                {   # Delete dictionary object in comments array using the commentId
                     '$pull': {'comments': {'commentId': comment_id}}
                     },
                 {'multi': True})
-            status = 200
-            return {'status': status}   # dict object is transformed into a json object when received by client
+            return {'status': 200}   # dict object is transformed into a json object when received by client
+
+
+# View for comment reply
+class CommentReplyEndpoint(MethodView):
+    @staticmethod
+    @requires_auth
+    def post():
+        # The clients send json data to the comment approval endpoint asynchronously using jquery, then
+        # we receive the data and then reply the client with a json data
+        # which is rendered in the template file using javascript
+        ids = str(request.form.get('IDs', type=str))
+        blog_id, comment_index, _ = ids.split('_')
+        reply_msg = str(request.form.get('reply_msg', None, type=str))
+
+        if reply_msg:
+            # Create Mongodb connection
+            articles = mongo.get_collection(name='articles')
+            # Execute query to find and update data
+            articles.find_one_and_update(
+                {'_id': ObjectId(blog_id)},
+                {
+                    '$set': {
+                        f'comments.{comment_index}.approved': True,
+                        f'comments.{comment_index}.replied': True,
+                        f'comments.{comment_index}.replyMessage': reply_msg,
+                        f'comments.{comment_index}.dateReplied': dt.now()
+                    }
+                },
+                upsert=False, )
+            return {'result': "Comment replied!"}  # dict object is transformed into a json object
 
 
 # View for registering new users

@@ -67,3 +67,7 @@ app.add_url_rule('/admin_dashboard/comments',
 # Route for comment approval
 app.add_url_rule('/admin_dashboard/comments_approval',
                  view_func=CommentApprovalEndpoint.as_view("comments_approval"))
+
+# Route for comment reply
+app.add_url_rule('/admin_dashboard/comments_reply',
+                 view_func=CommentReplyEndpoint.as_view("comments_reply"))
