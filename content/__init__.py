@@ -22,8 +22,8 @@ app.config['SESSION_COOKIE_NAME'] = "ice_blog"
 app.config['SESSION_COOKIE_SECURE'] = True
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = "None"
-app.config['PERMANENT_SESSION_LIFETIME'] = 36000  # Expiration time for session (10 hours)
-
+app.config['SESSION_PERMANENT'] = True  # Expiration time for session (10 hours)
+app.permanent_session_lifetime = 36000  # Expiration time for session (10 hours)
 # Config and Instantiate Mongo
 user = str(os.environ.get('MONGODB_USERNAME'))
 passwd = str(os.environ.get('MONGODB_PASSWORD'))
