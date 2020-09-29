@@ -19,6 +19,9 @@ app = Flask(__name__)
 
 # Session Configuration
 SESSION_COOKIE_NAME = "ice_blog"
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
 PERMANENT_SESSION_LIFETIME = 36000  # Expiration time for session (10 hours)
 
 # Config and Instantiate Mongo
