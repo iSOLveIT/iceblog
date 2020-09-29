@@ -18,11 +18,11 @@ from flask_mail import Mail
 app = Flask(__name__)
 
 # Session Configuration
-SESSION_COOKIE_NAME = "ice_blog"
-SESSION_COOKIE_SECURE = True
-SESSION_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SAMESITE = "Lax"
-PERMANENT_SESSION_LIFETIME = 36000  # Expiration time for session (10 hours)
+app.config['SESSION_COOKIE_NAME'] = "ice_blog"
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = "None"
+app.config['PERMANENT_SESSION_LIFETIME'] = 36000  # Expiration time for session (10 hours)
 
 # Config and Instantiate Mongo
 user = str(os.environ.get('MONGODB_USERNAME'))
