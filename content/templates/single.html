@@ -72,14 +72,30 @@
             {% for comment in article['comments'] %}
               {% if comment['approved'] == True %}
                 <li class="comment">
-                  <div class="vcard">
-                    <img src="{{ url_for('static', filename='images/webp/comments.webp') }}" alt="Image placeholder">
-                  </div>
-                  <div class="comment-body">
-                    <h6>{{ comment['name'] }}</h6>
-                    <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
-                    <p>{{ comment['message'] }}</p>
-                  </div>
+                  <ul>
+                    <li class="reader">
+                      <div class="vcard">
+                          <img src="{{ url_for('static', filename='images/webp/comments.webp') }}" alt="Comment image placeholder">
+                      </div>
+                      <div class="comment-body">
+                          <h6>{{ comment['name'] }}</h6>
+                          <div class="meta">{{ comment['datePosted'].strftime('%B %d, %Y at %I:%M %p') }}</div>
+                          <p>{{ comment['message'] }}</p>
+                      </div>
+                    </li>
+                    {% if comment['replied'] == True %}
+                      <li class="writer">
+                          <div class="reply-card">
+                              <img src="{{ url_for('static', filename='images/webp/comments.webp') }}" alt="Comment image placeholder">
+                          </div>
+                          <div class="reply-body">
+                              <h6>{{ article['author'] }}</h6>
+                              <div class="meta">{{ comment['dateReplied'].strftime('%B %d, %Y at %I:%M %p') }}</div>
+                              <p>{{ comment['replyMessage'] }}</p>
+                          </div>
+                      </li>
+                    {% endif %}
+                  </ul>
                 </li>
               {% endif %}
             {% endfor %}

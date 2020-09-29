@@ -59,7 +59,7 @@
                   <td>{{article.likes}} likes</td>
                   <td>{{article.dateUpdated.strftime('%B %d, %Y')}}</td>
                   <td>
-                    <a href='/admin_dashboard/edit_article/{{article._id}}' aria-label="Edit Article link" class="btn btn-success pull-right" style="color:#242424">Edit</a>
+                    <a href='/admin_dashboard/edit_article/{{article._id}}' aria-label="Edit Article link" class="btn pull-right" style="color:#242424">Edit</a>
                   </td>
                   <td>
                   <form action="/admin_dashboard/delete_article/{{article._id}}" method="POST">

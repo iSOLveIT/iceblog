@@ -136,10 +136,6 @@ class SingleEndpoint(MethodView):
             },
             {"_id": 0, "category_num": 0}
         )
-        # TODO
-        # Blog can't be viewed if status is draft or the session logged_in is False
-        # if article['status'] == 'draft' or session.get('logged_in') is False:
-        # return abort(404)
 
         # Number of comments
         len_comments = len([comment for comment in article['comments'] if comment['approved'] is True])
@@ -209,8 +205,7 @@ class SingleEndpoint(MethodView):
             e_mail = str(request.form['subscriber_email'])
             # Execute query to insert data
             # db.insert_one({"emailAddress": e_mail, "dateCreated": dt.now()})
-            alert = f"Thanks for subscribing {emojize(':grinning_face_with_big_eyes:')}"
-            return {"result": alert}
+            return {"result": f"Thanks for subscribing {emojize(':grinning_face_with_big_eyes:')}"}
         else:
             return redirect(url_for('blog_category', blog_category=blog_category,
                                     blog_title=blog_title, slug=slug))
@@ -235,5 +230,4 @@ class LikesEndpoint(MethodView):
             {'$inc': {'likes': likes}}
         )
         query = articles.find_one({'slug': slug_id}, {"likes": 1})
-        result = query['likes']
-        return {'result': result}
+        return {'result': query['likes']}
